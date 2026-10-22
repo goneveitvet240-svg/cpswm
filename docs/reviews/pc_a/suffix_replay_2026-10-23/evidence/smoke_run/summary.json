@@ -1,0 +1,224 @@
+{
+  "status": "GOAL_LOOP_COMPLETE",
+  "steps": 7,
+  "prompts": [
+    "put the black bowl on the stove",
+    "put the black bowl on the plate"
+  ],
+  "goal_changed": true,
+  "cancelled_actions": 3,
+  "sam_frames": 3,
+  "pi05_inference_executed": false,
+  "elapsed_seconds": 9.46788387466222,
+  "source_unchanged": true,
+  "final_core_receipt": {
+    "ok": true,
+    "audit": {
+      "revision": "0faea4c0a9f17e403f1f874478542cb87c86acf0f08d13f06aba90e5d706020b",
+      "semantic_memory": {
+        "arm": "native_joint",
+        "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "event_count": 3,
+        "source_count": 5,
+        "rebuilds": 5,
+        "total_native_target_scores": 216,
+        "current_location": "stove",
+        "destination_distribution": {
+          "plate": 0.6666666666666666,
+          "stove": 0.3333333333333333
+        },
+        "native_steps": 3,
+        "particles": 24,
+        "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+        "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+        "operators": [
+          "ccrr",
+          "cf_bocpd",
+          "ciav",
+          "opceu",
+          "orrer_cheh",
+          "pchmp",
+          "rgrc"
+        ],
+        "native_budget": 24,
+        "operator_executions": {
+          "ccrr": 3,
+          "cf_bocpd": 3,
+          "ciav": 0,
+          "opceu": 3,
+          "orrer_cheh": 0,
+          "pchmp": 3,
+          "rgrc": 3
+        },
+        "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+        "replay_implementation": "checkpoint_suffix_v1",
+        "checkpoint_stride": 4,
+        "max_checkpoints": 8,
+        "checkpoint_count": 1,
+        "last_replay": {
+          "input_events": 3,
+          "unchanged_prefix": 2,
+          "checkpoint_prefix": 0,
+          "replayed_events": 3,
+          "target_score_evaluations": 72,
+          "full_rebuild_target_scores": 72,
+          "checkpoint_count": 1,
+          "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+          "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+        }
+      },
+      "visual_memory": {
+        "arm": "native_joint",
+        "memory_revision": "64927c7cf3eec5c290d2d92ef2b201da3635c6d70b8ad48770c2a35bdcf9f29c",
+        "event_count": 3,
+        "source_count": 3,
+        "rebuilds": 3,
+        "total_native_target_scores": 24,
+        "current_location": null,
+        "destination_distribution": {
+          "image_left": 0.3333333333333333,
+          "image_center": 0.3333333333333333,
+          "image_right": 0.3333333333333333
+        },
+        "native_steps": 1,
+        "particles": 24,
+        "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+        "ledger_head": "GENESIS",
+        "operators": [
+          "ccrr",
+          "cf_bocpd",
+          "ciav",
+          "opceu",
+          "orrer_cheh",
+          "pchmp",
+          "rgrc"
+        ],
+        "native_budget": 24,
+        "operator_executions": {
+          "ccrr": 1,
+          "cf_bocpd": 1,
+          "ciav": 0,
+          "opceu": 1,
+          "orrer_cheh": 0,
+          "pchmp": 1,
+          "rgrc": 1
+        },
+        "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+        "replay_implementation": "checkpoint_suffix_v1",
+        "checkpoint_stride": 4,
+        "max_checkpoints": 8,
+        "checkpoint_count": 1,
+        "last_replay": {
+          "input_events": 1,
+          "unchanged_prefix": 1,
+          "checkpoint_prefix": 1,
+          "replayed_events": 0,
+          "target_score_evaluations": 0,
+          "full_rebuild_target_scores": 24,
+          "checkpoint_count": 1,
+          "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+          "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+        }
+      },
+      "queue_history": [
+        {
+          "event": "issued",
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+            "object_id": "target",
+            "destination": "stove",
+            "issued_at": 100
+          }
+        },
+        {
+          "event": "completed",
+          "feedback": {
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "observation": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+              "event_id": "visual:0:102",
+              "occurred_at": 102,
+              "available_at": 102,
+              "object_id": "target",
+              "visibility": "predicted",
+              "location": "image_center",
+              "actors": [
+                [
+                  "unknown_actor",
+                  1.0
+                ]
+              ],
+              "revises": null,
+              "origin": "sam2.1_tiny_propagation",
+              "robot_generated": true,
+              "identity_probability": 0.0
+            },
+            "status": "unknown",
+            "control_steps": 2
+          }
+        },
+        {
+          "event": "issued",
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          }
+        },
+        {
+          "event": "completed",
+          "feedback": {
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "observation": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "source_id": "sam2:0:107:badaf850b46a032c69ef3ce4a97f8985d5ab69b85f0144db767ca0499e5af0e4",
+              "event_id": "visual:0:107",
+              "occurred_at": 107,
+              "available_at": 107,
+              "object_id": "target",
+              "visibility": "predicted",
+              "location": "image_center",
+              "actors": [
+                [
+                  "unknown_actor",
+                  1.0
+                ]
+              ],
+              "revises": null,
+              "origin": "sam2.1_tiny_propagation",
+              "robot_generated": true,
+              "identity_probability": 0.0
+            },
+            "status": "unknown",
+            "control_steps": 5
+          }
+        }
+      ],
+      "pending_plan": null,
+      "recorded_step_ticks": [],
+      "feedback_status": "unknown",
+      "evidence_level": "controlled semantic history + separately admitted camera track",
+      "scientific_acceptance": false
+    },
+    "revision": "0faea4c0a9f17e403f1f874478542cb87c86acf0f08d13f06aba90e5d706020b"
+  },
+  "task_success_evaluator_only": false,
+  "evaluator_scope": "original LIBERO bowl-to-plate task only",
+  "limitations": [
+    "single bounded engineering probe, not a full task episode",
+    "semantic history is controlled, not visually inferred",
+    "operator supplies object binding and destination prompt catalogue",
+    "existing fixture readout, not frozen production task readout",
+    "SAM prediction permits continuation but cannot certify placement success",
+    "feedback status unknown; no human habit update from robot motion",
+    "no native global ORRER acceptance or joint-specific scientific gain",
+    "local trusted process protocol; execution evidence is audited separately"
+  ],
+  "scientific_acceptance": false
+}

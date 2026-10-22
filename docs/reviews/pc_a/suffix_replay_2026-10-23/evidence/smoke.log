@@ -1,0 +1,19 @@
+LIBERO: initializing real simulator
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[info] using task orders [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[Warning]: datasets path /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/third_party/libero/datasets does not exist!
+[Warning]: datasets path /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/vendor/openpi/third_party/libero/datasets does not exist!
+frame loading (JPEG):   0%|          | 0/1 [00:00<?, ?it/s]frame loading (JPEG): 100%|██████████| 1/1 [00:00<00:00, 86.04it/s]
+smoke: ready for memory-selected prompts
+smoke: inference at 100, goal=stove, prompt=put the black bowl on the stove
+frame loading (JPEG):   0%|          | 0/2 [00:00<?, ?it/s]frame loading (JPEG): 100%|██████████| 2/2 [00:00<00:00, 137.20it/s]
+propagate in video:   0%|          | 0/2 [00:00<?, ?it/s]propagate in video:  50%|█████     | 1/2 [00:00<00:00,  1.32it/s]
+smoke: inference at 102, goal=plate, prompt=put the black bowl on the plate
+frame loading (JPEG):   0%|          | 0/3 [00:00<?, ?it/s]frame loading (JPEG): 100%|██████████| 3/3 [00:00<00:00, 162.47it/s]
+propagate in video:   0%|          | 0/3 [00:00<?, ?it/s]propagate in video:  67%|██████▋   | 2/3 [00:00<00:00,  2.18it/s]propagate in video:  67%|██████▋   | 2/3 [00:01<00:00,  1.12it/s]

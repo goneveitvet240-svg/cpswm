@@ -1,0 +1,4907 @@
+[
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "history",
+      "observation": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "source_id": "integration-delayed_attribution-7:historical:0",
+        "event_id": "integration-delayed_attribution-7:historical:0",
+        "occurred_at": 0,
+        "available_at": 0,
+        "object_id": "target",
+        "visibility": "observed",
+        "location": "plate",
+        "actors": [
+          [
+            "owner",
+            1.0
+          ]
+        ],
+        "revises": null,
+        "origin": "controlled_semantic_sensor",
+        "robot_generated": false,
+        "identity_probability": 1.0
+      },
+      "now": 0
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "9c1932f2ab4746aec0748dfffb99d0a5c79b77a0f20a81fa4316c419d57dbe72",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "42f3f3157e3b7fa51dee4a5ff8752c8660ccee24311c889efb7e5cd96a8a7ef7",
+          "event_count": 1,
+          "source_count": 1,
+          "rebuilds": 1,
+          "total_native_target_scores": 24,
+          "current_location": "plate",
+          "destination_distribution": {
+            "plate": 0.6911588541666667,
+            "stove": 0.30884114583333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "f3124ed48cb54e4403528392a7f64270855c3b5ef157dc4c576483a059bd3074",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 0,
+            "checkpoint_prefix": 0,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "f3124ed48cb54e4403528392a7f64270855c3b5ef157dc4c576483a059bd3074"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "361f7c2e6598d80cd70b5820132c3764b6890306a1a52e29e3618ac9e3074f56",
+          "event_count": 0,
+          "source_count": 0,
+          "rebuilds": 0,
+          "total_native_target_scores": 0,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 0,
+          "particles": 0,
+          "native_state": null,
+          "ledger_head": null,
+          "operators": [],
+          "native_budget": null,
+          "operator_executions": {},
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 0,
+          "last_replay": null
+        },
+        "queue_history": [],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "9c1932f2ab4746aec0748dfffb99d0a5c79b77a0f20a81fa4316c419d57dbe72"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "history",
+      "observation": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "source_id": "integration-delayed_attribution-7:historical:1",
+        "event_id": "integration-delayed_attribution-7:historical:1",
+        "occurred_at": 1,
+        "available_at": 1,
+        "object_id": "target",
+        "visibility": "observed",
+        "location": "stove",
+        "actors": [
+          [
+            "owner",
+            0.7
+          ],
+          [
+            "guest",
+            0.3
+          ]
+        ],
+        "revises": null,
+        "origin": "controlled_semantic_sensor",
+        "robot_generated": false,
+        "identity_probability": 1.0
+      },
+      "now": 1
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07faeb20254b5220ef6a0362dd3606a4f2b4de726bc9694bf3b7c219319d821b",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "854a6b5129f3dc94720e9594fed4e9e8c749efc5f22f5c06671874d4f70633d1",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 48,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.542478916012787,
+            "stove": 0.45752108398721303
+          },
+          "native_steps": 2,
+          "particles": 24,
+          "native_state": "2a6387db3e2a807de3f3bef2101b16a8900310c312f252fb9740a1944004bab2",
+          "ledger_head": "a3383cb5f69c10030cd00bc394b54f66463109f8d7686bd955262d2dd29a63ec",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 2,
+            "cf_bocpd": 2,
+            "ciav": 0,
+            "opceu": 2,
+            "orrer_cheh": 0,
+            "pchmp": 2,
+            "rgrc": 2
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 2,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 48,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "2a6387db3e2a807de3f3bef2101b16a8900310c312f252fb9740a1944004bab2"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "361f7c2e6598d80cd70b5820132c3764b6890306a1a52e29e3618ac9e3074f56",
+          "event_count": 0,
+          "source_count": 0,
+          "rebuilds": 0,
+          "total_native_target_scores": 0,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 0,
+          "particles": 0,
+          "native_state": null,
+          "ledger_head": null,
+          "operators": [],
+          "native_budget": null,
+          "operator_executions": {},
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 0,
+          "last_replay": null
+        },
+        "queue_history": [],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07faeb20254b5220ef6a0362dd3606a4f2b4de726bc9694bf3b7c219319d821b"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "history",
+      "observation": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "source_id": "integration-delayed_attribution-7:historical:2",
+        "event_id": "integration-delayed_attribution-7:historical:2",
+        "occurred_at": 2,
+        "available_at": 2,
+        "object_id": "target",
+        "visibility": "observed",
+        "location": "stove",
+        "actors": [
+          [
+            "owner",
+            0.7
+          ],
+          [
+            "guest",
+            0.3
+          ]
+        ],
+        "revises": null,
+        "origin": "controlled_semantic_sensor",
+        "robot_generated": false,
+        "identity_probability": 1.0
+      },
+      "now": 2
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "b6745d2ad140757a29b4f9980496012edbbf64df1b122b11e68851540d2155c0",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 72,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.4538624186367266,
+            "stove": 0.5461375813632734
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4",
+          "ledger_head": "80c1d310bd4b552e1aaa93c037fef088476a67dc17b7a02b4fc57a031b099bb3",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 2,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "361f7c2e6598d80cd70b5820132c3764b6890306a1a52e29e3618ac9e3074f56",
+          "event_count": 0,
+          "source_count": 0,
+          "rebuilds": 0,
+          "total_native_target_scores": 0,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 0,
+          "particles": 0,
+          "native_state": null,
+          "ledger_head": null,
+          "operators": [],
+          "native_budget": null,
+          "operator_executions": {},
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 0,
+          "last_replay": null
+        },
+        "queue_history": [],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "b6745d2ad140757a29b4f9980496012edbbf64df1b122b11e68851540d2155c0"
+    }
+  },
+  {
+    "event": "sam_observation",
+    "tick": 100,
+    "observation": {
+      "episode_id": "libero-delayed-attribution-goal-v1",
+      "source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e",
+      "event_id": "visual:0:100",
+      "occurred_at": 100,
+      "available_at": 100,
+      "object_id": "target",
+      "visibility": "observed",
+      "location": "image_center",
+      "actors": [
+        [
+          "unknown_actor",
+          1.0
+        ]
+      ],
+      "origin": "sam2.1_tiny_operator_box",
+      "identity_probability": 1.0,
+      "robot_generated": false
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "visual",
+      "observation": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e",
+        "event_id": "visual:0:100",
+        "occurred_at": 100,
+        "available_at": 100,
+        "object_id": "target",
+        "visibility": "observed",
+        "location": "image_center",
+        "actors": [
+          [
+            "unknown_actor",
+            1.0
+          ]
+        ],
+        "origin": "sam2.1_tiny_operator_box",
+        "identity_probability": 1.0,
+        "robot_generated": false
+      },
+      "now": 100
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 72,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.4538624186367266,
+            "stove": 0.5461375813632734
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4",
+          "ledger_head": "80c1d310bd4b552e1aaa93c037fef088476a67dc17b7a02b4fc57a031b099bb3",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 2,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "154bfd6559aeaa4de3d63ad5f70a04aa1263966b73489864ee827cdd9843723b",
+          "event_count": 1,
+          "source_count": 1,
+          "rebuilds": 1,
+          "total_native_target_scores": 24,
+          "current_location": "image_center",
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 0,
+            "checkpoint_prefix": 0,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "plan",
+      "tick": 100
+    },
+    "receipt": {
+      "ok": true,
+      "status": "ready",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+          "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+          "object_id": "target",
+          "destination": "stove",
+          "issued_at": 100
+        },
+        "prompt": "put the black bowl on the stove",
+        "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+        "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+      },
+      "distribution": {
+        "plate": 0.4538624186367266,
+        "stove": 0.5461375813632734
+      },
+      "audit": {
+        "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 72,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.4538624186367266,
+            "stove": 0.5461375813632734
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4",
+          "ledger_head": "80c1d310bd4b552e1aaa93c037fef088476a67dc17b7a02b4fc57a031b099bb3",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 2,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "154bfd6559aeaa4de3d63ad5f70a04aa1263966b73489864ee827cdd9843723b",
+          "event_count": 1,
+          "source_count": 1,
+          "rebuilds": 1,
+          "total_native_target_scores": 24,
+          "current_location": "image_center",
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 0,
+            "checkpoint_prefix": 0,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+            "object_id": "target",
+            "destination": "stove",
+            "issued_at": 100
+          },
+          "prompt": "put the black bowl on the stove",
+          "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+        },
+        "recorded_step_ticks": [],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8"
+    }
+  },
+  {
+    "event": "bound_goal",
+    "tick": 100,
+    "plan": {
+      "command": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+        "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+        "object_id": "target",
+        "destination": "stove",
+        "issued_at": 100
+      },
+      "prompt": "put the black bowl on the stove",
+      "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+      "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+    },
+    "cancelled_actions": 0
+  },
+  {
+    "event": "policy_inference",
+    "tick": 100,
+    "plan": {
+      "command": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+        "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+        "object_id": "target",
+        "destination": "stove",
+        "issued_at": 100
+      },
+      "prompt": "put the black bowl on the stove",
+      "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+      "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+    },
+    "seconds": 0.00016191694885492325,
+    "policy": "smoke"
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "validate",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+          "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+          "object_id": "target",
+          "destination": "stove",
+          "issued_at": 100
+        },
+        "prompt": "put the black bowl on the stove",
+        "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+        "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+      }
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 72,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.4538624186367266,
+            "stove": 0.5461375813632734
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4",
+          "ledger_head": "80c1d310bd4b552e1aaa93c037fef088476a67dc17b7a02b4fc57a031b099bb3",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 2,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "154bfd6559aeaa4de3d63ad5f70a04aa1263966b73489864ee827cdd9843723b",
+          "event_count": 1,
+          "source_count": 1,
+          "rebuilds": 1,
+          "total_native_target_scores": 24,
+          "current_location": "image_center",
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 0,
+            "checkpoint_prefix": 0,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+            "object_id": "target",
+            "destination": "stove",
+            "issued_at": 100
+          },
+          "prompt": "put the black bowl on the stove",
+          "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+        },
+        "recorded_step_ticks": [],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8"
+    }
+  },
+  {
+    "event": "executed_action",
+    "tick": 101,
+    "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+    "policy_tick": 100,
+    "output_offset": 0,
+    "action": [
+      0.0,
+      0.0,
+      0.05,
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+    ],
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20940749499124253,
+      -0.004037763215639599,
+      1.185253909956319
+    ],
+    "gripper_position_after": [
+      0.03884338099301602,
+      -0.03884674172440139
+    ]
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "step",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+          "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+          "object_id": "target",
+          "destination": "stove",
+          "issued_at": 100
+        },
+        "prompt": "put the black bowl on the stove",
+        "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+        "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+      },
+      "completed_at": 101
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 72,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.4538624186367266,
+            "stove": 0.5461375813632734
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4",
+          "ledger_head": "80c1d310bd4b552e1aaa93c037fef088476a67dc17b7a02b4fc57a031b099bb3",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 2,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "154bfd6559aeaa4de3d63ad5f70a04aa1263966b73489864ee827cdd9843723b",
+          "event_count": 1,
+          "source_count": 1,
+          "rebuilds": 1,
+          "total_native_target_scores": 24,
+          "current_location": "image_center",
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 0,
+            "checkpoint_prefix": 0,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+            "object_id": "target",
+            "destination": "stove",
+            "issued_at": 100
+          },
+          "prompt": "put the black bowl on the stove",
+          "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+        },
+        "recorded_step_ticks": [
+          101
+        ],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "validate",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+          "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+          "object_id": "target",
+          "destination": "stove",
+          "issued_at": 100
+        },
+        "prompt": "put the black bowl on the stove",
+        "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+        "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+      }
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 72,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.4538624186367266,
+            "stove": 0.5461375813632734
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4",
+          "ledger_head": "80c1d310bd4b552e1aaa93c037fef088476a67dc17b7a02b4fc57a031b099bb3",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 2,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "154bfd6559aeaa4de3d63ad5f70a04aa1263966b73489864ee827cdd9843723b",
+          "event_count": 1,
+          "source_count": 1,
+          "rebuilds": 1,
+          "total_native_target_scores": 24,
+          "current_location": "image_center",
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 0,
+            "checkpoint_prefix": 0,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+            "object_id": "target",
+            "destination": "stove",
+            "issued_at": 100
+          },
+          "prompt": "put the black bowl on the stove",
+          "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+        },
+        "recorded_step_ticks": [
+          101
+        ],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8"
+    }
+  },
+  {
+    "event": "executed_action",
+    "tick": 102,
+    "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+    "policy_tick": 100,
+    "output_offset": 1,
+    "action": [
+      0.0,
+      0.0,
+      0.05,
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+    ],
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20946952498041377,
+      -0.004057237564583647,
+      1.185760990035906
+    ],
+    "gripper_position_after": [
+      0.038912398987803555,
+      -0.038914477944522796
+    ]
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "step",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+          "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+          "object_id": "target",
+          "destination": "stove",
+          "issued_at": 100
+        },
+        "prompt": "put the black bowl on the stove",
+        "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+        "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+      },
+      "completed_at": 102
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 72,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.4538624186367266,
+            "stove": 0.5461375813632734
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4",
+          "ledger_head": "80c1d310bd4b552e1aaa93c037fef088476a67dc17b7a02b4fc57a031b099bb3",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 2,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "154bfd6559aeaa4de3d63ad5f70a04aa1263966b73489864ee827cdd9843723b",
+          "event_count": 1,
+          "source_count": 1,
+          "rebuilds": 1,
+          "total_native_target_scores": 24,
+          "current_location": "image_center",
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 0,
+            "checkpoint_prefix": 0,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+            "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+            "object_id": "target",
+            "destination": "stove",
+            "issued_at": 100
+          },
+          "prompt": "put the black bowl on the stove",
+          "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+        },
+        "recorded_step_ticks": [
+          101,
+          102
+        ],
+        "feedback_status": "not_executed",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8"
+    }
+  },
+  {
+    "event": "sam_observation",
+    "tick": 102,
+    "observation": {
+      "episode_id": "libero-delayed-attribution-goal-v1",
+      "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+      "event_id": "visual:0:102",
+      "occurred_at": 102,
+      "available_at": 102,
+      "object_id": "target",
+      "visibility": "predicted",
+      "location": "image_center",
+      "actors": [
+        [
+          "unknown_actor",
+          1.0
+        ]
+      ],
+      "origin": "sam2.1_tiny_propagation",
+      "identity_probability": 0.0,
+      "robot_generated": true
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "feedback",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+          "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+          "object_id": "target",
+          "destination": "stove",
+          "issued_at": 100
+        },
+        "prompt": "put the black bowl on the stove",
+        "goal_memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+        "visual_source_id": "sam2:0:100:cf418f9ae9f06c0f99a06a0295a893ef2ce0fdd2e899bfd581c031f5f5d1702e"
+      },
+      "observation": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+        "event_id": "visual:0:102",
+        "occurred_at": 102,
+        "available_at": 102,
+        "object_id": "target",
+        "visibility": "predicted",
+        "location": "image_center",
+        "actors": [
+          [
+            "unknown_actor",
+            1.0
+          ]
+        ],
+        "origin": "sam2.1_tiny_propagation",
+        "identity_probability": 0.0,
+        "robot_generated": true
+      },
+      "control_steps": 2
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "69074d7a1226c3d438639a2c9c7c29288f462d6f6149e2c7e2bb88dfda3f7e80",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "289ef1692394a5dbc4d7f91a6c2b987223086d0268bc98164b22846a837ff0d8",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 72,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.4538624186367266,
+            "stove": 0.5461375813632734
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4",
+          "ledger_head": "80c1d310bd4b552e1aaa93c037fef088476a67dc17b7a02b4fc57a031b099bb3",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 2,
+            "replayed_events": 1,
+            "target_score_evaluations": 24,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "98998436664277aef585fe3785327418c5cbfb5d6ba8fe4418b21483cd264ef4"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          }
+        ],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "69074d7a1226c3d438639a2c9c7c29288f462d6f6149e2c7e2bb88dfda3f7e80"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "history",
+      "observation": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "source_id": "integration-delayed_attribution-7:historical:1:corrected",
+        "event_id": "integration-delayed_attribution-7:historical:1",
+        "occurred_at": 1,
+        "available_at": 102,
+        "object_id": "target",
+        "visibility": "observed",
+        "location": "stove",
+        "actors": [
+          [
+            "guest",
+            1.0
+          ]
+        ],
+        "revises": "integration-delayed_attribution-7:historical:1",
+        "origin": "controlled_semantic_sensor",
+        "robot_generated": false,
+        "identity_probability": 1.0
+      },
+      "now": 102
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "7bbb3935924570c2f0f108ce1d038a4584c32029147f5da12f0c725732c996cd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "960a562322e717385bb160d90fb080b6b29c8f89283410117aae8cd2bd01ab50",
+          "event_count": 3,
+          "source_count": 4,
+          "rebuilds": 4,
+          "total_native_target_scores": 144,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.5413414948248707,
+            "stove": 0.4586585051751293
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "e0bf48e0e410aa5a29401eb97389b9bd5bfe897dd8cd4255a16fb26c77168790",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "e0bf48e0e410aa5a29401eb97389b9bd5bfe897dd8cd4255a16fb26c77168790"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          }
+        ],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "7bbb3935924570c2f0f108ce1d038a4584c32029147f5da12f0c725732c996cd"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "history",
+      "observation": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "source_id": "integration-delayed_attribution-7:historical:2:corrected",
+        "event_id": "integration-delayed_attribution-7:historical:2",
+        "occurred_at": 2,
+        "available_at": 102,
+        "object_id": "target",
+        "visibility": "observed",
+        "location": "stove",
+        "actors": [
+          [
+            "guest",
+            1.0
+          ]
+        ],
+        "revises": "integration-delayed_attribution-7:historical:2",
+        "origin": "controlled_semantic_sensor",
+        "robot_generated": false,
+        "identity_probability": 1.0
+      },
+      "now": 102
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          }
+        ],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "plan",
+      "tick": 102
+    },
+    "receipt": {
+      "ok": true,
+      "status": "ready",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      },
+      "distribution": {
+        "plate": 0.6666666666666666,
+        "stove": 0.3333333333333333
+      },
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "bound_goal",
+    "tick": 102,
+    "plan": {
+      "command": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+        "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "object_id": "target",
+        "destination": "plate",
+        "issued_at": 102
+      },
+      "prompt": "put the black bowl on the plate",
+      "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+      "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+    },
+    "cancelled_actions": 3
+  },
+  {
+    "event": "policy_inference",
+    "tick": 102,
+    "plan": {
+      "command": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+        "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "object_id": "target",
+        "destination": "plate",
+        "issued_at": 102
+      },
+      "prompt": "put the black bowl on the plate",
+      "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+      "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+    },
+    "seconds": 0.00016179215162992477,
+    "policy": "smoke"
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "validate",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      }
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "executed_action",
+    "tick": 103,
+    "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+    "policy_tick": 102,
+    "output_offset": 0,
+    "action": [
+      0.0,
+      0.0,
+      0.05,
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+    ],
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20953733747485548,
+      -0.004068576673773851,
+      1.1863222968459415
+    ],
+    "gripper_position_after": [
+      0.03895978634453208,
+      -0.038961676663951395
+    ]
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "step",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      },
+      "completed_at": 103
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "validate",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      }
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "executed_action",
+    "tick": 104,
+    "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+    "policy_tick": 102,
+    "output_offset": 1,
+    "action": [
+      0.0,
+      0.0,
+      0.05,
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+    ],
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20960429610183642,
+      -0.00407441937670426,
+      1.1868962117019337
+    ],
+    "gripper_position_after": [
+      0.03900439765753916,
+      -0.03900622647289845
+    ]
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "step",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      },
+      "completed_at": 104
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103,
+          104
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "validate",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      }
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103,
+          104
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "executed_action",
+    "tick": 105,
+    "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+    "policy_tick": 102,
+    "output_offset": 2,
+    "action": [
+      0.0,
+      0.0,
+      0.05,
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+    ],
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20966900253187526,
+      -0.004076955968325933,
+      1.1874742331812376
+    ],
+    "gripper_position_after": [
+      0.03904708657881203,
+      -0.039048863145714936
+    ]
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "step",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      },
+      "completed_at": 105
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103,
+          104,
+          105
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "validate",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      }
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103,
+          104,
+          105
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "executed_action",
+    "tick": 106,
+    "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+    "policy_tick": 102,
+    "output_offset": 3,
+    "action": [
+      0.0,
+      0.0,
+      0.05,
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+    ],
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20973138925600862,
+      -0.004078103206454158,
+      1.188054449382018
+    ],
+    "gripper_position_after": [
+      0.03908794200062413,
+      -0.03908967356977698
+    ]
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "step",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      },
+      "completed_at": 106
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103,
+          104,
+          105,
+          106
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "validate",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      }
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103,
+          104,
+          105,
+          106
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "executed_action",
+    "tick": 107,
+    "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+    "policy_tick": 102,
+    "output_offset": 4,
+    "action": [
+      0.0,
+      0.0,
+      0.05,
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+    ],
+    "result": "simulator_step_returned",
+    "eef_position_after": [
+      -0.20979170253825202,
+      -0.004078704475573583,
+      1.1886362662987258
+    ],
+    "gripper_position_after": [
+      0.03912704410899532,
+      -0.03912873461948308
+    ]
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "step",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      },
+      "completed_at": 107
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "7d6d08267fca622a4662445ac41737014c11bb46b0425d3db1862568dbb2c7f7",
+          "event_count": 2,
+          "source_count": 2,
+          "rebuilds": 2,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          }
+        ],
+        "pending_plan": {
+          "command": {
+            "episode_id": "libero-delayed-attribution-goal-v1",
+            "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+            "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+            "object_id": "target",
+            "destination": "plate",
+            "issued_at": 102
+          },
+          "prompt": "put the black bowl on the plate",
+          "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+        },
+        "recorded_step_ticks": [
+          103,
+          104,
+          105,
+          106,
+          107
+        ],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd"
+    }
+  },
+  {
+    "event": "sam_observation",
+    "tick": 107,
+    "observation": {
+      "episode_id": "libero-delayed-attribution-goal-v1",
+      "source_id": "sam2:0:107:badaf850b46a032c69ef3ce4a97f8985d5ab69b85f0144db767ca0499e5af0e4",
+      "event_id": "visual:0:107",
+      "occurred_at": 107,
+      "available_at": 107,
+      "object_id": "target",
+      "visibility": "predicted",
+      "location": "image_center",
+      "actors": [
+        [
+          "unknown_actor",
+          1.0
+        ]
+      ],
+      "origin": "sam2.1_tiny_propagation",
+      "identity_probability": 0.0,
+      "robot_generated": true
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "feedback",
+      "plan": {
+        "command": {
+          "episode_id": "libero-delayed-attribution-goal-v1",
+          "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+          "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+          "object_id": "target",
+          "destination": "plate",
+          "issued_at": 102
+        },
+        "prompt": "put the black bowl on the plate",
+        "goal_memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+        "visual_source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1"
+      },
+      "observation": {
+        "episode_id": "libero-delayed-attribution-goal-v1",
+        "source_id": "sam2:0:107:badaf850b46a032c69ef3ce4a97f8985d5ab69b85f0144db767ca0499e5af0e4",
+        "event_id": "visual:0:107",
+        "occurred_at": 107,
+        "available_at": 107,
+        "object_id": "target",
+        "visibility": "predicted",
+        "location": "image_center",
+        "actors": [
+          [
+            "unknown_actor",
+            1.0
+          ]
+        ],
+        "origin": "sam2.1_tiny_propagation",
+        "identity_probability": 0.0,
+        "robot_generated": true
+      },
+      "control_steps": 5
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "0faea4c0a9f17e403f1f874478542cb87c86acf0f08d13f06aba90e5d706020b",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "64927c7cf3eec5c290d2d92ef2b201da3635c6d70b8ad48770c2a35bdcf9f29c",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:107:badaf850b46a032c69ef3ce4a97f8985d5ab69b85f0144db767ca0499e5af0e4",
+                "event_id": "visual:0:107",
+                "occurred_at": 107,
+                "available_at": 107,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 5
+            }
+          }
+        ],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "0faea4c0a9f17e403f1f874478542cb87c86acf0f08d13f06aba90e5d706020b"
+    }
+  },
+  {
+    "event": "core_rpc",
+    "request": {
+      "operation": "audit"
+    },
+    "receipt": {
+      "ok": true,
+      "audit": {
+        "revision": "0faea4c0a9f17e403f1f874478542cb87c86acf0f08d13f06aba90e5d706020b",
+        "semantic_memory": {
+          "arm": "native_joint",
+          "memory_revision": "5c5231103c958bc1ae5a2fe4ebe5c3052e3062d394f6f6f5b1523bc73e6cb841",
+          "event_count": 3,
+          "source_count": 5,
+          "rebuilds": 5,
+          "total_native_target_scores": 216,
+          "current_location": "stove",
+          "destination_distribution": {
+            "plate": 0.6666666666666666,
+            "stove": 0.3333333333333333
+          },
+          "native_steps": 3,
+          "particles": 24,
+          "native_state": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029",
+          "ledger_head": "5df280b57823995b7461ca2659a9e5d8e2d6cc709e6c399aad535ce0b41e8f22",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 3,
+            "cf_bocpd": 3,
+            "ciav": 0,
+            "opceu": 3,
+            "orrer_cheh": 0,
+            "pchmp": 3,
+            "rgrc": 3
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 3,
+            "unchanged_prefix": 2,
+            "checkpoint_prefix": 0,
+            "replayed_events": 3,
+            "target_score_evaluations": 72,
+            "full_rebuild_target_scores": 72,
+            "checkpoint_count": 1,
+            "context_sha256": "dfc9b7203de6d24d3a9bacacbd1db5023f522fe9dc7b50858be214d40e1bbd74",
+            "state_sha256": "7d721cb06d50eb21e161db6585bc723b7016c4424e3fe1a0b25ac6aa93b77029"
+          }
+        },
+        "visual_memory": {
+          "arm": "native_joint",
+          "memory_revision": "64927c7cf3eec5c290d2d92ef2b201da3635c6d70b8ad48770c2a35bdcf9f29c",
+          "event_count": 3,
+          "source_count": 3,
+          "rebuilds": 3,
+          "total_native_target_scores": 24,
+          "current_location": null,
+          "destination_distribution": {
+            "image_left": 0.3333333333333333,
+            "image_center": 0.3333333333333333,
+            "image_right": 0.3333333333333333
+          },
+          "native_steps": 1,
+          "particles": 24,
+          "native_state": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff",
+          "ledger_head": "GENESIS",
+          "operators": [
+            "ccrr",
+            "cf_bocpd",
+            "ciav",
+            "opceu",
+            "orrer_cheh",
+            "pchmp",
+            "rgrc"
+          ],
+          "native_budget": 24,
+          "operator_executions": {
+            "ccrr": 1,
+            "cf_bocpd": 1,
+            "ciav": 0,
+            "opceu": 1,
+            "orrer_cheh": 0,
+            "pchmp": 1,
+            "rgrc": 1
+          },
+          "evidence_level": "controlled_semantic_integration_not_scientific_acceptance",
+          "replay_implementation": "checkpoint_suffix_v1",
+          "checkpoint_stride": 4,
+          "max_checkpoints": 8,
+          "checkpoint_count": 1,
+          "last_replay": {
+            "input_events": 1,
+            "unchanged_prefix": 1,
+            "checkpoint_prefix": 1,
+            "replayed_events": 0,
+            "target_score_evaluations": 0,
+            "full_rebuild_target_scores": 24,
+            "checkpoint_count": 1,
+            "context_sha256": "804ebe3151d517291f83a64342adb27da75c91553c947920bce2978d939386b2",
+            "state_sha256": "6c18e4332da276c67247106575cfc43ec0abd837f46636838180ff79eccb67ff"
+          }
+        },
+        "queue_history": [
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "memory_revision": "908b10bfdc8a99fa24e3958806f50dd1827c80a422d367f84526d8d7e7d055d8",
+              "object_id": "target",
+              "destination": "stove",
+              "issued_at": 100
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "23976b6dc60d26f4fc174d56b3fb45614a1a1d08671f6861733d818cacd8b58f",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:102:0fddf2c41c53b1c538ba97d8b51e9993f6329df2633e2909a46e370b8e87cae1",
+                "event_id": "visual:0:102",
+                "occurred_at": 102,
+                "available_at": 102,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 2
+            }
+          },
+          {
+            "event": "issued",
+            "command": {
+              "episode_id": "libero-delayed-attribution-goal-v1",
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "memory_revision": "07711dc553bf4bb96716a76b2b2adda49c7197a6359f2ed09141b8e60b7ba1fd",
+              "object_id": "target",
+              "destination": "plate",
+              "issued_at": 102
+            }
+          },
+          {
+            "event": "completed",
+            "feedback": {
+              "command_id": "0e806a269b1c713adf9b041e38043221c8b4bba6a87c581adbaceff93902cba9",
+              "observation": {
+                "episode_id": "libero-delayed-attribution-goal-v1",
+                "source_id": "sam2:0:107:badaf850b46a032c69ef3ce4a97f8985d5ab69b85f0144db767ca0499e5af0e4",
+                "event_id": "visual:0:107",
+                "occurred_at": 107,
+                "available_at": 107,
+                "object_id": "target",
+                "visibility": "predicted",
+                "location": "image_center",
+                "actors": [
+                  [
+                    "unknown_actor",
+                    1.0
+                  ]
+                ],
+                "revises": null,
+                "origin": "sam2.1_tiny_propagation",
+                "robot_generated": true,
+                "identity_probability": 0.0
+              },
+              "status": "unknown",
+              "control_steps": 5
+            }
+          }
+        ],
+        "pending_plan": null,
+        "recorded_step_ticks": [],
+        "feedback_status": "unknown",
+        "evidence_level": "controlled semantic history + separately admitted camera track",
+        "scientific_acceptance": false
+      },
+      "revision": "0faea4c0a9f17e403f1f874478542cb87c86acf0f08d13f06aba90e5d706020b"
+    }
+  }
+]

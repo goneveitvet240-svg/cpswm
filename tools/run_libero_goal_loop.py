@@ -44,6 +44,7 @@ def main() -> None:
         default="native_joint",
     )
     parser.add_argument("--no-correction", action="store_true")
+    parser.add_argument("--memory-replay", choices=("full", "suffix"), default="full")
     parser.add_argument("--box", type=float, nargs=4, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -133,6 +134,7 @@ def main() -> None:
             episode,
             args.arm,
             goal_fixture=args.fixture.resolve(),
+            memory_replay=args.memory_replay,
         )
         save(args.output / "core_worker.json", bridge.initial)
         for observation in history:

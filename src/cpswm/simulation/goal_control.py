@@ -83,6 +83,8 @@ class MemoryGoalController:
         catalogue: dict[str, str],
         arm: str = "native_joint",
         root: Path | None = None,
+        *,
+        memory_replay: str = "full",
     ) -> None:
         if len(catalogue) < 2 or any(
             not isinstance(k, str) or not k.strip() or not isinstance(v, str) or not v.strip()
@@ -91,9 +93,16 @@ class MemoryGoalController:
             raise ValueError("at least two explicit destination-to-prompt entries required")
         if len(set(catalogue.values())) != len(catalogue):
             raise ValueError("distinct destinations require distinct prompts")
+        if memory_replay not in {"full", "suffix"}:
+            raise ValueError("unknown memory replay implementation")
+        memory_class: type[SimulationMemory] = SimulationMemory
+        if memory_replay == "suffix":
+            from cpswm.simulation.suffix_memory import SuffixReplayMemory
+
+            memory_class = SuffixReplayMemory
         self._catalogue = dict(catalogue)
-        self.memory = SimulationMemory(episode, tuple(catalogue), arm, root)
-        self.visual = SimulationMemory(
+        self.memory = memory_class(episode, tuple(catalogue), arm, root)
+        self.visual = memory_class(
             episode, ("image_left", "image_center", "image_right"), arm, root
         )
         self.queue = CommandQueue(episode)

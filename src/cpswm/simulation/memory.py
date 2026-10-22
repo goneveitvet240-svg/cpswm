@@ -109,9 +109,7 @@ class SimulationMemory:
             self.runtime = runtime
             self.rebuilds += 1
             assert runtime is not None
-            self.native_target_scores += sum(
-                r.target_score_evaluations for r in runtime.fairness_receipts
-            )
+            self.native_target_scores += self._rebuild_target_scores(runtime)
         return True
 
     def _distribution(self, observations: Iterable[Observation]) -> dict[str, float]:
@@ -125,15 +123,9 @@ class SimulationMemory:
         total = sum(mass.values())
         return {key: value / total for key, value in mass.items()}
 
-    def _rebuild_native(self, ordered: Sequence[Observation]) -> StatefulFullJointRuntime:
-        from cpswm.contracts import EventMechanism
-        from cpswm.contracts.hidden_event_evidence import ordered_role_key
+    def _new_native_runtime(self) -> StatefulFullJointRuntime:
         from cpswm.system.evaluation_operations.structure_two_current_event import (
-            CurrentEventObservation,
             CurrentEventRuntime,
-        )
-        from cpswm.system.evaluation_operations.structure_two_selected_method import (
-            ParticleChangeCause,
         )
         from cpswm.system.evaluation_operations.structure_two_stateful_full_joint import (
             FullJointArm,
@@ -146,7 +138,7 @@ class SimulationMemory:
             self._native_model = load_neural_proposal_model(
                 self._native_config.neural_proposal_model_path
             )
-        runtime: StatefulFullJointRuntime = CurrentEventRuntime(  # type: ignore[no-untyped-call]
+        return CurrentEventRuntime(  # type: ignore[no-untyped-call]
             arm=(
                 FullJointArm.STATEFUL_FULL_JOINT
                 if self.arm == "native_joint"
@@ -155,42 +147,63 @@ class SimulationMemory:
             config=self._native_config,
             neural_model=self._native_model,
         )
+
+    def _append_native(
+        self, runtime: StatefulFullJointRuntime, history: Sequence[Observation]
+    ) -> None:
+        from cpswm.contracts import EventMechanism
+        from cpswm.contracts.hidden_event_evidence import ordered_role_key
+        from cpswm.system.evaluation_operations.structure_two_current_event import (
+            CurrentEventObservation,
+        )
+        from cpswm.system.evaluation_operations.structure_two_selected_method import (
+            ParticleChangeCause,
+        )
+
+        obs = history[-1]
+        assert obs.location is not None
+        actors = {"owner": 0.0, "guest": 0.0, "unknown_actor": 0.0, **dict(obs.actors)}
+        # Direct relocation has no observed handoff; retain an explicit
+        # normalized role support without pretending same-person handoff.
+        roles = {ordered_role_key("owner", "guest"): 1.0}
+        causes = dict.fromkeys(ParticleChangeCause, 0.0)
+        causes[ParticleChangeCause.OBSERVATION] = 1.0
+        mechanisms = dict.fromkeys(EventMechanism, 0.0)
+        mechanisms[EventMechanism.DIRECT_RELOCATION] = 1.0
+        base = self._distribution(history)
+        runtime.revise(
+            CurrentEventObservation(
+                source_update_id=uuid5(NAMESPACE_URL, obs.source_id),
+                evidence_cluster_id=uuid5(NAMESPACE_URL, obs.event_id),
+                owner_actor_key="owner",
+                actor_posterior=actors,
+                mechanism_posterior=mechanisms,
+                ordered_role_posterior=roles,
+                identity_target_probability=obs.identity_probability,
+                cause_posterior=causes,
+                regime_change_probability=0.0,
+                active_regime="integration_fixture",
+                observed_location_id=self.location_ids[obs.location],
+                base_location_distribution={self.location_ids[k]: v for k, v in base.items()},
+                known_location_ids=tuple(self.location_ids.values()),
+                unresolved_probability=0.0,
+                prediction_only=False,
+            )
+        )
+
+    def _rebuild_native(self, ordered: Sequence[Observation]) -> StatefulFullJointRuntime:
+        runtime = self._new_native_runtime()
         history = []
         for obs in ordered:
             if obs.robot_generated or obs.visibility != Visibility.OBSERVED:
                 continue
-            assert obs.location is not None
             history.append(obs)
-            actors = {"owner": 0.0, "guest": 0.0, "unknown_actor": 0.0, **dict(obs.actors)}
-            # Direct relocation has no observed handoff; retain an explicit
-            # normalized role support without pretending same-person handoff.
-            roles = {ordered_role_key("owner", "guest"): 1.0}
-            causes = dict.fromkeys(ParticleChangeCause, 0.0)
-            causes[ParticleChangeCause.OBSERVATION] = 1.0
-            mechanisms = dict.fromkeys(EventMechanism, 0.0)
-            mechanisms[EventMechanism.DIRECT_RELOCATION] = 1.0
-            base = self._distribution(history)
-            runtime.revise(
-                CurrentEventObservation(
-                    source_update_id=uuid5(NAMESPACE_URL, obs.source_id),
-                    evidence_cluster_id=uuid5(NAMESPACE_URL, obs.event_id),
-                    owner_actor_key="owner",
-                    actor_posterior=actors,
-                    mechanism_posterior=mechanisms,
-                    ordered_role_posterior=roles,
-                    identity_target_probability=obs.identity_probability,
-                    cause_posterior=causes,
-                    regime_change_probability=0.0,
-                    active_regime="integration_fixture",
-                    observed_location_id=self.location_ids[obs.location],
-                    base_location_distribution={self.location_ids[k]: v for k, v in base.items()},
-                    known_location_ids=tuple(self.location_ids.values()),
-                    unresolved_probability=0.0,
-                    prediction_only=False,
-                )
-            )
+            self._append_native(runtime, history)
         runtime.verify_internal_contracts()
         return runtime
+
+    def _rebuild_target_scores(self, runtime: StatefulFullJointRuntime) -> int:
+        return sum(r.target_score_evaluations for r in runtime.fairness_receipts)
 
     def destination_distribution(self) -> dict[str, float]:
         if self.runtime is not None and self.runtime.particles:

@@ -18,7 +18,12 @@ class NativeBridge:
         arm: str = "native_joint",
         *,
         goal_fixture: Path | None = None,
+        memory_replay: str = "full",
     ) -> None:
+        if memory_replay not in {"full", "suffix"} or (
+            memory_replay == "suffix" and goal_fixture is None
+        ):
+            raise ValueError("suffix replay requires the goal-controller worker")
         worker = (
             "simulation_memory_worker.py" if goal_fixture is None else "simulation_goal_worker.py"
         )
@@ -31,6 +36,7 @@ class NativeBridge:
                 "--arm",
                 arm,
                 *([] if goal_fixture is None else ["--fixture", str(goal_fixture)]),
+                *([] if memory_replay == "full" else ["--memory-replay", memory_replay]),
             ],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,

@@ -18,9 +18,12 @@ def main() -> None:
     parser.add_argument("--episode", required=True)
     parser.add_argument("--arm", choices=sorted(SimulationMemory.ARMS), default="native_joint")
     parser.add_argument("--fixture", type=Path, required=True)
+    parser.add_argument("--memory-replay", choices=("full", "suffix"), default="full")
     args = parser.parse_args()
     fixture = json.loads(args.fixture.read_text())
-    controller = MemoryGoalController(args.episode, fixture["catalogue"], args.arm)
+    controller = MemoryGoalController(
+        args.episode, fixture["catalogue"], args.arm, memory_replay=args.memory_replay
+    )
     print(
         json.dumps({"ok": True, "python": sys.executable, "revision": controller.revision}),
         flush=True,

@@ -37,13 +37,64 @@ def visual(tick=100, *, robot=False, lost=False):
     )
 
 
-def ready(arm="source_replay"):
-    controller = MemoryGoalController(CONFIG["episode_id"], CONFIG["catalogue"], arm)
+def ready(arm="source_replay", memory_replay="full"):
+    controller = MemoryGoalController(
+        CONFIG["episode_id"], CONFIG["catalogue"], arm, memory_replay=memory_replay
+    )
     history, _ = fixture_observations(CONFIG)
     for obs in history:
         controller.observe_history(obs, obs.available_at)
     controller.observe_visual(visual(), 100)
     return controller
+
+
+@pytest.mark.parametrize("arm", ["native_joint", "native_factorized"])
+def test_suffix_replay_preserves_real_goal_protocol_and_unknown_feedback(arm):
+    from cpswm.simulation.suffix_memory import runtime_digest
+
+    controllers = [ready(arm, method) for method in ("full", "suffix")]
+    _, corrections = fixture_observations(CONFIG)
+    issued = []
+    for controller in controllers:
+        first = plan(controller)
+        controller.record_step(first, 101)
+        controller.feedback(first, visual(101, robot=True), 1)
+        for obs in corrections:
+            controller.observe_history(obs, 102)
+        second = plan(controller, 102)
+        assert second.command.destination == "plate"
+        with pytest.raises(ValueError, match="stale"):
+            controller.validate(first)
+        issued.append((first.payload(), second.payload()))
+    a, b = controllers
+    assert issued[0] == issued[1] and a.queue.history == b.queue.history
+    assert runtime_digest(a.memory.runtime) == runtime_digest(b.memory.runtime)
+    assert runtime_digest(a.visual.runtime) == runtime_digest(b.visual.runtime)
+
+
+def test_suffix_goal_worker_crosses_the_actual_core_process_boundary():
+    bridge = NativeBridge(
+        sys.executable,
+        ROOT,
+        CONFIG["episode_id"],
+        "native_joint",
+        goal_fixture=FIXTURE,
+        memory_replay="suffix",
+    )
+    try:
+        history, _ = fixture_observations(CONFIG)
+        for obs in history:
+            bridge.observe(
+                {"operation": "history", "observation": obs.payload(), "now": obs.available_at}
+            )
+        result = bridge.observe(
+            {"operation": "visual", "observation": visual().payload(), "now": 100}
+        )
+        assert result["audit"]["semantic_memory"]["replay_implementation"] == "checkpoint_suffix_v1"
+        result = bridge.observe({"operation": "plan", "tick": 100})
+        assert result["plan"]["command"]["destination"] == "stove"
+    finally:
+        bridge.close()
 
 
 def plan(controller, tick=100):

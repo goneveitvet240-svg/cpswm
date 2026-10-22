@@ -1,3 +1,9 @@
+# 2026-10-23 A开工：可选检查点与后缀重放
+
+分支 `codex/pc-a-suffix-replay-20261023`；base/开工源码 `0ee6614a7aecbed8a90fc0248d17a1380bdda92c`（草稿 PR119）。已 fetch 核对，独立工作树 `.local/simulation-stack/cpswm-suffix-replay`。实现保持同模型同来源语义的缓存重放，对照完整重放与 PR119 原件，测真实评分/时间/内存成本。[协议](../reviews/pc_a/suffix_replay_2026-10-23/PROTOCOL.md)。当前本地进行中，实际代码 SHA 和测试结果待补。完整范围、默认入口和 STATUS_B 保留；交 B 独立复核，不自动合并。
+
+---
+
 # 2026-10-23 交付回执：草稿 PR119
 
 [E0/E2 草稿 PR119](https://github.com/goneveitvet240-svg/cpswm/pull/119) 已创建并推送，堆叠 PR118，未合并。运行源码 `2e9694b3d08ebed0f361b342253b40740199e672`，报告/原件提交 `1ce0dc9`。67 通过 / 1 可选跳过；E0/E2 结果与限制见[报告](../reviews/pc_a/research_pilot_2026-10-23/REPORT.md)。

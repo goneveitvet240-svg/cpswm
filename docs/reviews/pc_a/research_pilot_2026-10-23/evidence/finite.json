@@ -1,0 +1,1123 @@
+{
+  "protocol": "cpswm-research-pilot-20261023-v1",
+  "source_sha": "2e9694b3d08ebed0f361b342253b40740199e672",
+  "git_status": "",
+  "python": "3.13.5",
+  "platform": "macOS-26.4-arm64-arm-64bit-Mach-O",
+  "protocol_sha256": "e0ed6d12d7af41c2c752c2f81f0df133b4f40de60c4dcb069c4126866c369e94",
+  "evidence_level": "development_only_no_scientific_acceptance",
+  "finite": {
+    "protocol": "structure-two-exact-enumeration-falsifier@0.1",
+    "evidence_status": "finite synthetic conformance falsifier; not paper evidence",
+    "selected_method_receipt_required": "structure-two-nap-rbtpr-rc@0.1",
+    "neural_proposer_status": "not_run_no_trained_artifact",
+    "state_count": 360,
+    "scenario_count": 16,
+    "particle_budget": 24,
+    "bootstrap_seed": 8701,
+    "same_visible_evidence": true,
+    "same_particle_budget_for_approximate_methods": true,
+    "provenance": {
+      "falsifier_source_sha256": "147e369c88708cf152510f1978beed7cdbd6baf86d60f0ec0de0837631df7e6c",
+      "selected_method_source_sha256": "8ede0511136e1bf4ec9a70d5578f06a13079cb9a76326c76ba22891de5ed7ce6",
+      "selected_method_receipt_file_sha256": "eff5e472346209053fe867e2ab53fdc455861e1e20125f192e6993e33bb33951",
+      "protocol_document_file_sha256": "e05235e87b0bbde33b548af07c72223669fd55e8571861a7a8f1ee6636cf69b8"
+    },
+    "scenarios": {
+      "e00": {
+        "factors": {
+          "high_attribution_ambiguity": false,
+          "adverse_delayed_feedback": false,
+          "short_regime": false,
+          "open_world_actor": false
+        },
+        "truth": {
+          "mechanism": "direct",
+          "actor_path": "owner_to_owner",
+          "identity": "target_instance",
+          "cause": "observation",
+          "regime": "old_regime"
+        },
+        "exact_truth_posterior": 0.9767261711394004,
+        "exact_unresolved_probability": 2.2116944519749563e-05,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 7.394672144481067e-05,
+            "truth_in_support": true,
+            "truth_posterior": 0.976798402178754,
+            "unresolved_probability": 2.2118580116232172e-05,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 4.593378907450556e-05,
+            "truth_in_support": true,
+            "truth_posterior": 0.9767710379342309,
+            "unresolved_probability": 2.2117960481481077e-05,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.9861474852427344,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.0005054345889530407,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 4.593378907450902e-05,
+            "truth_in_support": true,
+            "truth_posterior": 0.9767710379342309,
+            "unresolved_probability": 2.2117960481481077e-05,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 502
+          }
+        }
+      },
+      "e01": {
+        "factors": {
+          "high_attribution_ambiguity": false,
+          "adverse_delayed_feedback": false,
+          "short_regime": false,
+          "open_world_actor": true
+        },
+        "truth": {
+          "mechanism": "direct",
+          "actor_path": "unknown_to_owner",
+          "identity": "target_instance",
+          "cause": "actor",
+          "regime": "old_regime"
+        },
+        "exact_truth_posterior": 0.5576239754412611,
+        "exact_unresolved_probability": 0.0004780584176130882,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.011791497160420926,
+            "truth_in_support": true,
+            "truth_posterior": 0.564277653793658,
+            "unresolved_probability": 0.00048376270416557415,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.001118047454391364,
+            "truth_in_support": true,
+            "truth_posterior": 0.5582481233344739,
+            "unresolved_probability": 0.0004785935078662463,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.5988738069427814,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.0006410785057946528,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.0011180474543913727,
+            "truth_in_support": true,
+            "truth_posterior": 0.5582481233344739,
+            "unresolved_probability": 0.0004785935078662461,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 483
+          }
+        }
+      },
+      "e02": {
+        "factors": {
+          "high_attribution_ambiguity": false,
+          "adverse_delayed_feedback": false,
+          "short_regime": true,
+          "open_world_actor": false
+        },
+        "truth": {
+          "mechanism": "direct",
+          "actor_path": "owner_to_owner",
+          "identity": "target_instance",
+          "cause": "identity",
+          "regime": "reactivated_regime"
+        },
+        "exact_truth_posterior": 0.5979761986407656,
+        "exact_unresolved_probability": 0.00021343913735760085,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.003604807856372942,
+            "truth_in_support": true,
+            "truth_posterior": 0.6001395865372354,
+            "unresolved_probability": 0.0002142113280358285,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.0006313617816018067,
+            "truth_in_support": true,
+            "truth_posterior": 0.5983539764733804,
+            "unresolved_probability": 0.00021357397980599493,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.34700469800435196,
+            "truth_in_support": true,
+            "truth_posterior": 0.9435889194054183,
+            "unresolved_probability": 4.9905781190398716e-05,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.0006313617816017662,
+            "truth_in_support": true,
+            "truth_posterior": 0.5983539764733804,
+            "unresolved_probability": 0.00021357397980599477,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 503
+          }
+        }
+      },
+      "e03": {
+        "factors": {
+          "high_attribution_ambiguity": false,
+          "adverse_delayed_feedback": false,
+          "short_regime": true,
+          "open_world_actor": true
+        },
+        "truth": {
+          "mechanism": "direct",
+          "actor_path": "unknown_to_owner",
+          "identity": "target_instance",
+          "cause": "habit",
+          "regime": "reactivated_regime"
+        },
+        "exact_truth_posterior": 0.34005012325101425,
+        "exact_unresolved_probability": 0.0045953682894109725,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.424849955830588,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.00798985992611242,
+            "action_regret_against_exact_bayes": 0.2779620481003159,
+            "exact_action": "shelf",
+            "approximate_action": "desk",
+            "action_matches_exact": false,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.009115669271399021,
+            "truth_in_support": true,
+            "truth_posterior": 0.3431784242677186,
+            "unresolved_probability": 0.0046376435138821715,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.6263518508756547,
+            "truth_in_support": true,
+            "truth_posterior": 0.9564105192972756,
+            "unresolved_probability": 0.0004085623254166636,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.009438161130537756,
+            "truth_in_support": true,
+            "truth_posterior": 0.34329015101078086,
+            "unresolved_probability": 0.004639153366392256,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 488
+          }
+        }
+      },
+      "e04": {
+        "factors": {
+          "high_attribution_ambiguity": false,
+          "adverse_delayed_feedback": true,
+          "short_regime": false,
+          "open_world_actor": false
+        },
+        "truth": {
+          "mechanism": "direct",
+          "actor_path": "owner_to_owner",
+          "identity": "target_instance",
+          "cause": "noise",
+          "regime": "new_regime"
+        },
+        "exact_truth_posterior": 0.5785710765996238,
+        "exact_unresolved_probability": 0.0038346093894649326,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.14709458766263933,
+            "truth_in_support": true,
+            "truth_posterior": 0.6783531540901679,
+            "unresolved_probability": 0.004495937455662645,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.010823919251536465,
+            "truth_in_support": true,
+            "truth_posterior": 0.5849020087119838,
+            "unresolved_probability": 0.0038765690599427576,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.2899319813045118,
+            "truth_in_support": true,
+            "truth_posterior": 0.7759894373033116,
+            "unresolved_probability": 0.0025402521886113117,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.010823919251536475,
+            "truth_in_support": true,
+            "truth_posterior": 0.584902008711984,
+            "unresolved_probability": 0.003876569059942757,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 512
+          }
+        }
+      },
+      "e05": {
+        "factors": {
+          "high_attribution_ambiguity": false,
+          "adverse_delayed_feedback": true,
+          "short_regime": false,
+          "open_world_actor": true
+        },
+        "truth": {
+          "mechanism": "direct",
+          "actor_path": "unknown_to_owner",
+          "identity": "target_instance",
+          "cause": "observation",
+          "regime": "new_regime"
+        },
+        "exact_truth_posterior": 0.09766291090372083,
+        "exact_unresolved_probability": 0.0653506688247155,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.5263899433836778,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.13798412409484995,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.12006358594985943,
+            "truth_in_support": true,
+            "truth_posterior": 0.11098860024919459,
+            "unresolved_probability": 0.07426748999273906,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.6255235199676958,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.042664179417704784,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.18363675835760113,
+            "truth_in_support": true,
+            "truth_posterior": 0.1196316858990832,
+            "unresolved_probability": 0.0800509693371787,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 490
+          }
+        }
+      },
+      "e06": {
+        "factors": {
+          "high_attribution_ambiguity": false,
+          "adverse_delayed_feedback": true,
+          "short_regime": true,
+          "open_world_actor": false
+        },
+        "truth": {
+          "mechanism": "direct",
+          "actor_path": "owner_to_owner",
+          "identity": "target_instance",
+          "cause": "actor",
+          "regime": "reactivated_regime"
+        },
+        "exact_truth_posterior": 0.36645396457547835,
+        "exact_unresolved_probability": 0.0064092164908585315,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.1774292881883432,
+            "truth_in_support": true,
+            "truth_posterior": 0.4454984347405077,
+            "unresolved_probability": 0.007791690609482876,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.024152612979827577,
+            "truth_in_support": true,
+            "truth_posterior": 0.3755238467097552,
+            "unresolved_probability": 0.006567847161459932,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.7021309444516419,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.0077871737855707635,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.024152612979827567,
+            "truth_in_support": true,
+            "truth_posterior": 0.37552384670975525,
+            "unresolved_probability": 0.00656784716145993,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 517
+          }
+        }
+      },
+      "e07": {
+        "factors": {
+          "high_attribution_ambiguity": false,
+          "adverse_delayed_feedback": true,
+          "short_regime": true,
+          "open_world_actor": true
+        },
+        "truth": {
+          "mechanism": "direct",
+          "actor_path": "unknown_to_owner",
+          "identity": "target_instance",
+          "cause": "identity",
+          "regime": "reactivated_regime"
+        },
+        "exact_truth_posterior": 0.06870284564853456,
+        "exact_unresolved_probability": 0.08087698322350644,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.46027472471617936,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.1498484264628451,
+            "action_regret_against_exact_bayes": 0.25666076694890794,
+            "exact_action": "shelf",
+            "approximate_action": "desk",
+            "action_matches_exact": false,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.17213993834589186,
+            "truth_in_support": true,
+            "truth_posterior": 0.08298847695498517,
+            "unresolved_probability": 0.09769402700972185,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.6887635390860188,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.051681732266407904,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.20332812153936972,
+            "truth_in_support": true,
+            "truth_posterior": 0.0862373174025995,
+            "unresolved_probability": 0.10151856166905376,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 490
+          }
+        }
+      },
+      "e08": {
+        "factors": {
+          "high_attribution_ambiguity": true,
+          "adverse_delayed_feedback": false,
+          "short_regime": false,
+          "open_world_actor": false
+        },
+        "truth": {
+          "mechanism": "handoff",
+          "actor_path": "guest_to_owner",
+          "identity": "target_instance",
+          "cause": "habit",
+          "regime": "old_regime"
+        },
+        "exact_truth_posterior": 0.3881098089785596,
+        "exact_unresolved_probability": 0.007724851998372204,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.6030355541858354,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.01945980825191717,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.021151680537271865,
+            "truth_in_support": true,
+            "truth_posterior": 0.3964963736072878,
+            "unresolved_probability": 0.00789177633017977,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.9186385978519223,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.028280932303966066,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.02115168053727187,
+            "truth_in_support": true,
+            "truth_posterior": 0.3964963736072878,
+            "unresolved_probability": 0.007891776330179767,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 485
+          }
+        }
+      },
+      "e09": {
+        "factors": {
+          "high_attribution_ambiguity": true,
+          "adverse_delayed_feedback": false,
+          "short_regime": false,
+          "open_world_actor": true
+        },
+        "truth": {
+          "mechanism": "handoff",
+          "actor_path": "unknown_to_owner",
+          "identity": "target_instance",
+          "cause": "noise",
+          "regime": "old_regime"
+        },
+        "exact_truth_posterior": 0.4233742612537564,
+        "exact_unresolved_probability": 0.0015255319429013229,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.012698514599968362,
+            "truth_in_support": true,
+            "truth_posterior": 0.4288196336321878,
+            "unresolved_probability": 0.0015451530919992618,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.005490831960986002,
+            "truth_in_support": true,
+            "truth_posterior": 0.42571177306346125,
+            "unresolved_probability": 0.001533954630010487,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.9763481947796994,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.009405639595475496,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.005490831960986027,
+            "truth_in_support": true,
+            "truth_posterior": 0.4257117730634616,
+            "unresolved_probability": 0.0015339546300104862,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "desk",
+            "approximate_action": "desk",
+            "action_matches_exact": true,
+            "candidate_evaluations": 483
+          }
+        }
+      },
+      "e10": {
+        "factors": {
+          "high_attribution_ambiguity": true,
+          "adverse_delayed_feedback": false,
+          "short_regime": true,
+          "open_world_actor": false
+        },
+        "truth": {
+          "mechanism": "handoff",
+          "actor_path": "guest_to_owner",
+          "identity": "target_instance",
+          "cause": "observation",
+          "regime": "reactivated_regime"
+        },
+        "exact_truth_posterior": 0.29205252502533463,
+        "exact_unresolved_probability": 0.022117417246014313,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.651479992539787,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.06346096858883844,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.03771995218481816,
+            "truth_in_support": true,
+            "truth_posterior": 0.3035005513087673,
+            "unresolved_probability": 0.022984387233457682,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.9233466266162235,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.0520742615624352,
+            "action_regret_against_exact_bayes": 0.2730690985803586,
+            "exact_action": "shelf",
+            "approximate_action": "desk",
+            "action_matches_exact": false,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.040918819307251095,
+            "truth_in_support": true,
+            "truth_posterior": 0.3045128305138713,
+            "unresolved_probability": 0.02306104810652086,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 509
+          }
+        }
+      },
+      "e11": {
+        "factors": {
+          "high_attribution_ambiguity": true,
+          "adverse_delayed_feedback": false,
+          "short_regime": true,
+          "open_world_actor": true
+        },
+        "truth": {
+          "mechanism": "handoff",
+          "actor_path": "unknown_to_owner",
+          "identity": "target_instance",
+          "cause": "actor",
+          "regime": "reactivated_regime"
+        },
+        "exact_truth_posterior": 0.25153131879385177,
+        "exact_unresolved_probability": 0.021429795954294287,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.5794021641931137,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.050950799385790425,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.0342638784390214,
+            "truth_in_support": true,
+            "truth_posterior": 0.26045553560457724,
+            "unresolved_probability": 0.022190115369875564,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.9774021276178946,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.6828553579758156,
+            "action_regret_against_exact_bayes": 0.27326111358257477,
+            "exact_action": "shelf",
+            "approximate_action": "desk",
+            "action_matches_exact": false,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.03482123049734627,
+            "truth_in_support": true,
+            "truth_posterior": 0.26060593823822203,
+            "unresolved_probability": 0.022202929272197747,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 503
+          }
+        }
+      },
+      "e12": {
+        "factors": {
+          "high_attribution_ambiguity": true,
+          "adverse_delayed_feedback": true,
+          "short_regime": false,
+          "open_world_actor": false
+        },
+        "truth": {
+          "mechanism": "handoff",
+          "actor_path": "guest_to_owner",
+          "identity": "target_instance",
+          "cause": "identity",
+          "regime": "new_regime"
+        },
+        "exact_truth_posterior": 0.013897107842632974,
+        "exact_unresolved_probability": 0.039084280578442605,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.6853200757618784,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.12420328584058993,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.1645002892821684,
+            "truth_in_support": true,
+            "truth_posterior": 0.016633288634765743,
+            "unresolved_probability": 0.04677952616508123,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.8131673095063875,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.02371696678104913,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.2913481671077275,
+            "truth_in_support": true,
+            "truth_posterior": 0.019610628516846827,
+            "unresolved_probability": 0.05515300852172363,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 524
+          }
+        }
+      },
+      "e13": {
+        "factors": {
+          "high_attribution_ambiguity": true,
+          "adverse_delayed_feedback": true,
+          "short_regime": false,
+          "open_world_actor": true
+        },
+        "truth": {
+          "mechanism": "handoff",
+          "actor_path": "unknown_to_owner",
+          "identity": "target_instance",
+          "cause": "habit",
+          "regime": "new_regime"
+        },
+        "exact_truth_posterior": 0.001958510487317924,
+        "exact_unresolved_probability": 0.03422904741557377,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.48447740286056357,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.06639679347812495,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.1504222076088968,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.0402894799300691,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.9176726714093023,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.08678351330794741,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.16572637325757292,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.04102856223470385,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "cabinet",
+            "approximate_action": "cabinet",
+            "action_matches_exact": true,
+            "candidate_evaluations": 517
+          }
+        }
+      },
+      "e14": {
+        "factors": {
+          "high_attribution_ambiguity": true,
+          "adverse_delayed_feedback": true,
+          "short_regime": true,
+          "open_world_actor": false
+        },
+        "truth": {
+          "mechanism": "handoff",
+          "actor_path": "guest_to_owner",
+          "identity": "target_instance",
+          "cause": "noise",
+          "regime": "reactivated_regime"
+        },
+        "exact_truth_posterior": 0.01708353504386596,
+        "exact_unresolved_probability": 0.04226251007834188,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.5331004993386371,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.09051735977116501,
+            "action_regret_against_exact_bayes": 0.2674436764309542,
+            "exact_action": "shelf",
+            "approximate_action": "desk",
+            "action_matches_exact": false,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.20995541774541795,
+            "truth_in_support": true,
+            "truth_posterior": 0.02162350761917003,
+            "unresolved_probability": 0.05349382937066115,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.8162307916846904,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.058530610262412484,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.25368816964824736,
+            "truth_in_support": true,
+            "truth_posterior": 0.022890612675688256,
+            "unresolved_probability": 0.05662848739570782,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 512
+          }
+        }
+      },
+      "e15": {
+        "factors": {
+          "high_attribution_ambiguity": true,
+          "adverse_delayed_feedback": true,
+          "short_regime": true,
+          "open_world_actor": true
+        },
+        "truth": {
+          "mechanism": "handoff",
+          "actor_path": "unknown_to_owner",
+          "identity": "target_instance",
+          "cause": "observation",
+          "regime": "reactivated_regime"
+        },
+        "exact_truth_posterior": 0.007229448989002474,
+        "exact_unresolved_probability": 0.053654233735707116,
+        "methods": {
+          "incremental_beam": {
+            "posterior_total_variation": 0.6342838820404917,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.14671006034699205,
+            "action_regret_against_exact_bayes": 0.2642625913341808,
+            "exact_action": "shelf",
+            "approximate_action": "desk",
+            "action_matches_exact": false,
+            "candidate_evaluations": 384
+          },
+          "full_rerun_beam": {
+            "posterior_total_variation": 0.23077852229341575,
+            "truth_in_support": true,
+            "truth_posterior": 0.009398397208768672,
+            "unresolved_probability": 0.06975134638163764,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 744
+          },
+          "bootstrap_particle_filter": {
+            "posterior_total_variation": 0.8302129704402906,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.09232580142054793,
+            "action_regret_against_exact_bayes": 0.2642625913341808,
+            "exact_action": "shelf",
+            "approximate_action": "desk",
+            "action_matches_exact": false,
+            "candidate_evaluations": 48
+          },
+          "typed_particle_revision": {
+            "posterior_total_variation": 0.2880008124414516,
+            "truth_in_support": false,
+            "truth_posterior": 0.0,
+            "unresolved_probability": 0.0753571558412699,
+            "action_regret_against_exact_bayes": 0.0,
+            "exact_action": "shelf",
+            "approximate_action": "shelf",
+            "action_matches_exact": true,
+            "candidate_evaluations": 524
+          }
+        }
+      }
+    },
+    "method_summaries": {
+      "incremental_beam": {
+        "mean_posterior_total_variation": 0.3709566773149964,
+        "truth_support_rate": 0.375,
+        "mean_truth_posterior": 0.23086792906078193,
+        "mean_action_regret_against_exact_bayes": 0.06664556767589742,
+        "action_match_rate": 0.75,
+        "mean_candidate_evaluations": 384
+      },
+      "full_rerun_beam": {
+        "mean_posterior_total_variation": 0.07452336555472365,
+        "truth_support_rate": 0.9375,
+        "mean_truth_posterior": 0.3165483701051575,
+        "mean_action_regret_against_exact_bayes": 0.0,
+        "action_match_rate": 1.0,
+        "mean_candidate_evaluations": 744
+      },
+      "bootstrap_particle_filter": {
+        "mean_posterior_total_variation": 0.7523591947363626,
+        "truth_support_rate": 0.1875,
+        "mean_truth_posterior": 0.16724930475037536,
+        "mean_action_regret_against_exact_bayes": 0.050662050218569635,
+        "action_match_rate": 0.8125,
+        "mean_candidate_evaluations": 48
+      },
+      "typed_particle_revision": {
+        "mean_posterior_total_variation": 0.09589506256511218,
+        "truth_support_rate": 0.875,
+        "mean_truth_posterior": 0.3170491440057291,
+        "mean_action_regret_against_exact_bayes": 0.0,
+        "action_match_rate": 1.0,
+        "mean_candidate_evaluations": 502.625
+      }
+    },
+    "high_ambiguity_adverse_feedback_summaries": {
+      "incremental_beam": {
+        "mean_posterior_total_variation": 0.5842954650003926,
+        "truth_support_rate": 0.0,
+        "mean_truth_posterior": 0.0,
+        "mean_action_regret_against_exact_bayes": 0.13292656694128374,
+        "action_match_rate": 0.5,
+        "mean_candidate_evaluations": 384
+      },
+      "full_rerun_beam": {
+        "mean_posterior_total_variation": 0.18891410923247473,
+        "truth_support_rate": 0.75,
+        "mean_truth_posterior": 0.01191379836567611,
+        "mean_action_regret_against_exact_bayes": 0.0,
+        "action_match_rate": 1.0,
+        "mean_candidate_evaluations": 744
+      },
+      "bootstrap_particle_filter": {
+        "mean_posterior_total_variation": 0.8443209357601678,
+        "truth_support_rate": 0.0,
+        "mean_truth_posterior": 0.0,
+        "mean_action_regret_against_exact_bayes": 0.0660656478335452,
+        "action_match_rate": 0.75,
+        "mean_candidate_evaluations": 48
+      },
+      "typed_particle_revision": {
+        "mean_posterior_total_variation": 0.24969088061374983,
+        "truth_support_rate": 0.5,
+        "mean_truth_posterior": 0.01062531029813377,
+        "mean_action_regret_against_exact_bayes": 0.0,
+        "action_match_rate": 1.0,
+        "mean_candidate_evaluations": 519.25
+      }
+    },
+    "development_gates": {
+      "typed_tv_not_worse_than_incremental_beam": true,
+      "typed_action_regret_not_worse_than_incremental_beam": true,
+      "typed_truth_support_not_worse_than_incremental_beam": true,
+      "typed_within_0_05_tv_of_full_rerun_beam": true,
+      "typed_uses_fewer_candidate_evaluations_than_full_rerun_beam": true,
+      "typed_stress_tv_not_worse_than_incremental_beam": true,
+      "typed_stress_action_regret_not_worse_than_incremental_beam": true
+    },
+    "all_development_gates_passed": true,
+    "limitations": [
+      "finite hand-authored likelihood model",
+      "deterministic structured proposal is not a trained neural amortized proposer",
+      "no RGB-D, household, or robot execution evidence",
+      "gate thresholds are development diagnostics, not confirmatory margins"
+    ],
+    "content_sha256": "8c9ef8645aa1ae3333d1005bde8f322510001786efc02cf3aae6175030b502ae"
+  },
+  "content_sha256": "91089d93709a564073928b2e8764f0f010056be1ce79ba80b2cc132fa4092fc0"
+}

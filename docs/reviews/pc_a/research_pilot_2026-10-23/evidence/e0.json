@@ -1,0 +1,2284 @@
+{
+  "protocol": "cpswm-research-pilot-20261023-v1",
+  "source_sha": "2e9694b3d08ebed0f361b342253b40740199e672",
+  "git_status": "",
+  "python": "3.13.5",
+  "platform": "macOS-26.4-arm64-arm-64bit-Mach-O",
+  "protocol_sha256": "e0ed6d12d7af41c2c752c2f81f0df133b4f40de60c4dcb069c4126866c369e94",
+  "evidence_level": "development_only_no_scientific_acceptance",
+  "e0": {
+    "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+    "split": "existing_validation",
+    "rows": [
+      {
+        "source_id": "90bf9e16-954d-5276-a5d7-7665b79d64ae",
+        "incoming_state_sha256": "e54e8c84d14a578cd5ed2c54d7c04a9c8bab7a03a0ffa8e52598795ad01e0772",
+        "visible_input_sha256": "6e126b161fd1d06e9df410645daa781a6b016dd78b952575abaef0e39f933088",
+        "proposal_sha256": "7253bad2c1c5e43c4edce556b4272d0dafc9077d699c391b0c68123996384322",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 0,
+        "reference_target_evaluations": 468,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 468,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.011509415693581104,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.31120348805227255,
+              "owner": 0.32759302389545525,
+              "unknown_actor": 0.31120348805227255,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest": 0.5039255598142778,
+              "owner": 0.2531347692976604,
+              "unknown_actor": 0.1929396708880619,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.19272207176200537
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.33418224013762227,
+              "handoff_relocation": 0.5415550398317951,
+              "unknown_mechanism": 0.07426272003058275,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct_relocation": 0.4904719100160244,
+              "handoff_relocation": 0.43318067492607293,
+              "unknown_mechanism": 0.026347415057902713,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.15628966987840218
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.10927004952307878,
+              "direct:owner": 0.1156421410914647,
+              "direct:unknown_actor": 0.10927004952307878,
+              "guest=>owner": 0.09312631461405466,
+              "guest=>unknown_actor": 0.0888256026509214,
+              "owner=>guest": 0.0888256026509214,
+              "owner=>unknown_actor": 0.0888256026509214,
+              "unknown_actor=>guest": 0.0888256026509214,
+              "unknown_actor=>owner": 0.09312631461405466,
+              "unknown:guest": 0.02428223322735084,
+              "unknown:owner": 0.02569825357588105,
+              "unknown:unknown_actor": 0.02428223322735084,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct:guest": 0.3011647906985567,
+              "direct:owner": 0.11396454016073683,
+              "direct:unknown_actor": 0.07534257915673094,
+              "guest=>owner": 0.06299826080398613,
+              "guest=>unknown_actor": 0.03580984978938258,
+              "owner=>guest": 0.0673982767115198,
+              "owner=>unknown_actor": 0.06861353441299703,
+              "unknown_actor=>guest": 0.13536249240420128,
+              "unknown_actor=>owner": 0.06299826080398613,
+              "unknown:owner": 0.013173707528951356,
+              "unknown:unknown_actor": 0.013173707528951356,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.2384316309287577
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.377011221127958,
+              "target_instance": 0.4648232571298468,
+              "unknown_instance": 0.10816552174219494,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "identity_mismatch": 0.2771023471764498,
+              "target_instance": 0.555081524887721,
+              "unknown_instance": 0.11781612793582921,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.09990887395150833
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.26047721770015236,
+              "habit": 0.1864105538967878,
+              "identity": 0.1393463293116256,
+              "noise": 0.17002101805360517,
+              "observation": 0.17002101805360517,
+              "unresolved": 0.02372386298422398,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.2336203594804977,
+              "habit": 0.3636717429833648,
+              "noise": 0.13381058211337138,
+              "identity": 0.0980691897609991,
+              "observation": 0.09339925140983893,
+              "unresolved": 0.027428874251928127,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.18096620035428118
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.8636363636363639,
+              "unresolved": 0.08636363636363631,
+              "create": 3.282601145628331e-301,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.7272832151167088,
+              "unresolved": 0.2227167848832911,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.13635314851965494
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.792286819100711,
+        "max_importance_weight_error": 8.326672684688674e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 11.334712818087873,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.25,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.25,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.25
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.25,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.25,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.25
+        },
+        "action_tv": 0.0,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "systematic",
+        "arm": "stateful_full_joint",
+        "step": 0,
+        "observe_seconds": 0.005834749899804592
+      },
+      {
+        "source_id": "94595f81-fff6-5071-8374-7d8df5a7f6ea",
+        "incoming_state_sha256": "a85c5a08b91e9e476748aa671af002d276529dd4384962dffb9eec74a3d342ec",
+        "visible_input_sha256": "6bb8efcf13e5d266ac90d3a795fa231bb9b5f9542d8be000468e140352ad48f0",
+        "proposal_sha256": "3548fd9e57832798629ddb8f2f905c71ca2fc56742273af70d79cb563dea3086",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11232,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11232,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.39674062468111515,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.16123369280332192,
+              "owner": 0.14954005082508698,
+              "unknown_actor": 0.6392262563715936,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown_actor": 0.95,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.31077374362840765
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.10202876120740885,
+              "handoff_relocation": 0.18868793957926605,
+              "unknown_mechanism": 0.6592832992133258,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "handoff_relocation": 0.95,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.7613120604207343
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.014333072802380135,
+              "direct:owner": 0.012941457424273021,
+              "direct:unknown_actor": 0.07475423098075554,
+              "guest=>owner": 0.0063747761261652896,
+              "guest=>unknown_actor": 0.03877189373469336,
+              "owner=>guest": 0.00687352589967099,
+              "owner=>unknown_actor": 0.03877189373469336,
+              "unknown_actor=>guest": 0.050790634128866585,
+              "unknown_actor=>owner": 0.04710521595517564,
+              "unknown:guest": 0.08923645997240409,
+              "unknown:owner": 0.08311860131947307,
+              "unknown:unknown_actor": 0.4869282379214483,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest=>unknown_actor": 0.95,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.9112281062653063
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.05837971596955975,
+              "target_instance": 0.8771679760628086,
+              "unknown_instance": 0.014452307967628756,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.95,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.07283202393718993
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.3258239935187781,
+              "habit": 0.3335919183972771,
+              "identity": 0.01905604496087205,
+              "noise": 7.751329803879808e-301,
+              "observation": 0.24922447748797474,
+              "unresolved": 0.022303565635098287,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.95,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.624176006481222
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.6664451885783442,
+              "unresolved": 0.2737862491420888,
+              "create": 0.009768562279567468,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.95,
+              "__unresolved__": 0.049999999999999996
+            },
+            "tv": 0.283554811421656
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9375080855226132,
+        "max_importance_weight_error": 1.1102230246251565e-16,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 11.115484276452195,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0007161633232199149,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9963260439375687,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.002241629415991419,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0007161633232199149
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 1.0,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.0,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0
+        },
+        "action_tv": 0.0036739560624312545,
+        "reference_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "sample_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "same_choice": true,
+        "method": "systematic",
+        "arm": "stateful_full_joint",
+        "step": 1,
+        "observe_seconds": 0.0670965826138854
+      },
+      {
+        "source_id": "10c35393-3d33-5efd-9b2f-d2d3a7479bb9",
+        "incoming_state_sha256": "c771b8ea67df22e833f41744e6983db521ff05b6c345d61eac5f1251467a0775",
+        "visible_input_sha256": "7880039ef7739bcb13fe2e74556a19729330a5c166c4a348980b45e83e86310c",
+        "proposal_sha256": "826cb4de65d504882c1170d46cc45ea56a664cb50e0359730b2c09a13a14a0ff",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11232,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11232,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.4218917926773429,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.21701696406187845,
+              "owner": 0.4708770416591882,
+              "unknown_actor": 0.2621059942789336,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.7329830359381216
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.21942601432119058,
+              "handoff_relocation": 0.6818126491629912,
+              "unknown_mechanism": 0.04876133651581999,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct_relocation": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.7305739856788103
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.028465780852136784,
+              "direct:owner": 0.159256725210922,
+              "direct:unknown_actor": 0.03170350825813133,
+              "guest=>owner": 0.18239610084265084,
+              "guest=>unknown_actor": 0.038296141050223,
+              "owner=>guest": 0.16469241043667587,
+              "owner=>unknown_actor": 0.18506112091321625,
+              "unknown_actor=>guest": 0.017533043694813604,
+              "unknown_actor=>owner": 0.09383383222540985,
+              "unknown:guest": 0.006325729078252623,
+              "unknown:owner": 0.035390383380204886,
+              "unknown:unknown_actor": 0.007045224057362523,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct:guest": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.9215342191478629
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.03575312216660447,
+              "target_instance": 0.903989212023097,
+              "unknown_instance": 0.01025766581029863,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.046010787976903035
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.5291123970869582,
+              "habit": 0.2503251967750743,
+              "identity": 0.012156081118692178,
+              "noise": 5.20307804252054e-301,
+              "observation": 0.14279709089171516,
+              "unresolved": 0.015609234127561728,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.42088760291304256
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.9048318119381353,
+              "unresolved": 0.016390856639608216,
+              "create": 0.028777331422253923,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.04516818806186339
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.937758370965578,
+        "max_importance_weight_error": 5.551115123125783e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 11.115621166629039,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.006816019838050142,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.006854097656829596,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9795138626670701,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.006816019838050142
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 4.12378181403124e-05,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9999587621818596,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0
+        },
+        "action_tv": 0.020444899514789564,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "systematic",
+        "arm": "stateful_full_joint",
+        "step": 2,
+        "observe_seconds": 0.08587229065597057
+      },
+      {
+        "source_id": "771d76d0-7a6c-5667-87e1-aa911fff7f8c",
+        "incoming_state_sha256": "93f6cdd5efef230d379cc9ea96305bd3f73f83f3cb873a718177514904bcbbd7",
+        "visible_input_sha256": "21a3b004f0909133ae451dcf4da7098d4a8211e43f18f680b7594e637a217b3c",
+        "proposal_sha256": "e9b319578a4141e2298542b4626e740f1e6a8ea0a2b672034332a724d9eb6d1a",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11232,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11232,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.504270582459867,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.4915016196571236,
+              "owner": 0.23765246672040374,
+              "unknown_actor": 0.2208459136224723,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown_actor": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.7291540863775275
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.38939319163640895,
+              "handoff_relocation": 0.502602794553886,
+              "unknown_mechanism": 0.05800401380970709,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "handoff_relocation": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.447397205446115
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.2007786794566201,
+              "direct:owner": 0.09839883612272153,
+              "direct:unknown_actor": 0.09021567605706686,
+              "guest=>owner": 0.06229806948110377,
+              "guest=>unknown_actor": 0.058595854768512756,
+              "owner=>guest": 0.13040747302732575,
+              "owner=>unknown_actor": 0.058595854768512756,
+              "unknown_actor=>guest": 0.13040747302732575,
+              "unknown_actor=>owner": 0.06229806948110377,
+              "unknown:guest": 0.02990799414585255,
+              "unknown:owner": 0.014657491635474685,
+              "unknown:unknown_actor": 0.013438528028379871,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest=>unknown_actor": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.8914041452314873
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.2488230378887827,
+              "target_instance": 0.6297889709681538,
+              "unknown_instance": 0.07138799114306349,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.3202110290318462
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.48670991444594874,
+              "habit": 0.2016602386213757,
+              "identity": 0.09293170144986904,
+              "noise": 6.0471524700564076e-301,
+              "observation": 0.15055668807263622,
+              "unresolved": 0.018141457410169887,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.46329008555405105
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.8636363636363631,
+              "unresolved": 0.08636363636363649,
+              "create": 2.3203265778103836e-301,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.95,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.08636363636363668
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9282943098345984,
+        "max_importance_weight_error": 8.326672684688674e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 11.115621166629039,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.00023548219917133136,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.0002617295004943373,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.999267306101163,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.00023548219917133136
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 2.630511559672765e-05,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9999736948844032,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0
+        },
+        "action_tv": 0.0007063887832402625,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "systematic",
+        "arm": "stateful_full_joint",
+        "step": 3,
+        "observe_seconds": 0.0730533329769969
+      },
+      {
+        "source_id": "90bf9e16-954d-5276-a5d7-7665b79d64ae",
+        "incoming_state_sha256": "991c51add5ea4fb91cbb26b7ba3248a499632a9054cc443b8e5273f4c3490c83",
+        "visible_input_sha256": "6e126b161fd1d06e9df410645daa781a6b016dd78b952575abaef0e39f933088",
+        "proposal_sha256": "7253bad2c1c5e43c4edce556b4272d0dafc9077d699c391b0c68123996384322",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 0,
+        "reference_target_evaluations": 468,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 468,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.01098599936813116,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.3166666666666667,
+              "owner": 0.3166666666666667,
+              "unknown_actor": 0.3166666666666667,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest": 0.5543118070708319,
+              "owner": 0.2026742767012286,
+              "unknown_actor": 0.19301391622793945,
+              "__unresolved__": 0.04999999999999997
+            },
+            "tv": 0.23764514040416532
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.4275000000000005,
+              "handoff_relocation": 0.4274999999999999,
+              "unknown_mechanism": 0.09500000000000013,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct_relocation": 0.5781511544988049,
+              "handoff_relocation": 0.33850624952487834,
+              "unknown_mechanism": 0.033342595976316794,
+              "__unresolved__": 0.04999999999999997
+            },
+            "tv": 0.15065115449880467
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.14250000000000004,
+              "direct:owner": 0.14250000000000004,
+              "direct:unknown_actor": 0.14250000000000004,
+              "guest=>owner": 0.07124999999999997,
+              "guest=>unknown_actor": 0.07124999999999997,
+              "owner=>guest": 0.07124999999999997,
+              "owner=>unknown_actor": 0.07124999999999997,
+              "unknown_actor=>guest": 0.07124999999999997,
+              "unknown_actor=>owner": 0.07124999999999997,
+              "unknown:guest": 0.03166666666666668,
+              "unknown:owner": 0.03166666666666668,
+              "unknown:unknown_actor": 0.03166666666666668,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct:guest": 0.3811233821794626,
+              "direct:owner": 0.1016819036215682,
+              "direct:unknown_actor": 0.09534586869777403,
+              "guest=>owner": 0.042160537545751,
+              "guest=>unknown_actor": 0.016671297988158397,
+              "owner=>guest": 0.046285569327273804,
+              "owner=>unknown_actor": 0.06432545155384864,
+              "unknown_actor=>guest": 0.12690285556409547,
+              "unknown_actor=>owner": 0.042160537545751,
+              "unknown:owner": 0.016671297988158397,
+              "unknown:unknown_actor": 0.016671297988158397,
+              "__unresolved__": 0.04999999999999997
+            },
+            "tv": 0.2942762377435581
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.36256276260960185,
+              "target_instance": 0.4834170168128031,
+              "unknown_instance": 0.10402022057759629,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "identity_mismatch": 0.24232525386663453,
+              "target_instance": 0.5764139645147315,
+              "unknown_instance": 0.13126078161863405,
+              "__unresolved__": 0.04999999999999997
+            },
+            "tv": 0.12023750874296676
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.20424999999999988,
+              "habit": 0.20424999999999988,
+              "identity": 0.10450000000000001,
+              "noise": 0.20424999999999988,
+              "observation": 0.20424999999999988,
+              "unresolved": 0.028500000000000032,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.1810620990373509,
+              "habit": 0.4216688959879954,
+              "noise": 0.14253661349310087,
+              "identity": 0.06942236042946653,
+              "observation": 0.100598850837353,
+              "unresolved": 0.03471118021473327,
+              "__unresolved__": 0.04999999999999997
+            },
+            "tv": 0.22363007620272857
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.8636363636363652,
+              "unresolved": 0.08636363636363643,
+              "create": 1.8568181818181484e-301,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.6681523971445361,
+              "unresolved": 0.28184760285546395,
+              "__unresolved__": 0.04999999999999997
+            },
+            "tv": 0.19548396649182834
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.7940469057378055,
+        "max_importance_weight_error": 5.551115123125783e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 8.575339977925637,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.25,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.25,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.25
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.25,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.25,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.25
+        },
+        "action_tv": 0.0,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "systematic",
+        "arm": "matched_full_state_factorized",
+        "step": 0,
+        "observe_seconds": 0.005315291695296764
+      },
+      {
+        "source_id": "94595f81-fff6-5071-8374-7d8df5a7f6ea",
+        "incoming_state_sha256": "d4cc5f8f78cfb1a8c541e831f3066a317787fa5037856f268e941be365db3079",
+        "visible_input_sha256": "6bb8efcf13e5d266ac90d3a795fa231bb9b5f9542d8be000468e140352ad48f0",
+        "proposal_sha256": "3548fd9e57832798629ddb8f2f905c71ca2fc56742273af70d79cb563dea3086",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11232,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11232,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.3820393327623606,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.1574030570796713,
+              "owner": 0.11337553490885684,
+              "unknown_actor": 0.6792214080114709,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown_actor": 0.9499999999999998,
+              "__unresolved__": 0.05000000000000002
+            },
+            "tv": 0.27077859198852855
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.11620179247292023,
+              "handoff_relocation": 0.10889995052223947,
+              "unknown_mechanism": 0.7248982570048382,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "handoff_relocation": 0.9499999999999998,
+              "__unresolved__": 0.05000000000000002
+            },
+            "tv": 0.8411000494777594
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.01722565095519893,
+              "direct:owner": 0.012053197586301821,
+              "direct:unknown_actor": 0.08692294393141992,
+              "guest=>owner": 0.003154860691790212,
+              "guest=>unknown_actor": 0.022975350676173362,
+              "owner=>guest": 0.004348643986331677,
+              "owner=>unknown_actor": 0.022975350676173362,
+              "unknown_actor=>guest": 0.03213349144098532,
+              "unknown_actor=>owner": 0.023312253050785714,
+              "unknown:guest": 0.10369527069715506,
+              "unknown:owner": 0.0748552235799793,
+              "unknown:unknown_actor": 0.5463477627277052,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest=>unknown_actor": 0.9499999999999998,
+              "__unresolved__": 0.05000000000000002
+            },
+            "tv": 0.9270246493238266
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.05679473660611306,
+              "target_instance": 0.8786874820816478,
+              "unknown_instance": 0.014517781312243199,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.9499999999999998,
+              "__unresolved__": 0.05000000000000002
+            },
+            "tv": 0.07131251791835415
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.2903744725599181,
+              "habit": 0.3478370561860259,
+              "identity": 0.018343666455487476,
+              "noise": 8.35907559050045e-301,
+              "observation": 0.2693046553878467,
+              "unresolved": 0.024140149410723285,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.9499999999999998,
+              "__unresolved__": 0.05000000000000002
+            },
+            "tv": 0.6596255274400825
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.667905442160532,
+              "unresolved": 0.2743861444641879,
+              "create": 0.007708413375282043,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9499999999999998,
+              "__unresolved__": 0.05000000000000002
+            },
+            "tv": 0.2820945578394689
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9453751552971345,
+        "max_importance_weight_error": 1.1102230246251565e-16,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 8.724811170155341,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.00045099588205651327,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9977991519716136,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.00129885626427343,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.00045099588205651327
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 1.0,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.0,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0
+        },
+        "action_tv": 0.002200848028386419,
+        "reference_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "sample_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "same_choice": true,
+        "method": "systematic",
+        "arm": "matched_full_state_factorized",
+        "step": 1,
+        "observe_seconds": 0.06252658274024725
+      },
+      {
+        "source_id": "10c35393-3d33-5efd-9b2f-d2d3a7479bb9",
+        "incoming_state_sha256": "2f1e71148f1ced5bd394469e8f943255fb1a2cd421e9e5e2b3f13af1dc58b3fa",
+        "visible_input_sha256": "7880039ef7739bcb13fe2e74556a19729330a5c166c4a348980b45e83e86310c",
+        "proposal_sha256": "826cb4de65d504882c1170d46cc45ea56a664cb50e0359730b2c09a13a14a0ff",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11232,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11232,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.45879270788282156,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.20926968467805646,
+              "owner": 0.4853435322840763,
+              "unknown_actor": 0.2553867830378659,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.7407303153219429
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.3278376258712462,
+              "handoff_relocation": 0.5493095683795872,
+              "unknown_mechanism": 0.07285280574916587,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct_relocation": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.6221623741287535
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.04698630702020068,
+              "direct:owner": 0.22705521773923598,
+              "direct:unknown_actor": 0.053796101111809845,
+              "guest=>owner": 0.13723231569488667,
+              "guest=>unknown_actor": 0.032514397178084284,
+              "owner=>guest": 0.13723231569488667,
+              "owner=>unknown_actor": 0.157121595612014,
+              "unknown_actor=>guest": 0.01460966040292454,
+              "unknown_actor=>owner": 0.0705992837967914,
+              "unknown:guest": 0.010441401560044599,
+              "unknown:owner": 0.05045671505316355,
+              "unknown:unknown_actor": 0.011954689135957734,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct:guest": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.9030136929797994
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.0373252561920699,
+              "target_instance": 0.9019660285657225,
+              "unknown_instance": 0.01070871524220778,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.048033971434277636
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.4489427534376583,
+              "habit": 0.26209378485114104,
+              "identity": 0.016104270350349524,
+              "noise": 7.320122886522862e-301,
+              "observation": 0.2008988227012832,
+              "unresolved": 0.02196036865956754,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.5010572465623415
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.9179416953719778,
+              "unresolved": 0.01662833969125485,
+              "create": 0.015429964936768575,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.032058304628022866
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9292934143555063,
+        "max_importance_weight_error": 5.551115123125783e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 8.724736797138094,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.006531188987250843,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.006569412744017027,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9803682092814813,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.006531188987250843
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 4.12378181403124e-05,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9999587621818596,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0
+        },
+        "action_tv": 0.019590552900378384,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "systematic",
+        "arm": "matched_full_state_factorized",
+        "step": 2,
+        "observe_seconds": 0.06863304227590561
+      },
+      {
+        "source_id": "771d76d0-7a6c-5667-87e1-aa911fff7f8c",
+        "incoming_state_sha256": "84d1db7f88cddf3d93490566bebe31ec521730e2a5701870a65d5560330f1b74",
+        "visible_input_sha256": "21a3b004f0909133ae451dcf4da7098d4a8211e43f18f680b7594e637a217b3c",
+        "proposal_sha256": "e9b319578a4141e2298542b4626e740f1e6a8ea0a2b672034332a724d9eb6d1a",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11232,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11232,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.44860683288425207,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.5003534264244208,
+              "owner": 0.2248232867877887,
+              "unknown_actor": 0.2248232867877887,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown_actor": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.7251767132122104
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.5221845843514324,
+              "handoff_relocation": 0.350030794621551,
+              "unknown_mechanism": 0.07778462102701193,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "handoff_relocation": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.5999692053784468
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.27502825895395,
+              "direct:owner": 0.12357816269874161,
+              "direct:unknown_actor": 0.12357816269874161,
+              "guest=>owner": 0.041418459854610123,
+              "guest=>unknown_actor": 0.041418459854610123,
+              "owner=>guest": 0.09217847760155692,
+              "owner=>unknown_actor": 0.041418459854610123,
+              "unknown_actor=>guest": 0.09217847760155692,
+              "unknown_actor=>owner": 0.041418459854610123,
+              "unknown:guest": 0.04096821226735867,
+              "unknown:owner": 0.018408204379826702,
+              "unknown:unknown_actor": 0.018408204379826702,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest=>unknown_actor": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.9085815401453897
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.2391798637016766,
+              "target_instance": 0.6421987974688933,
+              "unknown_instance": 0.06862133882943032,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.3078012025311069
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.4224930777027484,
+              "habit": 0.23213150370632063,
+              "identity": 0.08353136434606728,
+              "noise": 7.593760395097353e-301,
+              "observation": 0.1890627730595732,
+              "unresolved": 0.02278128118529101,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.5275069222972519
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.8636363636363648,
+              "unresolved": 0.08636363636363638,
+              "create": 1.2799534007553868e-301,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9500000000000001,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.08636363636363585
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9386800857876801,
+        "max_importance_weight_error": 6.245004513516506e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 8.724736797138094,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.00014735558027728784,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.00017362451795533408,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9995316643214901,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.00014735558027728784
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 2.630511559672765e-05,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9999736948844032,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0
+        },
+        "action_tv": 0.0004420305629131624,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "systematic",
+        "arm": "matched_full_state_factorized",
+        "step": 3,
+        "observe_seconds": 0.06666770949959755
+      },
+      {
+        "source_id": "90bf9e16-954d-5276-a5d7-7665b79d64ae",
+        "incoming_state_sha256": "e54e8c84d14a578cd5ed2c54d7c04a9c8bab7a03a0ffa8e52598795ad01e0772",
+        "visible_input_sha256": "6e126b161fd1d06e9df410645daa781a6b016dd78b952575abaef0e39f933088",
+        "proposal_sha256": "7253bad2c1c5e43c4edce556b4272d0dafc9077d699c391b0c68123996384322",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 0,
+        "reference_target_evaluations": 468,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 468,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.01105162501335144,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.31120348805227255,
+              "owner": 0.32759302389545525,
+              "unknown_actor": 0.31120348805227255,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest": 0.2913682679806141,
+              "owner": 0.33934785750129964,
+              "unknown_actor": 0.31928387451808615,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.019835220071658225
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.33418224013762227,
+              "handoff_relocation": 0.5415550398317951,
+              "unknown_mechanism": 0.07426272003058275,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct_relocation": 0.3584311996505419,
+              "handoff_relocation": 0.49798435180224526,
+              "unknown_mechanism": 0.09358444854721285,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.043570688029549776
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.10927004952307878,
+              "direct:owner": 0.1156421410914647,
+              "direct:unknown_actor": 0.10927004952307878,
+              "guest=>owner": 0.09312631461405466,
+              "guest=>unknown_actor": 0.0888256026509214,
+              "owner=>guest": 0.0888256026509214,
+              "owner=>unknown_actor": 0.0888256026509214,
+              "unknown_actor=>guest": 0.0888256026509214,
+              "unknown_actor=>owner": 0.09312631461405466,
+              "unknown:guest": 0.02428223322735084,
+              "unknown:owner": 0.02569825357588105,
+              "unknown:unknown_actor": 0.02428223322735084,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct:guest": 0.1175596809582118,
+              "direct:owner": 0.0934324842477792,
+              "direct:unknown_actor": 0.14743903444455086,
+              "guest=>owner": 0.12492722486094376,
+              "guest=>unknown_actor": 0.04335201483740412,
+              "owner=>guest": 0.08159350316179174,
+              "owner=>unknown_actor": 0.12849282523613118,
+              "unknown_actor=>guest": 0.07626676886857027,
+              "unknown_actor=>owner": 0.04335201483740412,
+              "unknown:guest": 0.015948314992040306,
+              "unknown:owner": 0.07763613355517254,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.1698646291679955
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.377011221127958,
+              "target_instance": 0.4648232571298468,
+              "unknown_instance": 0.10816552174219494,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "identity_mismatch": 0.2667093327896571,
+              "target_instance": 0.5408512532649047,
+              "unknown_instance": 0.14243941394543813,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.110301888338301
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.26047721770015236,
+              "habit": 0.1864105538967878,
+              "identity": 0.1393463293116256,
+              "noise": 0.17002101805360517,
+              "observation": 0.17002101805360517,
+              "unresolved": 0.02372386298422398,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.2965016491472221,
+              "noise": 0.15842218502820504,
+              "habit": 0.2566049373030703,
+              "identity": 0.1403127328639707,
+              "observation": 0.06495263273052662,
+              "unresolved": 0.03320586292700509,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.11666721834847858
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.8636363636363639,
+              "unresolved": 0.08636363636363631,
+              "create": 3.282601145628331e-301,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9500000000000001,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.08636363636363625
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.7706142761866073,
+        "max_importance_weight_error": 8.326672684688674e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 19.37007837566519,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.25,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.25,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.25
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.25,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.25,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.25
+        },
+        "action_tv": 0.0,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "independent_strata_v1",
+        "arm": "stateful_full_joint",
+        "step": 0,
+        "observe_seconds": 0.005428957752883434
+      },
+      {
+        "source_id": "94595f81-fff6-5071-8374-7d8df5a7f6ea",
+        "incoming_state_sha256": "de5a15437c7aec43a7c75c3f22a1254ae860d44474ef7c6204b55a1c6f0526f8",
+        "visible_input_sha256": "6bb8efcf13e5d266ac90d3a795fa231bb9b5f9542d8be000468e140352ad48f0",
+        "proposal_sha256": "fcd8d8008d5728290051d728b7ec92f89f12a8c8efe126a8d8d475b7e0bed496",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11232,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11232,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.4017198756337166,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.1268357718638182,
+              "owner": 0.16719549978045192,
+              "unknown_actor": 0.6559687283557304,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown_actor": 0.4928291379010289,
+              "guest": 0.07214537999047663,
+              "owner": 0.3850254821084945,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.21782998232804285
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.09248229630888265,
+              "handoff_relocation": 0.1903276135791652,
+              "unknown_mechanism": 0.667190090111952,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown_mechanism": 0.595575780904919,
+              "handoff_relocation": 0.35442421909508104,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.1640966055159157
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.009596406765678467,
+              "direct:owner": 0.012522700523858718,
+              "direct:unknown_actor": 0.07036318901934528,
+              "guest=>owner": 0.007107197195939035,
+              "guest=>unknown_actor": 0.04160045803062787,
+              "owner=>guest": 0.005662227166978235,
+              "owner=>unknown_actor": 0.04160045803062787,
+              "unknown_actor=>guest": 0.04183996868423616,
+              "unknown_actor=>owner": 0.05251730447075568,
+              "unknown:guest": 0.06973716924692544,
+              "unknown:owner": 0.09504829758989801,
+              "unknown:unknown_actor": 0.5024046232751286,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown:unknown_actor": 0.4691922056957405,
+              "unknown:guest": 0.07214537999047663,
+              "unknown:owner": 0.05423819521870185,
+              "guest=>unknown_actor": 0.023636932205288345,
+              "unknown_actor=>owner": 0.09615386967618536,
+              "guest=>owner": 0.23463341721360734,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.27357099596664886
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.059031666974296654,
+              "target_instance": 0.8755231616896937,
+              "unknown_instance": 0.0154451713360081,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.7784969601917374,
+              "identity_mismatch": 0.14422760427200076,
+              "unknown_instance": 0.02727543553626191,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.0970262014979571
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.3459097655596678,
+              "habit": 0.313585420826847,
+              "identity": 0.02053087451780086,
+              "noise": 8.14734988459871e-301,
+              "observation": 0.24687352547008914,
+              "unresolved": 0.02310041362559462,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.5484327392955322,
+              "observation": 0.1770964206840978,
+              "habit": 0.20433082293290156,
+              "identity": 0.02014001708746859,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.202522973735864
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.6669152788495113,
+              "unresolved": 0.27397936967819103,
+              "create": 0.009105351472296224,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9464154027435961,
+              "create": 0.0035845972564038406,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.27950012389408413
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.8864171361620526,
+        "max_importance_weight_error": 8.326672684688674e-17,
+        "max_log_receipt_error": 1.7763568394002505e-15,
+        "ess": 10.1067440986209,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0010920729690625452,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9931102815983877,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.004705572463487272,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0010920729690625452
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0036416807360140353,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9764740422702383,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.016242596257733683,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0036416807360140353
+        },
+        "action_tv": 0.016636239328149394,
+        "reference_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "sample_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "same_choice": true,
+        "method": "independent_strata_v1",
+        "arm": "stateful_full_joint",
+        "step": 1,
+        "observe_seconds": 0.06271983310580254
+      },
+      {
+        "source_id": "10c35393-3d33-5efd-9b2f-d2d3a7479bb9",
+        "incoming_state_sha256": "2e8286b0350b211adecd42df901613585f177269179b20f91a1988bc482c9848",
+        "visible_input_sha256": "7880039ef7739bcb13fe2e74556a19729330a5c166c4a348980b45e83e86310c",
+        "proposal_sha256": "3c4eb1934af11bf95f755559ea8ea75b64423adc2dc83cfe9ecc01d6bae92da2",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11268,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11268,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.47723058238625526,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.1994923419915685,
+              "owner": 0.5153289348774817,
+              "unknown_actor": 0.2351787231309479,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "owner": 0.7161167886546473,
+              "guest": 0.059032276288820885,
+              "unknown_actor": 0.17485093505653176,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.20078785377716474
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.2899357836208482,
+              "handoff_relocation": 0.5639456928513035,
+              "unknown_mechanism": 0.09611852352784646,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "handoff_relocation": 0.3553707473393219,
+              "direct_relocation": 0.5946292526606781,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.30469346903982897
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.03708848553412841,
+              "direct:owner": 0.21223656335053662,
+              "direct:unknown_actor": 0.040610734736183596,
+              "guest=>owner": 0.15367446647193433,
+              "guest=>unknown_actor": 0.031051674987534948,
+              "owner=>guest": 0.13566554496630107,
+              "owner=>unknown_actor": 0.1500531808646198,
+              "unknown_actor=>guest": 0.01444286304067083,
+              "unknown_actor=>owner": 0.07905796252024375,
+              "unknown:guest": 0.012295448450468316,
+              "unknown:owner": 0.07035994253476892,
+              "unknown:unknown_actor": 0.01346313254260938,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest=>owner": 0.08973558795902178,
+              "direct:owner": 0.41922780840799884,
+              "direct:guest": 0.0005505327864506888,
+              "owner=>guest": 0.058481743502370204,
+              "direct:unknown_actor": 0.17485091146622866,
+              "unknown_actor=>owner": 0.20715339228762675,
+              "owner=>unknown_actor": 2.359030310808488e-08,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.46932685155489023
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.046708535053727004,
+              "target_instance": 0.8913064155902277,
+              "unknown_instance": 0.011985049356045585,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "identity_mismatch": 0.08763642913935177,
+              "target_instance": 0.8623635708606483,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.04092789408562488
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.4285922192491789,
+              "habit": 0.3243707481655264,
+              "identity": 0.013715284969064179,
+              "noise": 5.547097231661774e-301,
+              "observation": 0.1666804559212447,
+              "unresolved": 0.016641291694984652,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "habit": 0.5997833709972286,
+              "identity": 0.052657243439353456,
+              "noise": 2.3577090887099473e-300,
+              "actor": 0.21977370359755308,
+              "unresolved": 0.001060440321872804,
+              "observation": 0.07672524164399216,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.3143545813019908
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.8955363638835653,
+              "unresolved": 0.016222471361313103,
+              "create": 0.03779554824250375,
+              "reactivate": 0.0004456165126181732,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9449569051978143,
+              "unresolved": 0.005043094802185751,
+              "__unresolved__": 0.05
+            },
+            "tv": 0.04942054131424914
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9149937234984874,
+        "max_importance_weight_error": 1.6653345369377348e-16,
+        "max_log_receipt_error": 1.1368683772161603e-13,
+        "ess": 9.478734779026336,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.007444667526540078,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.007509904858600262,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9776007600883195,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.007444667526540078
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.01251216006264591,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.012547452507633498,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9624282273670747,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.01251216006264591
+        },
+        "action_tv": 0.015172532721244879,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "independent_strata_v1",
+        "arm": "stateful_full_joint",
+        "step": 2,
+        "observe_seconds": 0.07178570795804262
+      },
+      {
+        "source_id": "771d76d0-7a6c-5667-87e1-aa911fff7f8c",
+        "incoming_state_sha256": "a947ce2a32e82e90047014e1988848572d3d224c23ab30cbff8ff6cc5a1be30c",
+        "visible_input_sha256": "21a3b004f0909133ae451dcf4da7098d4a8211e43f18f680b7594e637a217b3c",
+        "proposal_sha256": "eb5d744f71533be35c642249770430a3e530a49bf99819f105d147f84deb71eb",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11268,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11268,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.457913332618773,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.21200044006606533,
+              "owner": 0.5256655821852395,
+              "unknown_actor": 0.21233397774869528,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "owner": 0.30047559601823176,
+              "unknown_actor": 0.4169281417003125,
+              "guest": 0.23259626228145577,
+              "__unresolved__": 0.04999999999999999
+            },
+            "tv": 0.22518998616700772
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.41238674647142093,
+              "handoff_relocation": 0.47618411736934124,
+              "unknown_mechanism": 0.06142913615923734,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct_relocation": 0.31798313896241054,
+              "handoff_relocation": 0.6320168610266771,
+              "unknown_mechanism": 1.0912499496319109e-11,
+              "__unresolved__": 0.04999999999999999
+            },
+            "tv": 0.15583274365733554
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.09134922006650777,
+              "direct:owner": 0.22954091558443668,
+              "direct:unknown_actor": 0.09149661082047654,
+              "guest=>owner": 0.1309661241249195,
+              "guest=>unknown_actor": 0.053604015181076645,
+              "owner=>guest": 0.05352191937867434,
+              "owner=>unknown_actor": 0.053604015181076645,
+              "unknown_actor=>guest": 0.05352191937867434,
+              "unknown_actor=>owner": 0.1309661241249195,
+              "unknown:guest": 0.013607381242208831,
+              "unknown:owner": 0.03419241835096311,
+              "unknown:unknown_actor": 0.013629336566065367,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct:owner": 5.8674694002894e-05,
+              "direct:unknown_actor": 0.08630259019525781,
+              "guest=>owner": 0.30041650343244813,
+              "unknown_actor=>owner": 4.178808682310996e-07,
+              "owner=>unknown_actor": 4.550407115116079e-08,
+              "direct:guest": 0.23162187407314985,
+              "owner=>guest": 0.0009743882083058411,
+              "unknown:owner": 1.0912499496319109e-11,
+              "guest=>unknown_actor": 0.33062550600098356,
+              "unknown_actor=>guest": 8.677965141024854e-17,
+              "__unresolved__": 0.04999999999999999
+            },
+            "tv": 0.5867445241340772
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.2558166467451788,
+              "target_instance": 0.6247347249172706,
+              "unknown_instance": 0.06944862833755029,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.2156989832024152,
+              "identity_mismatch": 0.7337656131392879,
+              "unknown_instance": 0.0005354036582970348,
+              "__unresolved__": 0.04999999999999999
+            },
+            "tv": 0.4779489663941089
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.3337506906545813,
+              "habit": 0.32725979056192883,
+              "identity": 0.10679724386998946,
+              "noise": 6.20392446932115e-301,
+              "observation": 0.163580501505294,
+              "unresolved": 0.018611773408205832,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.5457886219916568,
+              "habit": 0.3926284584018912,
+              "observation": 0.01060851759484389,
+              "identity": 0.0009744020116082518,
+              "noise": 3.10336861565671e-301,
+              "__unresolved__": 0.04999999999999999
+            },
+            "tv": 0.2774065991770375
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.8636363636363635,
+              "unresolved": 0.08636363636363649,
+              "create": 3.824697004800716e-301,
+              "reactivate": 1.947808000141905e-309,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9500000000000002,
+              "__unresolved__": 0.04999999999999999
+            },
+            "tv": 0.08636363636363657
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9415626407270614,
+        "max_importance_weight_error": 1.6653345369377348e-16,
+        "max_log_receipt_error": 1.1368683772161603e-13,
+        "ess": 4.494639503547697,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.005470628071630984,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.005495501787589416,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9835632420691486,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.005470628071630984
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 2.507118080353893e-07,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 2.76162322695294e-05,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9999718823441145,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 2.507118080353893e-07
+        },
+        "action_tv": 0.016408640274965847,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "independent_strata_v1",
+        "arm": "stateful_full_joint",
+        "step": 3,
+        "observe_seconds": 0.05413266737014055
+      },
+      {
+        "source_id": "90bf9e16-954d-5276-a5d7-7665b79d64ae",
+        "incoming_state_sha256": "991c51add5ea4fb91cbb26b7ba3248a499632a9054cc443b8e5273f4c3490c83",
+        "visible_input_sha256": "6e126b161fd1d06e9df410645daa781a6b016dd78b952575abaef0e39f933088",
+        "proposal_sha256": "7253bad2c1c5e43c4edce556b4272d0dafc9077d699c391b0c68123996384322",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 0,
+        "reference_target_evaluations": 468,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 468,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.011014833115041256,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.3166666666666667,
+              "owner": 0.3166666666666667,
+              "unknown_actor": 0.3166666666666667,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest": 0.31057148095940235,
+              "owner": 0.3522142547164065,
+              "unknown_actor": 0.2872142643241912,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.035547588049739814
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.4275000000000005,
+              "handoff_relocation": 0.4274999999999999,
+              "unknown_mechanism": 0.09500000000000013,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct_relocation": 0.4524135841665456,
+              "handoff_relocation": 0.3872593373829589,
+              "unknown_mechanism": 0.11032707845049552,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.040240662617040734
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.14250000000000004,
+              "direct:owner": 0.14250000000000004,
+              "direct:unknown_actor": 0.14250000000000004,
+              "guest=>owner": 0.07124999999999997,
+              "guest=>unknown_actor": 0.07124999999999997,
+              "owner=>guest": 0.07124999999999997,
+              "owner=>unknown_actor": 0.07124999999999997,
+              "unknown_actor=>guest": 0.07124999999999997,
+              "unknown_actor=>owner": 0.07124999999999997,
+              "unknown:guest": 0.03166666666666668,
+              "unknown:owner": 0.03166666666666668,
+              "unknown:unknown_actor": 0.03166666666666668,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct:guest": 0.16738923922490428,
+              "direct:owner": 0.13303534281186014,
+              "direct:unknown_actor": 0.15198900212978117,
+              "guest=>owner": 0.10885183345405075,
+              "guest=>unknown_actor": 0.022708264361364666,
+              "owner=>guest": 0.06304637738144778,
+              "owner=>unknown_actor": 0.11251699783304539,
+              "unknown_actor=>guest": 0.05742759999168567,
+              "unknown_actor=>owner": 0.022708264361364666,
+              "unknown:guest": 0.022708264361364666,
+              "unknown:owner": 0.08761881408913086,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.16919922006424573
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.36256276260960185,
+              "target_instance": 0.4834170168128031,
+              "unknown_instance": 0.10402022057759629,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "identity_mismatch": 0.28279473337804606,
+              "target_instance": 0.5079578618896312,
+              "unknown_instance": 0.15924740473232277,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.07976802923155521
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.20424999999999988,
+              "habit": 0.20424999999999988,
+              "identity": 0.10450000000000001,
+              "noise": 0.20424999999999988,
+              "observation": 0.20424999999999988,
+              "unresolved": 0.028500000000000032,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.22708264361364666,
+              "noise": 0.1941515953151372,
+              "habit": 0.27112923636105757,
+              "identity": 0.14184210320714313,
+              "observation": 0.06851372043396765,
+              "unresolved": 0.04728070106904773,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.1458346842508951
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.8636363636363652,
+              "unresolved": 0.08636363636363643,
+              "create": 1.8568181818181484e-301,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9499999999999998,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.08636363636363555
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.7808069009109264,
+        "max_importance_weight_error": 6.938893903907228e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 18.688254679311736,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.25,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.25,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.25
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.25,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.25,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.25
+        },
+        "action_tv": 0.0,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "independent_strata_v1",
+        "arm": "matched_full_state_factorized",
+        "step": 0,
+        "observe_seconds": 0.005689792335033417
+      },
+      {
+        "source_id": "94595f81-fff6-5071-8374-7d8df5a7f6ea",
+        "incoming_state_sha256": "e94cc1b3c6074f083d22c1c901d2fd0e024bd0b83d10547d7a19d29c03c54f84",
+        "visible_input_sha256": "6bb8efcf13e5d266ac90d3a795fa231bb9b5f9542d8be000468e140352ad48f0",
+        "proposal_sha256": "fcd8d8008d5728290051d728b7ec92f89f12a8c8efe126a8d8d475b7e0bed496",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11232,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11232,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.42158358357846737,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.12129542391489764,
+              "owner": 0.1372088576757732,
+              "unknown_actor": 0.6914957184093304,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown_actor": 0.6644670354098194,
+              "guest": 0.13167929015618277,
+              "owner": 0.15385367443399772,
+              "__unresolved__": 0.04999999999999996
+            },
+            "tv": 0.02702868299951034
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.10566212823335115,
+              "handoff_relocation": 0.10819351531950208,
+              "unknown_mechanism": 0.7361443564471473,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown_mechanism": 0.8295848794567315,
+              "handoff_relocation": 0.12041512054326861,
+              "__unresolved__": 0.04999999999999996
+            },
+            "tv": 0.105662128233351
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.011568606970244309,
+              "direct:owner": 0.012650614261396756,
+              "direct:unknown_actor": 0.08144290700171002,
+              "guest=>owner": 0.00379166671913466,
+              "guest=>unknown_actor": 0.023926081824759443,
+              "owner=>guest": 0.0034009784753765595,
+              "owner=>unknown_actor": 0.023926081824759443,
+              "unknown_actor=>guest": 0.025130894382935132,
+              "unknown_actor=>owner": 0.02801781209253706,
+              "unknown:guest": 0.08119494408634176,
+              "unknown:owner": 0.0927487646027046,
+              "unknown:unknown_actor": 0.5622006477581001,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "unknown:unknown_actor": 0.6325066714365117,
+              "unknown:guest": 0.13167929015618277,
+              "unknown:owner": 0.06539891786403687,
+              "guest=>unknown_actor": 0.03196036397330775,
+              "unknown_actor=>owner": 0.030497228600721786,
+              "guest=>owner": 0.057957527969239066,
+              "__unresolved__": 0.04999999999999996
+            },
+            "tv": 0.18546992965509004
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.0610311735397642,
+              "target_instance": 0.8727561696946436,
+              "unknown_instance": 0.016212656765591235,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.6705700312513915,
+              "identity_mismatch": 0.22964701673435906,
+              "unknown_instance": 0.04978295201424945,
+              "__unresolved__": 0.04999999999999996
+            },
+            "tv": 0.20218613844325264
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.31076103234031516,
+              "habit": 0.32002700234826764,
+              "identity": 0.020804695069063794,
+              "noise": 9.145010224753231e-301,
+              "observation": 0.2725275269616288,
+              "unresolved": 0.025879743280724177,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.4213359047096444,
+              "observation": 0.3120536494101295,
+              "habit": 0.1893783892430235,
+              "identity": 0.027232056637202733,
+              "__unresolved__": 0.04999999999999996
+            },
+            "tv": 0.1565283563859686
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.668342280399539,
+              "unresolved": 0.2745656045383069,
+              "create": 0.007092115062155678,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9411684351122129,
+              "create": 0.00883156488778715,
+              "__unresolved__": 0.04999999999999996
+            },
+            "tv": 0.2745656045383062
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.8845174080579586,
+        "max_importance_weight_error": 5.551115123125783e-17,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 15.200784939791678,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0007745996085845992,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9951091850221924,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.003341615760638409,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0007745996085845992
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0009894181157892445,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9939191544349746,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.0041020093334469265,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0009894181157892445
+        },
+        "action_tv": 0.0011900305872177956,
+        "reference_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "sample_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "same_choice": true,
+        "method": "independent_strata_v1",
+        "arm": "matched_full_state_factorized",
+        "step": 1,
+        "observe_seconds": 0.06303749978542328
+      },
+      {
+        "source_id": "10c35393-3d33-5efd-9b2f-d2d3a7479bb9",
+        "incoming_state_sha256": "9c06870301b2eb0925a50ea9976b3fb74eaeb1a36e2cf07b7fcaa804a69f9fd2",
+        "visible_input_sha256": "7880039ef7739bcb13fe2e74556a19729330a5c166c4a348980b45e83e86310c",
+        "proposal_sha256": "3c4eb1934af11bf95f755559ea8ea75b64423adc2dc83cfe9ecc01d6bae92da2",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11268,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11268,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.4486967083066702,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.19524673835592754,
+              "owner": 0.5221074271647079,
+              "unknown_actor": 0.23264583447936565,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "owner": 0.6343662592679196,
+              "guest": 0.04344673149975993,
+              "unknown_actor": 0.2721870092323205,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.15180000685616704
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.3872166084202605,
+              "handoff_relocation": 0.43441465962361,
+              "unknown_mechanism": 0.1283687319561306,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "handoff_relocation": 0.2751355419563187,
+              "direct_relocation": 0.6748644580436813,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.2876478496234214
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.05582086610988704,
+              "direct:owner": 0.2684240970976343,
+              "direct:unknown_actor": 0.06297164521273854,
+              "guest=>owner": 0.1087498384521018,
+              "guest=>unknown_actor": 0.025512449527556266,
+              "owner=>guest": 0.10928583221946732,
+              "owner=>unknown_actor": 0.12328559424876896,
+              "unknown_actor=>guest": 0.011634496492263852,
+              "unknown_actor=>owner": 0.05594644868345116,
+              "unknown:guest": 0.01850554353430901,
+              "unknown:owner": 0.08898704293151968,
+              "unknown:unknown_actor": 0.020876145490301902,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "guest=>owner": 0.07963815460995319,
+              "direct:owner": 0.4015924899251727,
+              "direct:guest": 0.0010849612008227792,
+              "owner=>guest": 0.04236177029893715,
+              "direct:unknown_actor": 0.2721870069176857,
+              "unknown_actor=>owner": 0.15313561473279355,
+              "owner=>unknown_actor": 2.3146347418304625e-09,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.43957292058182795
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.05557014854384121,
+              "target_instance": 0.8807975470099723,
+              "unknown_instance": 0.013632304446185468,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "identity_mismatch": 0.09807131675862091,
+              "target_instance": 0.851928683241379,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.0425011682147792
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.3555862078253308,
+              "habit": 0.32443627776023026,
+              "identity": 0.016985520752791555,
+              "noise": 7.4122539721110805e-301,
+              "observation": 0.2307552317453146,
+              "unresolved": 0.02223676191633247,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "habit": 0.5249852173358457,
+              "identity": 0.10377446724253064,
+              "noise": 2.2093672976855815e-300,
+              "actor": 0.2023177282534975,
+              "unresolved": 0.0007313347364546683,
+              "observation": 0.11819125243167138,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.28733788606535443
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.9139484924926117,
+              "unresolved": 0.016556003578548733,
+              "create": 0.019075458450464492,
+              "reactivate": 0.00042004547837280705,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9400613013107465,
+              "unresolved": 0.009938698689253445,
+              "__unresolved__": 0.04999999999999998
+            },
+            "tv": 0.026112808818133715
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9177146553844713,
+        "max_importance_weight_error": 2.220446049250313e-16,
+        "max_log_receipt_error": 8.881784197001252e-16,
+        "ess": 8.846250556651896,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0068856982992656435,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.0069634359175875255,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9792651674838811,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0068856982992656435
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.009192852095577134,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.009229719026034172,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9723845767828115,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.009192852095577134
+        },
+        "action_tv": 0.00688059070106962,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "independent_strata_v1",
+        "arm": "matched_full_state_factorized",
+        "step": 2,
+        "observe_seconds": 0.07048070803284645
+      },
+      {
+        "source_id": "771d76d0-7a6c-5667-87e1-aa911fff7f8c",
+        "incoming_state_sha256": "3e8dc847db809b5cec446353ebee3067bd33da3b11129955d96ef3be0ef166db",
+        "visible_input_sha256": "21a3b004f0909133ae451dcf4da7098d4a8211e43f18f680b7594e637a217b3c",
+        "proposal_sha256": "eb5d744f71533be35c642249770430a3e530a49bf99819f105d147f84deb71eb",
+        "reference_scope": "one_step_given_sampled_parents_within_candidate_support",
+        "parent_count": 24,
+        "reference_target_evaluations": 11268,
+        "sample_target_evaluations": 24,
+        "transition_evaluations_each": 11268,
+        "shared_model_and_readout": true,
+        "reference_seconds_including_worlds_and_readout": 0.45946495793759823,
+        "unresolved_probability": 0.05,
+        "marginals": {
+          "placement_actor": {
+            "reference": {
+              "guest": 0.22485385403794353,
+              "owner": 0.4996963869116178,
+              "unknown_actor": 0.225449759050437,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "owner": 0.20202725380676934,
+              "unknown_actor": 0.3511723018521888,
+              "guest": 0.3968004443410419,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.2976691331048493
+          },
+          "mechanism": {
+            "reference": {
+              "direct_relocation": 0.5221845689824015,
+              "handoff_relocation": 0.3500308099905839,
+              "unknown_mechanism": 0.07778462102701196,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct_relocation": 0.6596817216895433,
+              "handoff_relocation": 0.290318278298789,
+              "unknown_mechanism": 1.1667824715548994e-11,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.13749715270714044
+          },
+          "role_key": {
+            "reference": {
+              "direct:guest": 0.12359496087065072,
+              "direct:owner": 0.27466709730483824,
+              "direct:unknown_actor": 0.12392251080691274,
+              "guest=>owner": 0.0920574373905022,
+              "guest=>unknown_actor": 0.041533874612094034,
+              "owner=>guest": 0.041424092992696844,
+              "owner=>unknown_actor": 0.041533874612094034,
+              "unknown_actor=>guest": 0.041424092992696844,
+              "unknown_actor=>owner": 0.0920574373905022,
+              "unknown:guest": 0.018410707181899556,
+              "unknown:owner": 0.04091441482577627,
+              "unknown:unknown_actor": 0.018459499019336276,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "direct:owner": 0.0001792722148416855,
+              "direct:unknown_actor": 0.26369302617063195,
+              "guest=>owner": 0.20184777052446198,
+              "unknown_actor=>owner": 2.110557978504939e-07,
+              "owner=>unknown_actor": 5.420954349275171e-08,
+              "direct:guest": 0.39580942330406965,
+              "owner=>guest": 0.0009910210369722821,
+              "unknown:owner": 1.1667824715548994e-11,
+              "guest=>unknown_actor": 0.08747922147201337,
+              "unknown_actor=>guest": 4.85640434626886e-18,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.5677206577910172
+          },
+          "instance_association_key": {
+            "reference": {
+              "identity_mismatch": 0.2709024306297317,
+              "target_instance": 0.609771562923623,
+              "unknown_instance": 0.0693260064466472,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "target_instance": 0.27846546894862706,
+              "identity_mismatch": 0.6710886969893459,
+              "unknown_instance": 0.0004458340620270782,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.40018626635961513
+          },
+          "change_cause": {
+            "reference": {
+              "actor": 0.30717248056629803,
+              "habit": 0.292869045747863,
+              "identity": 0.10571246581952008,
+              "noise": 7.902917211603004e-301,
+              "observation": 0.22053725623129894,
+              "unresolved": 0.023708751635019096,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "actor": 0.36549859379087,
+              "habit": 0.5510966759761127,
+              "observation": 0.0324136975684846,
+              "identity": 0.0009910326645329091,
+              "noise": 9.482180742530282e-301,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.3165537434528211
+          },
+          "regime_decision": {
+            "reference": {
+              "stay": 0.863636363636367,
+              "unresolved": 0.08636363636363678,
+              "create": 1.614855050244261e-301,
+              "reactivate": 1.201968273545247e-309,
+              "__unresolved__": 0.05
+            },
+            "sampled": {
+              "stay": 0.9500000000000002,
+              "__unresolved__": 0.05000000000000001
+            },
+            "tv": 0.08636363636363499
+          }
+        },
+        "unsampled_parent_candidate_reference_mass": 0.9403955841163919,
+        "max_importance_weight_error": 1.1102230246251565e-16,
+        "max_log_receipt_error": 3.552713678800501e-15,
+        "ess": 5.582152966959624,
+        "pre_ledger_reference_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.004296720433641825,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.004322066685204701,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9870844924475116,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.004296720433641825
+        },
+        "pre_ledger_sample_action": {
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 7.376905980437529e-07,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 3.0282827113430598e-05,
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.9999682417916905,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 7.376905980437529e-07
+        },
+        "action_tv": 0.012883749344178871,
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "same_choice": true,
+        "method": "independent_strata_v1",
+        "arm": "matched_full_state_factorized",
+        "step": 3,
+        "observe_seconds": 0.05327604152262211
+      }
+    ]
+  },
+  "content_sha256": "c649d5d14b05b2e3db48c7af10eb281616fccd629bbb935915d7414d09c8020b"
+}

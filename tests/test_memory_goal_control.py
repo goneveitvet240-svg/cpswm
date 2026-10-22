@@ -21,6 +21,18 @@ FIXTURE = ROOT / "configs/simulation/libero_goal_fixture.json"
 CONFIG = json.loads(FIXTURE.read_text())
 
 
+def test_smoke_cannot_be_reported_as_pi05_inference():
+    from verify_libero_goal_run import validate_policy_claim
+
+    manifest = {"arguments": {"policy": "smoke"}}
+    validate_policy_claim(manifest, {"pi05_inference_executed": False}, 2)
+    with pytest.raises(ValueError, match="policy claim mismatch"):
+        validate_policy_claim(manifest, {"pi05_inference_executed": True}, 2)
+    manifest["arguments"]["policy"] = "pi05-local"
+    with pytest.raises(ValueError, match="provenance"):
+        validate_policy_claim(manifest, {"pi05_inference_executed": True}, 2)
+
+
 def visual(tick=100, *, robot=False, lost=False):
     return Observation(
         CONFIG["episode_id"],

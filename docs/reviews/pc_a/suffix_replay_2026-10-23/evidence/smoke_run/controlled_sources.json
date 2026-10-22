@@ -1,0 +1,114 @@
+{
+  "history": [
+    {
+      "episode_id": "libero-delayed-attribution-goal-v1",
+      "source_id": "integration-delayed_attribution-7:historical:0",
+      "event_id": "integration-delayed_attribution-7:historical:0",
+      "occurred_at": 0,
+      "available_at": 0,
+      "object_id": "target",
+      "visibility": "observed",
+      "location": "plate",
+      "actors": [
+        [
+          "owner",
+          1.0
+        ]
+      ],
+      "revises": null,
+      "origin": "controlled_semantic_sensor",
+      "robot_generated": false,
+      "identity_probability": 1.0
+    },
+    {
+      "episode_id": "libero-delayed-attribution-goal-v1",
+      "source_id": "integration-delayed_attribution-7:historical:1",
+      "event_id": "integration-delayed_attribution-7:historical:1",
+      "occurred_at": 1,
+      "available_at": 1,
+      "object_id": "target",
+      "visibility": "observed",
+      "location": "stove",
+      "actors": [
+        [
+          "owner",
+          0.7
+        ],
+        [
+          "guest",
+          0.3
+        ]
+      ],
+      "revises": null,
+      "origin": "controlled_semantic_sensor",
+      "robot_generated": false,
+      "identity_probability": 1.0
+    },
+    {
+      "episode_id": "libero-delayed-attribution-goal-v1",
+      "source_id": "integration-delayed_attribution-7:historical:2",
+      "event_id": "integration-delayed_attribution-7:historical:2",
+      "occurred_at": 2,
+      "available_at": 2,
+      "object_id": "target",
+      "visibility": "observed",
+      "location": "stove",
+      "actors": [
+        [
+          "owner",
+          0.7
+        ],
+        [
+          "guest",
+          0.3
+        ]
+      ],
+      "revises": null,
+      "origin": "controlled_semantic_sensor",
+      "robot_generated": false,
+      "identity_probability": 1.0
+    }
+  ],
+  "corrections": [
+    {
+      "episode_id": "libero-delayed-attribution-goal-v1",
+      "source_id": "integration-delayed_attribution-7:historical:1:corrected",
+      "event_id": "integration-delayed_attribution-7:historical:1",
+      "occurred_at": 1,
+      "available_at": 102,
+      "object_id": "target",
+      "visibility": "observed",
+      "location": "stove",
+      "actors": [
+        [
+          "guest",
+          1.0
+        ]
+      ],
+      "revises": "integration-delayed_attribution-7:historical:1",
+      "origin": "controlled_semantic_sensor",
+      "robot_generated": false,
+      "identity_probability": 1.0
+    },
+    {
+      "episode_id": "libero-delayed-attribution-goal-v1",
+      "source_id": "integration-delayed_attribution-7:historical:2:corrected",
+      "event_id": "integration-delayed_attribution-7:historical:2",
+      "occurred_at": 2,
+      "available_at": 102,
+      "object_id": "target",
+      "visibility": "observed",
+      "location": "stove",
+      "actors": [
+        [
+          "guest",
+          1.0
+        ]
+      ],
+      "revises": "integration-delayed_attribution-7:historical:2",
+      "origin": "controlled_semantic_sensor",
+      "robot_generated": false,
+      "identity_probability": 1.0
+    }
+  ]
+}

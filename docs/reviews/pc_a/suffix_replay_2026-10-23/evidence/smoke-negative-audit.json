@@ -1,0 +1,84 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "case": "unchanged",
+      "expected_result_observed": true,
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"CONSISTENCY_VERIFIED\",\n  \"source_sha\": \"4efcd4c4b52a9030c6714d350030c54aa8b7ecde\",\n  \"steps\": 7,\n  \"inferences\": 2,\n  \"policy\": \"smoke\",\n  \"pi05_inference_executed\": false,\n  \"memory_replay\": \"suffix\",\n  \"feedback_segments\": 2,\n  \"goal_changed\": true,\n  \"prompts\": [\n    \"put the black bowl on the stove\",\n    \"put the black bowl on the plate\"\n  ],\n  \"cancelled_actions\": 3,\n  \"task_success_evaluator_only\": false,\n  \"scientific_acceptance\": false\n}\n",
+      "stderr": ""
+    },
+    {
+      "case": "changed_prompt",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 131, in main\n    controller.validate(plan)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/src/cpswm/simulation/goal_control.py\", line 192, in validate\n    raise ValueError(\"unissued, changed or stale goal plan\")\nValueError: unissued, changed or stale goal plan\n"
+    },
+    {
+      "case": "changed_action",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 156, in main\n    require(\n    ~~~~~~~^\n        np.array_equal(entry[\"action\"], output[offset]), \"action differs from model output\"\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: action differs from model output\n"
+    },
+    {
+      "case": "missing_physics",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 186, in main\n    require(pending_physics_receipt is not None, \"step acknowledgment without physics\")\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: step acknowledgment without physics\n"
+    },
+    {
+      "case": "promoted_feedback",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 214, in main\n    require(\n    ~~~~~~~^\n        entry[\"receipt\"] == json.loads(json.dumps(expected)),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        f\"core replay differs: {operation}\",\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: core replay differs: feedback\n"
+    },
+    {
+      "case": "promoted_pi05",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 227, in main\n    validate_policy_claim(manifest, summary, len(inferred))\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 39, in validate_policy_claim\n    require(claim == (policy == \"pi05-local\" and inference_count > 0), \"policy claim mismatch\")\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: policy claim mismatch\n"
+    },
+    {
+      "case": "forged_pi05_without_provenance",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 227, in main\n    validate_policy_claim(manifest, summary, len(inferred))\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 43, in validate_policy_claim\n    require(\n    ~~~~~~~^\n        isinstance(value, str)\n        ^^^^^^^^^^^^^^^^^^^^^^\n    ...<2 lines>...\n        \"pi05 claim lacks model provenance\",\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: pi05 claim lacks model provenance\n"
+    },
+    {
+      "case": "cache_count",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 214, in main\n    require(\n    ~~~~~~~^\n        entry[\"receipt\"] == json.loads(json.dumps(expected)),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        f\"core replay differs: {operation}\",\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: core replay differs: history\n"
+    },
+    {
+      "case": "cache_state",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 214, in main\n    require(\n    ~~~~~~~^\n        entry[\"receipt\"] == json.loads(json.dumps(expected)),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        f\"core replay differs: {operation}\",\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: core replay differs: history\n"
+    },
+    {
+      "case": "replay_mode",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 214, in main\n    require(\n    ~~~~~~~^\n        entry[\"receipt\"] == json.loads(json.dumps(expected)),\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        f\"core replay differs: {operation}\",\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: core replay differs: history\n"
+    },
+    {
+      "case": "omit_cache_source",
+      "expected_result_observed": true,
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 271, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 77, in main\n    require(required <= set(manifest[\"sources\"]), \"source manifest is incomplete\")\n    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-suffix-replay/tools/verify_libero_goal_run.py\", line 31, in require\n    raise ValueError(message)\nValueError: source manifest is incomplete\n"
+    }
+  ],
+  "scope": "ten corruptions and one legal run; partial consistency coverage",
+  "not_claimed": "authentication or detection of arbitrary consistent fabrication"
+}

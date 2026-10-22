@@ -1,3 +1,27 @@
+# 2026-10-23 交付回执：草稿 PR120
+
+[后缀重放草稿 PR120](https://github.com/goneveitvet240-svg/cpswm/pull/120) 已创建并推送，堆叠 PR119，未合并。成本运行 `8e9d8da9276320f7d747bb4e02fb97bd2e936b5b`、最终 smoke/审计 `4efcd4c4b52a9030c6714d350030c54aa8b7ecde`、报告/81份原件 `6a0980e011245319b86f1af36e9bf63a9035add6`。完整结果与内存代价见[报告](../reviews/pc_a/suffix_replay_2026-10-23/REPORT.md)。B按实际SHA独立复核，统一/全仓/科学验收及共享集成待完成。
+
+12小时自主窗口继续，下一独立任务为两步历史同原生目标枚举及bootstrap/RBPF对照；后续固定正确目标的完整π0.5任务仍在队列，完整E0–E6范围不变。
+
+---
+
+# 2026-10-23 A交付准备：可选后缀重放等价与成本
+
+分支 `codex/pc-a-suffix-replay-20261023`，base `0ee6614a7aecbed8a90fc0248d17a1380bdda92c`。成本运行 `8e9d8da9276320f7d747bb4e02fb97bd2e936b5b`；最终审计/真实 smoke 源码 `4efcd4c4b52a9030c6714d350030c54aa8b7ecde`。[报告](../reviews/pc_a/suffix_replay_2026-10-23/REPORT.md)、[命令](../reviews/pc_a/suffix_replay_2026-10-23/COMMANDS.md)。
+
+24 个新进程计时、564 次配对检查一致；长历史评分 10656→2496，实测约1.9×，更多缓存内存；短轨迹约1.3×。84核心通过/1可选跳过，最终目标30通过，仿真环境16通过，mypy4模块通过。真实 LIBERO/SAM smoke 7步与两段unknown反馈通过审计，1合法+10篡改检查通过；不是 π0.5 推理，任务false。完整矩阵/B/全仓/统一/科学收益未完成。
+
+代码与81份原件已整理；报告/交付推送和草稿PR回执随后登记。默认full保留，可显式suffix；原始完整模型、三个RB blocks和七算子范围不变，不自动合并。下一批同模型短历史参考与完整 π0.5 任务。
+
+---
+
+# 2026-10-23 A开工：可选检查点与后缀重放
+
+分支 `codex/pc-a-suffix-replay-20261023`；base/开工源码 `0ee6614a7aecbed8a90fc0248d17a1380bdda92c`（草稿 PR119）。已 fetch 核对，独立工作树 `.local/simulation-stack/cpswm-suffix-replay`。实现保持同模型同来源语义的缓存重放，对照完整重放与 PR119 原件，测真实评分/时间/内存成本。[协议](../reviews/pc_a/suffix_replay_2026-10-23/PROTOCOL.md)。当前本地进行中，实际代码 SHA 和测试结果待补。完整范围、默认入口和 STATUS_B 保留；交 B 独立复核，不自动合并。
+
+---
+
 # 2026-10-23 交付回执：草稿 PR119
 
 [E0/E2 草稿 PR119](https://github.com/goneveitvet240-svg/cpswm/pull/119) 已创建并推送，堆叠 PR118，未合并。运行源码 `2e9694b3d08ebed0f361b342253b40740199e672`，报告/原件提交 `1ce0dc9`。67 通过 / 1 可选跳过；E0/E2 结果与限制见[报告](../reviews/pc_a/research_pilot_2026-10-23/REPORT.md)。

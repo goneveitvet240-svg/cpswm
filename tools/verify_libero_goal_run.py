@@ -31,6 +31,23 @@ def require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
+def validate_policy_claim(manifest: dict, summary: dict, inference_count: int) -> None:
+    policy = manifest["arguments"]["policy"]
+    require(policy in {"smoke", "pi05-local"}, "unknown policy implementation")
+    claim = summary["pi05_inference_executed"]
+    require(type(claim) is bool, "policy claim must be boolean")
+    require(claim == (policy == "pi05-local" and inference_count > 0), "policy claim mismatch")
+    if policy == "pi05-local":
+        for field in ("pi05_checkpoint_manifest_sha256", "tokenizer_sha256"):
+            value = manifest.get(field)
+            require(
+                isinstance(value, str)
+                and len(value) == 64
+                and all(c in "0123456789abcdef" for c in value),
+                "pi05 claim lacks model provenance",
+            )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("run", type=Path)
@@ -53,6 +70,10 @@ def main() -> None:
         "tools/run_libero_goal_loop.py",
         "tools/simulation_goal_worker.py",
     }
+    memory_replay = manifest["arguments"].get("memory_replay", "full")
+    require(memory_replay in {"full", "suffix"}, "unknown memory replay implementation")
+    if memory_replay == "suffix":
+        required.add("src/cpswm/simulation/suffix_memory.py")
     require(required <= set(manifest["sources"]), "source manifest is incomplete")
     for path, expected in manifest["sources"].items():
         committed = subprocess.check_output(["git", "show", f"{sha}:{path}"], cwd=ROOT)
@@ -81,7 +102,10 @@ def main() -> None:
     )
     require(controlled == expected_sources, "controlled history differs from declared fixture")
     controller = MemoryGoalController(
-        fixture["episode_id"], fixture["catalogue"], manifest["arguments"]["arm"]
+        fixture["episode_id"],
+        fixture["catalogue"],
+        manifest["arguments"]["arm"],
+        memory_replay=memory_replay,
     )
     actual_steps = []
     actual_visual = {}
@@ -200,6 +224,7 @@ def main() -> None:
     require(summary["status"] == "GOAL_LOOP_COMPLETE", "probe did not complete")
     require(len(actual_steps) == summary["steps"] == 7, "incomplete physical segment count")
     require(len(inferred) == 2 and feedback_count == 2, "missing model/feedback segments")
+    validate_policy_claim(manifest, summary, len(inferred))
     require(len(actual_visual) == summary["sam_frames"] == 3, "missing visual receipts")
     expected_history = [o.source_id for o in history]
     if not manifest["arguments"]["no_correction"]:
@@ -227,6 +252,9 @@ def main() -> None:
                 "source_sha": sha,
                 "steps": len(actual_steps),
                 "inferences": len(inferred),
+                "policy": manifest["arguments"]["policy"],
+                "pi05_inference_executed": summary["pi05_inference_executed"],
+                "memory_replay": memory_replay,
                 "feedback_segments": feedback_count,
                 "goal_changed": summary["goal_changed"],
                 "prompts": summary["prompts"],

@@ -1,3 +1,9 @@
+# 2026-10-23 A开工：官方 π0.5 完整任务
+
+分支 `codex/pc-a-pi05-full-episode-20261023`，base `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`。已fetch核对远端及B状态，独立工作树 `cpswm-full-episode`。固定官方正确指令 table_center/init0/seed7，220步上限、5步重规划、首次成功停止。[协议](../reviews/pc_a/pi05_full_episode_2026-10-23/PROTOCOL.md)。本地进行中，源码/测试/结果待补；不声称CPSWM收益，不自动合并。
+
+---
+
 # 2026-10-23 A开工：两步历史原生目标枚举与bootstrap对照
 
 分支 `codex/pc-a-short-history-reference-20261023`，base/开工源码 `31477f8fd36e44bbaa19125802c7e509a9b8360b`（PR120）。已 fetch；独立工作树 `.local/simulation-stack/cpswm-short-history`。使用既有validation 7/8前两次付费位置观测，冻结同输入，完整枚举两步路径，比较同目标24粒子的两种既有采样与bootstrap proposal。[协议](../reviews/pc_a/short_history_reference_2026-10-23/PROTOCOL.md)。

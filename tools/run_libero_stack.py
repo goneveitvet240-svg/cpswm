@@ -48,6 +48,7 @@ def main() -> None:
     p.add_argument("--initial-state", type=int, default=0)
     p.add_argument("--seed", type=int, default=7)
     p.add_argument("--steps", type=int, default=10)
+    p.add_argument("--stop-on-success", action="store_true")
     p.add_argument("--policy", choices=("smoke", "pi05-local", "pi05-websocket"), default="smoke")
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8000)
@@ -154,11 +155,13 @@ def main() -> None:
 
                 policy = BoundedWebsocketPolicy(args.host, args.port)
         queue = ActionChunks(5)
+        success_step = None
         writer = imageio.get_writer(args.output / "rollout.mp4", fps=10)
         for tick in range(args.steps + 1):
             rgb = np.ascontiguousarray(obs["agentview_image"][::-1, ::-1])
             writer.append_data(rgb)
-            if tick % 5 == 0 or tick == args.steps:
+            terminal = tick == args.steps or (args.stop_on_success and success_step is not None)
+            if tick % 5 == 0 or terminal:
                 entry = {"tick": tick}
                 if tracker is not None:
                     event, mask = tracker.observe(rgb, episode, tick)
@@ -179,13 +182,17 @@ def main() -> None:
                 logs.append(entry)
                 # Persist each sensor receipt before issuing another action.
                 save(args.output / "journal.json", logs)
-            if tick == args.steps:
+            if terminal:
+                imageio.imwrite(args.output / "last_frame.png", rgb)
+                np.savez_compressed(args.output / "final_observation.npz", **obs)
                 break
             queue.bind(revision, env.prompt)
             if not queue.actions:
                 t0 = time.monotonic()
                 print(f"{args.policy}: inference at tick {tick}", flush=True)
-                output = policy.infer(policy_input(obs, env.prompt))
+                inputs = policy_input(obs, env.prompt)
+                np.savez_compressed(args.output / f"policy_input_{tick:05d}.npz", **inputs)
+                output = policy.infer(inputs)
                 queue.load(output)
                 np.savez_compressed(
                     args.output / f"policy_output_{tick:05d}.npz", actions=output["actions"]
@@ -203,6 +210,8 @@ def main() -> None:
                 save(args.output / "journal.json", logs)
             action = queue.pop(revision, env.prompt)
             obs = env.step(action)
+            if env.evaluator_success and success_step is None:
+                success_step = env.steps
             logs.append(
                 {
                     "tick": tick,
@@ -210,6 +219,7 @@ def main() -> None:
                     "action": action.tolist(),
                     "revision": revision,
                     "result": "simulator_step_returned",
+                    "task_success_evaluator_only": env.evaluator_success,
                     "eef_position_after": obs["robot0_eef_pos"].tolist(),
                     "gripper_position_after": obs["robot0_gripper_qpos"].tolist(),
                 }
@@ -232,6 +242,11 @@ def main() -> None:
                 "task": args.task,
                 "prompt": env.prompt,
                 "steps": env.steps,
+                "requested_steps": args.steps,
+                "first_success_step_evaluator_only": success_step,
+                "stop_reason": "success"
+                if args.stop_on_success and success_step is not None
+                else "step_limit",
                 "task_success_evaluator_only": env.evaluator_success,
                 "pi05_inference_executed": args.policy.startswith("pi05") and args.steps > 0,
                 "sam_frames": 0 if tracker is None else tracker.count,

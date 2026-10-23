@@ -1,6 +1,6 @@
 # 2026-10-23 A交付：两步全路径参考
 
-分支 `codex/pc-a-short-history-reference-20261023`，base `31477f8fd36e44bbaa19125802c7e509a9b8360b`，实际源码 `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`。8份参考、24采样比较；每个两步参考220,320路径，24/24同动作，源绑定完整重放通过，21测试通过。[报告](../reviews/pc_a/short_history_reference_2026-10-23/REPORT.md)、[命令/原件](../reviews/pc_a/short_history_reference_2026-10-23/COMMANDS.md)。局部开发诊断；B独立/统一/科学验收待完成。不自动合并，草稿PR回执随后登记。
+分支 `codex/pc-a-short-history-reference-20261023`，base `31477f8fd36e44bbaa19125802c7e509a9b8360b`，实际源码 `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`。8份参考、24采样比较；每个两步参考220,320路径，24/24同动作，源绑定完整重放通过，10项本文件测试通过。[报告](../reviews/pc_a/short_history_reference_2026-10-23/REPORT.md)、[命令/原件](../reviews/pc_a/short_history_reference_2026-10-23/COMMANDS.md)。局部开发诊断；B独立/统一/科学验收待完成。不自动合并，草稿PR回执随后登记。
 
 ---
 

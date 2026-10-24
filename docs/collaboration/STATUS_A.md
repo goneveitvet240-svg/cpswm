@@ -1,3 +1,9 @@
+# 2026-10-24 A开工：E1/E2匹配收益诊断
+
+分支 `codex/pc-a-matched-value-diagnostic-20261024`，base `59a1af8ec038ded991324c1da62fe78400b8c810`。已fetch核对远端/双方状态，独立目录 `.local/simulation-stack/cpswm-matched-value`。[运行前协议](../reviews/pc_a/matched_value_2026-10-24/PROTOCOL.md)。固定公开证据、当前读出、原生/六势消融/来源统计/时间简约/匹配AMG，沿用已开放开发数据与既有终点。E2补强可修订简约对照；不宣称自然输入、主动闭环、确认性收益或全范围完成。本地进行中，实际源码/证据/测试待补；不自动合并。
+
+---
+
 # 2026-10-24 交付回执：草稿 PR122
 
 [完整π0.5任务与物理重放 PR122](https://github.com/goneveitvet240-svg/cpswm/pull/122) 已推送，堆叠PR121，未合并。运行源码 `611e9dbee986a7fe6a2af33661d7a7d284402d03`，核验 `2c2b6035382501dee7cf10a7a61a90c7ac82873a`，报告与83份清单文件 `a872a6d0d4421c20dc5e2bf16093c66cf1d4961a`。118步首次官方成功，24推理/输入、119帧、动作物理重放一致；33测试通过、2个结构自洽篡改由物理拒绝；全部83文件hash复核一致。

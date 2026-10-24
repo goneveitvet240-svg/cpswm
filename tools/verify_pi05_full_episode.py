@@ -74,10 +74,16 @@ def main() -> None:
     summary = json.loads((run / "summary.json").read_text())
     journal = json.loads((run / "journal.json").read_text())
     actions, inferences = validate_records(manifest, summary, journal)
+    required_sources = list((root / "src/cpswm/simulation").rglob("*.py")) + [
+        root / "tools" / name
+        for name in ("run_libero_stack.py", "simulation_python.py", "simulation_memory_worker.py")
+    ]
+    assert set(manifest["sources"]) == {str(p.relative_to(root)) for p in required_sources}
     for path, digest in manifest["sources"].items():
         assert not Path(path).is_absolute() and ".." not in Path(path).parts
         data = subprocess.check_output(["git", "show", f"{manifest['code_sha']}:{path}"], cwd=root)
         assert hashlib.sha256(data).hexdigest() == digest, path
+        assert hashlib.sha256((root / path).read_bytes()).hexdigest() == digest, path
     for name, vendor in manifest["vendor"].items():
         assert not vendor["status"]
         current = subprocess.check_output(

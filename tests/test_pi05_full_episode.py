@@ -109,3 +109,76 @@ def test_reject_inconsistent_complete_episode_claims(attack):
         summary["scientific_acceptance"] = True
     with pytest.raises(AssertionError):
         validate_records(manifest, summary, journal)
+
+
+@pytest.mark.parametrize("success_step", [1, 5, 6, None])
+def test_runner_stops_at_first_success_and_preserves_final_frame(
+    monkeypatch, tmp_path, success_step
+):
+    import json
+
+    import numpy as np
+    import run_libero_stack as runner
+
+    class FakeEnvironment:
+        prompt = "put bowl on plate"
+        steps = 0
+        evaluator_success = False
+
+        def __init__(self, *args):
+            self.observation = {
+                "agentview_image": np.zeros((256, 256, 3), dtype=np.uint8),
+                "robot0_eef_pos": np.zeros(3),
+                "robot0_gripper_qpos": np.zeros(2),
+            }
+
+        def step(self, action):
+            assert action.shape == (7,)
+            self.steps += 1
+            self.evaluator_success = self.steps == success_step
+            self.observation["robot0_eef_pos"][0] = self.steps
+            return self.observation
+
+        def close(self):
+            pass
+
+    class Writer:
+        count = 0
+
+        def append_data(self, frame):
+            self.count += 1
+
+        def close(self):
+            pass
+
+    writer = Writer()
+    monkeypatch.setattr(runner, "LiberoEnvironment", FakeEnvironment)
+    monkeypatch.setattr(runner, "configure_libero", lambda *args: None)
+    monkeypatch.setattr(runner.platform, "platform", lambda: "test-platform")
+    monkeypatch.setattr(runner, "policy_input", lambda obs, prompt: {"prompt": prompt})
+    monkeypatch.setattr(runner.imageio, "get_writer", lambda *args, **kwargs: writer)
+    monkeypatch.setattr(
+        runner.subprocess,
+        "check_output",
+        lambda args, **kwargs: "" if "status" in args else "a" * 40,
+    )
+    output = tmp_path / "episode"
+    monkeypatch.setattr(
+        runner.sys, "argv", ["run", "--steps", "12", "--stop-on-success", "--output", str(output)]
+    )
+    runner.main()
+    summary = json.loads((output / "summary.json").read_text())
+    expected = success_step or 12
+    assert summary["steps"] == expected
+    assert summary["first_success_step_evaluator_only"] == success_step
+    assert summary["stop_reason"] == ("success" if success_step else "step_limit")
+    assert writer.count == expected + 1
+    assert (output / "last_frame.png").is_file()
+    with np.load(output / "final_observation.npz") as final:
+        assert final["robot0_eef_pos"][0] == expected
+    journal = json.loads((output / "journal.json").read_text())
+    actions = [x for x in journal if x.get("event") == "executed_action"]
+    assert len(actions) == expected
+    assert [x["tick"] for x in journal if x.get("event") == "policy_inference"] == list(
+        range(0, expected, 5)
+    )

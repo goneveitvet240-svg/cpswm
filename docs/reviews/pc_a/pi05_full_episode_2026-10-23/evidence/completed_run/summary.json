@@ -1,0 +1,25 @@
+{
+  "status": "POLICY_ROLLOUT_COMPLETE",
+  "task": "table_center",
+  "prompt": "pick up the black bowl from table center and place it on the plate",
+  "steps": 118,
+  "requested_steps": 220,
+  "first_success_step_evaluator_only": 118,
+  "stop_reason": "success",
+  "task_success_evaluator_only": true,
+  "pi05_inference_executed": true,
+  "sam_frames": 0,
+  "native_memory_connected": false,
+  "cancelled_actions": 0,
+  "elapsed_seconds": 1031.4928605426103,
+  "source_unchanged": true,
+  "limitations": [
+    "single episode engineering run",
+    "SAM propagation is prediction, not a fresh independent sighting",
+    "no automatic visual person attribution or cross-session identity",
+    "image regions are not calibrated physical places",
+    "official task prompt; native memory has not selected a new manipulation goal",
+    "task success is evaluation only, not a visual success receipt"
+  ],
+  "scientific_acceptance": false
+}

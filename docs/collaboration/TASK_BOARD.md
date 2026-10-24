@@ -1,6 +1,20 @@
-# 2026-10-23 A开工：官方 π0.5 完整任务
+# 2026-10-24 A交付：π0.5完整任务118步成功
 
-分支 `codex/pc-a-pi05-full-episode-20261023`，base `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`。已fetch核对远端及B状态，独立工作树 `cpswm-full-episode`。固定官方正确指令 table_center/init0/seed7，220步上限、5步重规划、首次成功停止。[协议](../reviews/pc_a/pi05_full_episode_2026-10-23/PROTOCOL.md)。本地进行中，源码/测试/结果待补；不声称CPSWM收益，不自动合并。
+分支 `codex/pc-a-pi05-full-episode-20261023`，base `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`。实际运行 `611e9dbee986a7fe6a2af33661d7a7d284402d03`，核验 `2c2b6035382501dee7cf10a7a61a90c7ac82873a`。官方table_center/init0/seed7，118动作/24推理首次成功，全部动作物理、24输入、119视频帧重放核验通过；33项测试通过。原版代码/权重+本地推理适配，固定官方目标，本运行未启用CPSWM目标选择，不声称记忆收益。[报告](../reviews/pc_a/pi05_full_episode_2026-10-23/REPORT.md)、[源码位置](../reviews/pc_a/pi05_full_episode_2026-10-23/ENTRY_MAP.md)、[复现](../reviews/pc_a/pi05_full_episode_2026-10-23/COMMANDS.md)。首次中断/后台未启动单独留档。
+
+完整E0–E6范围不变；E1/E3/E4/E5确认性矩阵、E6多目标、B独立复核与统一/科学验收待完成。用户最新“继续”后完成本次任务，不把跨日墙钟时间称为连续12小时计算。草稿PR回执随后登记，不自动合并。
+
+---
+
+# 2026-10-23 交付回执：草稿 PR121
+
+[两步全路径参考 PR121](https://github.com/goneveitvet240-svg/cpswm/pull/121) 已推送，堆叠 PR120，未合并。实际源码 `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`；原件报告 `45c685a`，本文件10测试计数澄清 `ee27e74`。完整源绑定重放通过；B独立复核和科学验收待完成。[报告](../reviews/pc_a/short_history_reference_2026-10-23/REPORT.md)。
+
+---
+
+# 2026-10-23 A交付：两步全路径参考
+
+分支 `codex/pc-a-short-history-reference-20261023`，base `31477f8fd36e44bbaa19125802c7e509a9b8360b`，实际源码 `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`。8份参考、24采样比较；每个两步参考220,320路径，24/24同动作，源绑定完整重放通过，10项本文件测试通过。[报告](../reviews/pc_a/short_history_reference_2026-10-23/REPORT.md)、[命令/原件](../reviews/pc_a/short_history_reference_2026-10-23/COMMANDS.md)。局部开发诊断；B独立/统一/科学验收待完成。不自动合并，草稿PR回执随后登记。
 
 ---
 

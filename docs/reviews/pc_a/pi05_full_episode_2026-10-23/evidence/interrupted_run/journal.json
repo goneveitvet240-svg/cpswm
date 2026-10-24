@@ -1,0 +1,549 @@
+[
+  {
+    "tick": 0
+  },
+  {
+    "tick": 0,
+    "event": "policy_inference",
+    "seconds": 132.7604947919026,
+    "policy": "pi05-local",
+    "prompt": "pick up the black bowl from table center and place it on the plate",
+    "revision": "task-instruction-only"
+  },
+  {
+    "tick": 0,
+    "event": "executed_action",
+    "action": [
+      -0.0034566450569630813,
+      0.0005312112648486744,
+      0.009224558388471582,
+      -0.0007374238562533608,
+      -0.004114550625088198,
+      -6.154417634052223e-05,
+      -0.9997349314317703
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.20935898707129041,
+      -0.004053694005927639,
+      1.185075323347033
+    ],
+    "gripper_position_after": [
+      0.03884302026267503,
+      -0.03884710103915502
+    ]
+  },
+  {
+    "tick": 1,
+    "event": "executed_action",
+    "action": [
+      0.014585466768681887,
+      0.012629401626646497,
+      0.011583202411055482,
+      -0.0007171730695018225,
+      -0.003805523132605071,
+      0.0008265410977723042,
+      -1.0000405230724811
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.20927148605532003,
+      -0.004019484705820612,
+      1.1852060648782996
+    ],
+    "gripper_position_after": [
+      0.0389140676148128,
+      -0.03891281327807805
+    ]
+  },
+  {
+    "tick": 2,
+    "event": "executed_action",
+    "action": [
+      0.06168261274784792,
+      0.0395527390199899,
+      0.018905513277888253,
+      -0.00041341126822877494,
+      -0.0011517637718169993,
+      0.002025454709681296,
+      -1.0002425425073505
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.2089330678660626,
+      -0.0037608177353234866,
+      1.185328911032514
+    ],
+    "gripper_position_after": [
+      0.038962618805085954,
+      -0.0389594777994527
+    ]
+  },
+  {
+    "tick": 3,
+    "event": "executed_action",
+    "action": [
+      0.16343150877410162,
+      0.09768719013977045,
+      0.03858710094523421,
+      9.674984790074281e-05,
+      -0.00044479301156061246,
+      0.0033772337282813314,
+      -0.998419421394974
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.20792806932431657,
+      -0.0030210272464164245,
+      1.1854555441298869
+    ],
+    "gripper_position_after": [
+      0.03900820668548328,
+      -0.039003024675153035
+    ]
+  },
+  {
+    "tick": 4,
+    "event": "executed_action",
+    "action": [
+      0.32261525564432125,
+      0.16929976534640778,
+      0.06240125998854629,
+      -0.0012375129910294491,
+      -0.0003551147727915427,
+      0.0025030535355585193,
+      -1.0014678887078763
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.20569565341830928,
+      -0.0015468036766212038,
+      1.1855672695165478
+    ],
+    "gripper_position_after": [
+      0.03905232097911729,
+      -0.039044195154139726
+    ]
+  },
+  {
+    "tick": 5
+  },
+  {
+    "tick": 5,
+    "event": "policy_inference",
+    "seconds": 71.4238343341276,
+    "policy": "pi05-local",
+    "prompt": "pick up the black bowl from table center and place it on the plate",
+    "revision": "task-instruction-only"
+  },
+  {
+    "tick": 5,
+    "event": "executed_action",
+    "action": [
+      0.3333063828838466,
+      0.16630522972321504,
+      0.10100932061839107,
+      -0.0020309028009910246,
+      0.0002575402995910192,
+      0.0022493838295065127,
+      -0.9997310579027832
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.2026433021118431,
+      0.00038957457404826363,
+      1.1858083844905836
+    ],
+    "gripper_position_after": [
+      0.03909367798316673,
+      -0.03908445934619519
+    ]
+  },
+  {
+    "tick": 6,
+    "event": "executed_action",
+    "action": [
+      0.5020485985250472,
+      0.23468741693758965,
+      0.12119953245508674,
+      -0.00771436164266999,
+      0.002020324528774653,
+      -0.002656983419088349,
+      -0.9988207785907984
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.198490258981255,
+      0.002771122146238787,
+      1.1862957052168688
+    ],
+    "gripper_position_after": [
+      0.0391339794948584,
+      -0.03912227504511195
+    ]
+  },
+  {
+    "tick": 7,
+    "event": "executed_action",
+    "action": [
+      0.6730762119200825,
+      0.3127910638096332,
+      0.13673670468628396,
+      -0.019743069543260106,
+      0.00927300247687271,
+      -0.011360855541874215,
+      -0.9980727107542455
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.1927078190622615,
+      0.005898298978734666,
+      1.1866931801664835
+    ],
+    "gripper_position_after": [
+      0.03917315332763586,
+      -0.039157861991096186
+    ]
+  },
+  {
+    "tick": 8,
+    "event": "executed_action",
+    "action": [
+      0.7918868742984532,
+      0.3531886273113489,
+      0.1407351923620701,
+      -0.028294715832553566,
+      0.016857884718272514,
+      -0.016426558131993424,
+      -0.9977631263990402
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.18542421607264764,
+      0.00974786611855795,
+      1.1868712949007596
+    ],
+    "gripper_position_after": [
+      0.03921062426969916,
+      -0.03919193986187102
+    ]
+  },
+  {
+    "tick": 9,
+    "event": "executed_action",
+    "action": [
+      0.872881041368961,
+      0.3621753920369146,
+      0.12708535994732384,
+      -0.029947024373585332,
+      0.01962922012539453,
+      -0.014226373089971572,
+      -0.9995842809505463
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.17688077927438206,
+      0.014087871149076276,
+      1.1868407716108758
+    ],
+    "gripper_position_after": [
+      0.03924621666974302,
+      -0.03922482476024216
+    ]
+  },
+  {
+    "tick": 10
+  },
+  {
+    "tick": 10,
+    "event": "policy_inference",
+    "seconds": 59.77678016666323,
+    "policy": "pi05-local",
+    "prompt": "pick up the black bowl from table center and place it on the plate",
+    "revision": "task-instruction-only"
+  },
+  {
+    "tick": 10,
+    "event": "executed_action",
+    "action": [
+      0.7965953238049147,
+      0.33681879528689374,
+      0.14707645748925202,
+      -0.031801611873465335,
+      0.02026329728812365,
+      -0.03194775081991055,
+      -0.9977867251294852
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.16793420877555634,
+      0.018456209026750763,
+      1.1869445661226854
+    ],
+    "gripper_position_after": [
+      0.0392792175594692,
+      -0.03925736565779126
+    ]
+  },
+  {
+    "tick": 11,
+    "event": "executed_action",
+    "action": [
+      0.8401846523108479,
+      0.33840877577662454,
+      0.12086398799538611,
+      -0.032574308339918936,
+      0.02065643599150907,
+      -0.026769993181279678,
+      -1.0009956757279634
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.15865853990733333,
+      0.022802373571050607,
+      1.1872801983541659
+    ],
+    "gripper_position_after": [
+      0.03931100189895627,
+      -0.03928831517455255
+    ]
+  },
+  {
+    "tick": 12,
+    "event": "executed_action",
+    "action": [
+      0.8880323188158868,
+      0.32120911840844135,
+      0.0932573832288981,
+      -0.03238469566065154,
+      0.020633269635395662,
+      -0.01985248665554773,
+      -0.9997619865419268
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.14874262282413023,
+      0.027133406991644085,
+      1.1874316340452138
+    ],
+    "gripper_position_after": [
+      0.03934104294177924,
+      -0.03931831843480446
+    ]
+  },
+  {
+    "tick": 13,
+    "event": "executed_action",
+    "action": [
+      0.9237652285782098,
+      0.2931568968410492,
+      0.06184324832296362,
+      -0.029634808212206515,
+      0.019310113492402192,
+      -0.013085794461594608,
+      -1.0016459518557788
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.1382092110784398,
+      0.03128126958390243,
+      1.1872533010966808
+    ],
+    "gripper_position_after": [
+      0.0393692857435508,
+      -0.03934754648528283
+    ]
+  },
+  {
+    "tick": 14,
+    "event": "executed_action",
+    "action": [
+      0.9405270879322288,
+      0.2541597437868117,
+      0.02960181698691844,
+      -0.02535099615507716,
+      0.017432656844927674,
+      -0.008384956984347935,
+      -0.9990570638590157
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.12719628414319534,
+      0.035086760296257395,
+      1.186722489337
+    ],
+    "gripper_position_after": [
+      0.039395709485831217,
+      -0.03937613143726612
+    ]
+  },
+  {
+    "tick": 15
+  },
+  {
+    "tick": 15,
+    "event": "policy_inference",
+    "seconds": 42.585939625278115,
+    "policy": "pi05-local",
+    "prompt": "pick up the black bowl from table center and place it on the plate",
+    "revision": "task-instruction-only"
+  },
+  {
+    "tick": 15,
+    "event": "executed_action",
+    "action": [
+      0.9247584257744549,
+      0.24251870242071139,
+      0.02410997210037702,
+      -0.03261427579319873,
+      0.012457655757808994,
+      -0.011081487073687113,
+      -1.001330348632455
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.1159430313010455,
+      0.03845236013783929,
+      1.1860516241419923
+    ],
+    "gripper_position_after": [
+      0.039420564846323176,
+      -0.039403929435041826
+    ]
+  },
+  {
+    "tick": 16,
+    "event": "executed_action",
+    "action": [
+      0.9309900052310823,
+      0.17179674128556244,
+      -0.009230610367894188,
+      -0.0237768141421347,
+      0.00741112932954302,
+      -0.007338757964798187,
+      -1.0002277635044456
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.10451224003021241,
+      0.041339978651595624,
+      1.185272614702459
+    ],
+    "gripper_position_after": [
+      0.03944378885241022,
+      -0.039431104653502524
+    ]
+  },
+  {
+    "tick": 17,
+    "event": "executed_action",
+    "action": [
+      0.9201731720787284,
+      0.07327380550003049,
+      -0.05370729108178618,
+      -0.00748363696678718,
+      0.0038726303261494566,
+      -0.005243584941993923,
+      -1.0013910140556692
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.09295666036309534,
+      0.043479770593682944,
+      1.1841514698231006
+    ],
+    "gripper_position_after": [
+      0.039465067254609264,
+      -0.039458068286479894
+    ]
+  },
+  {
+    "tick": 18,
+    "event": "executed_action",
+    "action": [
+      0.8911958506860135,
+      0.015604743406414934,
+      -0.11159262115472557,
+      -0.001385365099124597,
+      0.001780890106978461,
+      -0.004931248460879972,
+      -1.002171321571946
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.08145883247981402,
+      0.04472062658205926,
+      1.182525081082514
+    ],
+    "gripper_position_after": [
+      0.03948505894852175,
+      -0.03948425468549713
+    ]
+  },
+  {
+    "tick": 19,
+    "event": "executed_action",
+    "action": [
+      0.8586808918071983,
+      0.0025316143499611865,
+      -0.17904197395688304,
+      -0.0008185948696153994,
+      0.0007926538806363459,
+      -0.004615337680102832,
+      -1.0026926389808655
+    ],
+    "revision": "task-instruction-only",
+    "result": "simulator_step_returned",
+    "task_success_evaluator_only": false,
+    "eef_position_after": [
+      -0.07016184006260383,
+      0.04532215678785306,
+      1.1802485825413067
+    ],
+    "gripper_position_after": [
+      0.039504716652231514,
+      -0.039508798441994106
+    ]
+  },
+  {
+    "tick": 20
+  }
+]

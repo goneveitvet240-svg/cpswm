@@ -1,0 +1,19 @@
+{
+  "scope": "partial coherent-record corruption; not arbitrary forgery authentication",
+  "cases": [
+    {
+      "case": "early_success",
+      "record_contract": "accepted",
+      "physics_replay": "rejected",
+      "expected_failure_site": "env.evaluator_success == item",
+      "exit_code": 1
+    },
+    {
+      "case": "changed_action_and_policy_output",
+      "record_contract": "accepted",
+      "physics_replay": "rejected",
+      "expected_failure_site": "Mismatched elements: 3 / 3",
+      "exit_code": 1
+    }
+  ]
+}

@@ -1,3 +1,23 @@
+# 2026-10-23 交付回执：草稿 PR121
+
+[两步全路径参考 PR121](https://github.com/goneveitvet240-svg/cpswm/pull/121) 已推送，堆叠 PR120，未合并。实际源码 `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`；原件报告 `45c685a`，本文件10测试计数澄清 `ee27e74`。完整源绑定重放通过；B独立复核和科学验收待完成。[报告](../reviews/pc_a/short_history_reference_2026-10-23/REPORT.md)。
+
+---
+
+# 2026-10-23 A交付：两步全路径参考
+
+分支 `codex/pc-a-short-history-reference-20261023`，base `31477f8fd36e44bbaa19125802c7e509a9b8360b`，实际源码 `ea0d6f231ba9971d75131e9fa9fc4820ab4452cc`。8份参考、24采样比较；每个两步参考220,320路径，24/24同动作，源绑定完整重放通过，10项本文件测试通过。[报告](../reviews/pc_a/short_history_reference_2026-10-23/REPORT.md)、[命令/原件](../reviews/pc_a/short_history_reference_2026-10-23/COMMANDS.md)。局部开发诊断；B独立/统一/科学验收待完成。不自动合并，草稿PR回执随后登记。
+
+---
+
+# 2026-10-23 A开工：两步历史原生目标枚举与bootstrap对照
+
+分支 `codex/pc-a-short-history-reference-20261023`，base/开工源码 `31477f8fd36e44bbaa19125802c7e509a9b8360b`（PR120）。已 fetch；独立工作树 `.local/simulation-stack/cpswm-short-history`。使用既有validation 7/8前两次付费位置观测，冻结同输入，完整枚举两步路径，比较同目标24粒子的两种既有采样与bootstrap proposal。[协议](../reviews/pc_a/short_history_reference_2026-10-23/PROTOCOL.md)。
+
+当前本地进行中；测试/实际代码SHA待补。原生projection目标的精确枚举与原始生成模型正确性分开，完整E0–E6范围保留。B独立复核/统一验收待完成，不自动合并。
+
+---
+
 # 2026-10-23 交付回执：草稿 PR120
 
 [后缀重放草稿 PR120](https://github.com/goneveitvet240-svg/cpswm/pull/120) 已创建并推送，堆叠 PR119，未合并。成本运行 `8e9d8da9276320f7d747bb4e02fb97bd2e936b5b`、最终 smoke/审计 `4efcd4c4b52a9030c6714d350030c54aa8b7ecde`、报告/81份原件 `6a0980e011245319b86f1af36e9bf63a9035add6`。完整结果与内存代价见[报告](../reviews/pc_a/suffix_replay_2026-10-23/REPORT.md)。B按实际SHA独立复核，统一/全仓/科学验收及共享集成待完成。

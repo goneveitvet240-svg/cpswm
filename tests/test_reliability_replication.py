@@ -71,3 +71,28 @@ def test_seed_clusters_and_net_benefit_sign():
     assert result["independent_seed_groups"] == 6
     assert result["descriptive_bootstrap_total_95pct"] == [-24, -24]
     assert result["two_sided_cluster_sign_flip_fraction"] == 2 / 64
+
+
+def test_regenerated_source_rejects_complete_self_consistent_forgery(records):
+    from verify_reliability_evidence import validate_source
+
+    row = copy.deepcopy(records[0])
+    original_input = row["input_sha256"]
+    original_truth = copy.deepcopy(row["truth"])
+    validate_source(row, original_input, original_truth)
+    row["input"]["detection_confidence"] = 0.4123
+    row["input_sha256"] = content_sha256(row["input"])
+    assert verify_row(row) < 1e-12
+    with pytest.raises(AssertionError, match="regenerated source"):
+        validate_source(row, original_input, original_truth)
+
+
+def test_summary_cannot_replace_raw_net_benefit_counts():
+    from verify_reliability_evidence import validate_summary
+
+    totals = {CANDIDATE: 3, "baseline": 1}
+    summary = {"errors": dict(totals), "paired": {"baseline": {"net_fewer_errors": -2}}}
+    validate_summary(totals, summary["paired"], summary)
+    summary["errors"][CANDIDATE] = 0
+    with pytest.raises(AssertionError, match="aggregate errors"):
+        validate_summary(totals, summary["paired"], summary)

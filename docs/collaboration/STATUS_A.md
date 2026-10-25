@@ -1,3 +1,11 @@
+# 2026-10-25 A开工：五步有效协同
+
+用户已授权五步：回归误例溯源、目标/采样分离修复、语义修订传播、匹配动作收益与新种子复核、π0.5目标匹配执行。分支 `codex/pc-a-five-stage-synergy-20261025`，base `dfcfbb2b78cd06865923eda916700c3abee5e3e9`，独立工作树 `.local/simulation-stack/cpswm-synergy`。fetch成功；共享集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，B远端 `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`；未发现旧实验/π0.5运行进程。
+
+[运行前协议](../reviews/pc_a/five_stage_synergy_2026-10-25/PROTOCOL.md)。当前本地进行中，实际源码/测试/结果待补；默认模型、正式科学阈值和完整研究范围不自动改变。下一步先保存5个误例的完整父历史/制度/RB路径，再单独核验候选修复与执行接口。PR125继承类型债务、B/全仓/统一/科学验收仍开放。
+
+---
+
 # 2026-10-25 A交付：联合模型三个问题首轮完成
 
 分支 `codex/pc-a-joint-three-questions-20261025`，base `fbec4e9c2103b8bc505f261112d37313085a4cae`（PR124），实际运行/测试/核验源码 `d1bb6442037fc90cfe2fff22410f7f05e85d6b0d`。开工已fetch；独立目录 `.local/simulation-stack/cpswm-three-questions`，生产src/模型/先验/24粒子/v06默认均未改。共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。

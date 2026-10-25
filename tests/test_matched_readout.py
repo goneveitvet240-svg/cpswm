@@ -2,9 +2,16 @@
 
 import copy
 import itertools
+from types import SimpleNamespace
 
 import pytest
-from analyze_matched_readout import capture, decompose, fixed_mass_bound, paired_gap
+from analyze_matched_readout import (
+    capture,
+    decompose,
+    fixed_mass_bound,
+    observed_locations,
+    paired_gap,
+)
 from run_matched_value import dataset_for, make_state, state_audit
 
 from cpswm.contracts import ProjectTwoDatasetSplit as Split
@@ -130,3 +137,10 @@ def test_actual_native_readout_reconstructs_without_state_changes():
         assert result["reconstruction_error"] < 1e-10
         assert before == state_audit(state)
         state.feedback(step)
+
+
+def test_public_prefix_counts_before_only_observations():
+    step = SimpleNamespace(before=SimpleNamespace(detected_location_id="left"), after=None)
+    assert observed_locations(step) == {"left"}
+    step.after = SimpleNamespace(detected_location_id="right")
+    assert observed_locations(step) == {"left", "right"}

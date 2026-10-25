@@ -242,6 +242,15 @@ def paired_gap(joint, ablation):
     }
 
 
+def observed_locations(step):
+    """Public prefix includes both endpoint observations, not just after frames."""
+    return {
+        str(observation.detected_location_id)
+        for observation in (step.before, step.after)
+        if observation is not None and observation.detected_location_id is not None
+    }
+
+
 def summarize(points):
     result = {"points": len(points), "arms": {}, "errors": []}
     for method in ("native_joint", "native_six_potential_ablation"):
@@ -370,8 +379,7 @@ def collect(output, quick=False):
                     previous_habit = habit
                     habit_change_step = index
                 location = None if step.after is None else step.after.detected_location_id
-                if location is not None:
-                    seen.add(str(location))
+                seen.update(observed_locations(step))
                 points.append(
                     {
                         "condition": condition,

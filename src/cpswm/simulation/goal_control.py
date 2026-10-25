@@ -20,6 +20,7 @@ from cpswm.simulation.contracts import (
     digest,
 )
 from cpswm.simulation.memory import SimulationMemory
+from cpswm.system.evaluation_operations.structure_two_memory_action import NativeGoalMemory
 
 
 def observation_from_payload(body: dict[str, Any]) -> Observation:
@@ -85,6 +86,7 @@ class MemoryGoalController:
         root: Path | None = None,
         *,
         memory_replay: str = "full",
+        native_memory: NativeGoalMemory | None = None,
     ) -> None:
         if len(catalogue) < 2 or any(
             not isinstance(k, str) or not k.strip() or not isinstance(v, str) or not v.strip()
@@ -101,7 +103,13 @@ class MemoryGoalController:
 
             memory_class = SuffixReplayMemory
         self._catalogue = dict(catalogue)
-        self.memory = memory_class(episode, tuple(catalogue), arm, root)
+        if native_memory is not None and set(native_memory.bindings.values()) != set(catalogue):
+            raise ValueError("native bindings must match the execution catalogue")
+        self.memory: SimulationMemory | NativeGoalMemory = (
+            memory_class(episode, tuple(catalogue), arm, root)
+            if native_memory is None
+            else native_memory
+        )
         self.visual = memory_class(
             episode, ("image_left", "image_center", "image_right"), arm, root
         )
@@ -131,6 +139,8 @@ class MemoryGoalController:
             self.pending = None
 
     def observe_history(self, obs: Observation, now: int) -> None:
+        if isinstance(self.memory, NativeGoalMemory):
+            raise ValueError("native memory is updated through its source-owned runtime")
         self._admit_new_evidence(now)
         if obs.origin != "controlled_semantic_sensor" or obs.robot_generated:
             raise ValueError("semantic history requires explicit controlled provenance")
@@ -170,6 +180,10 @@ class MemoryGoalController:
 
     def plan(self, tick: int) -> dict[str, Any]:
         self._time(tick)
+        if isinstance(self.memory, NativeGoalMemory):
+            if self.step_ticks:
+                raise ValueError("settle the executed segment before replanning")
+            self._refresh(tick)
         if self.pending is not None:
             raise ValueError("a goal plan is already pending")
         distribution = self.memory.destination_distribution()
@@ -232,6 +246,10 @@ class MemoryGoalController:
             "pending_plan": None if self.pending is None else self.pending.payload(),
             "recorded_step_ticks": list(self.step_ticks),
             "feedback_status": "unknown" if self.visual.feedback else "not_executed",
-            "evidence_level": "controlled semantic history + separately admitted camera track",
+            "evidence_level": (
+                "live native posterior + explicit execution binding + separate camera track"
+                if isinstance(self.memory, NativeGoalMemory)
+                else "controlled semantic history + separately admitted camera track"
+            ),
             "scientific_acceptance": False,
         }

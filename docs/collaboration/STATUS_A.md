@@ -1,3 +1,11 @@
+# 2026-10-25 A开工：PR123读出和共同错误诊断
+
+分支 `codex/pc-a-matched-readout-diagnostic-20261025`，base/当前源码 `cc7c6f7566bbdfa611a79a096f5a4eb6d6fd7f04`，独立目录 `.local/simulation-stack/cpswm-matched-readout`。已fetch并核对A/B交接，PR123仍草稿、CI尚运行；共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。已读旧10月13日诊断，本批只把其问题在PR123最新固定证据上源绑定核实，增加固定解析质量的最坏排序界与15个共同错误的证据时序。
+
+[协议](../reviews/pc_a/matched_readout_2026-10-25/PROTOCOL.md)。不改生产模型/参数或研究范围，不以低ESS或阴性结果代替科学判定。当前本地进行中，测试/实际代码SHA/结果待补；B独立复核、统一/科学验收待完成。下一步实现只读分解和存档重算，保留全部正负路径。
+
+---
+
 # 2026-10-25 A交付：E1/E2固定证据强基线开发对照
 
 分支 `codex/pc-a-matched-value-diagnostic-20261024`，接续base `146d847c4346f7323af8de548d405b09fcbdbf82`，实际运行/测试源码 `ee356b2393c1786fc87083d079b2d8517aa31e6f`。本轮已fetch远端并保留完整范围。独立工作目录 `.local/simulation-stack/cpswm-matched-value`；生产src/先验/模型/24粒子/v06未改。

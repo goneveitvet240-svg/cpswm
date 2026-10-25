@@ -1,0 +1,4710 @@
+{
+  "reference_scope": "complete native two-step model projection; not generative truth",
+  "rows": [
+    {
+      "arm": "stateful_full_joint",
+      "depth": 1,
+      "episode": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+      "original": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25970673510805015,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.24676442163064996,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.24676442163064996,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.24676442163064996
+        },
+        "action_tv": 0.004130149175801748,
+        "candidate_support": 468,
+        "distinct_sample_paths": 24,
+        "ess": 19.37007837566519,
+        "latent_path_tv": 0.7706142761866073,
+        "marginals": {
+          "change_cause": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "actor": 0.2965016491472221,
+              "habit": 0.2566049373030703,
+              "identity": 0.1403127328639707,
+              "noise": 0.15842218502820504,
+              "observation": 0.06495263273052662,
+              "unresolved": 0.03320586292700509
+            },
+            "tv": 0.11666721834847855
+          },
+          "instance_association_key": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "identity_mismatch": 0.2667093327896571,
+              "target_instance": 0.5408512532649047,
+              "unknown_instance": 0.14243941394543813
+            },
+            "tv": 0.11030188833830094
+          },
+          "mechanism": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "direct_relocation": 0.3584311996505419,
+              "handoff_relocation": 0.49798435180224526,
+              "unknown_mechanism": 0.09358444854721285
+            },
+            "tv": 0.043570688029549894
+          },
+          "placement_actor": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "guest": 0.2913682679806141,
+              "owner": 0.33934785750129964,
+              "unknown_actor": 0.31928387451808615
+            },
+            "tv": 0.01983522007165823
+          },
+          "regime_decision": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "stay": 0.9500000000000001
+            },
+            "tv": 0.08636363636363674
+          },
+          "role_key": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "direct:guest": 0.1175596809582118,
+              "direct:owner": 0.0934324842477792,
+              "direct:unknown_actor": 0.14743903444455086,
+              "guest=>owner": 0.12492722486094376,
+              "guest=>unknown_actor": 0.04335201483740412,
+              "owner=>guest": 0.08159350316179174,
+              "owner=>unknown_actor": 0.12849282523613118,
+              "unknown:guest": 0.015948314992040306,
+              "unknown:owner": 0.07763613355517254,
+              "unknown_actor=>guest": 0.07626676886857027,
+              "unknown_actor=>owner": 0.04335201483740412
+            },
+            "tv": 0.16986462916799552
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.07328137462947797
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.028329991336693533
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.028329991336693533
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable"
+            ],
+            "reference": 0.005215027225966054,
+            "sampled": 0.033205862927005066
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 0.008704692400942507,
+            "sampled": 0.07390100700996058
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable"
+            ],
+            "reference": 0.005215027225966054,
+            "sampled": 0.033205862927005066
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0021933007706647907,
+            "sampled": 0.024383849515544932
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.010789298798460112,
+            "sampled": 0.05997459213041714
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.006879560650157134,
+            "sampled": 0.06495263273052662
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010390300414095962,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.006879560650157134,
+            "sampled": 0.038241488324387625
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable"
+            ],
+            "reference": 0.0014803231814725496,
+            "sampled": 0.08514081039872706
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0014803231814725496,
+            "sampled": 0.03291475403116615
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00226511283552061,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.003552404061457165,
+            "sampled": 0.04443027062816744
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|unresolved|stay|stable"
+            ],
+            "reference": 0.00031606225611915495,
+            "sampled": 0.03320586292700509
+          }
+        ],
+        "method": "independent_strata_v1",
+        "proposal_sha256": "7253bad2c1c5e43c4edce556b4272d0dafc9077d699c391b0c68123996384322",
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sampling_seed": "840bd6fe2d17b2ed512e517401707d83ebe31828290fcf942dd782347dc3a121",
+        "seconds": 0.005489582195878029,
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.7706142761866073
+      },
+      "posterior_parent": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25970673510805015,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.24676442163064996,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.24676442163064996,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.24676442163064996
+        },
+        "action_tv": 0.004130149175801748,
+        "distinct_sample_paths": 24,
+        "ess": 19.37007837566519,
+        "latent_path_tv": 0.7706142761866073,
+        "marginal_tv": {
+          "change_cause": 0.11666721834847855,
+          "instance_association_key": 0.11030188833830094,
+          "mechanism": 0.043570688029549894,
+          "placement_actor": 0.01983522007165823,
+          "regime_decision": 0.08636363636363674,
+          "role_key": 0.16986462916799552
+        },
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.04999999999999999,
+            "actor": 0.2965016491472221,
+            "habit": 0.2566049373030703,
+            "identity": 0.1403127328639707,
+            "noise": 0.15842218502820504,
+            "observation": 0.06495263273052662,
+            "unresolved": 0.03320586292700509
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.04999999999999999,
+            "identity_mismatch": 0.2667093327896571,
+            "target_instance": 0.5408512532649047,
+            "unknown_instance": 0.14243941394543813
+          },
+          "mechanism": {
+            "__unresolved__": 0.04999999999999999,
+            "direct_relocation": 0.3584311996505419,
+            "handoff_relocation": 0.49798435180224526,
+            "unknown_mechanism": 0.09358444854721285
+          },
+          "placement_actor": {
+            "__unresolved__": 0.04999999999999999,
+            "guest": 0.2913682679806141,
+            "owner": 0.33934785750129964,
+            "unknown_actor": 0.31928387451808615
+          },
+          "regime_decision": {
+            "__unresolved__": 0.04999999999999999,
+            "stay": 0.9500000000000001
+          },
+          "role_key": {
+            "__unresolved__": 0.04999999999999999,
+            "direct:guest": 0.1175596809582118,
+            "direct:owner": 0.0934324842477792,
+            "direct:unknown_actor": 0.14743903444455086,
+            "guest=>owner": 0.12492722486094376,
+            "guest=>unknown_actor": 0.04335201483740412,
+            "owner=>guest": 0.08159350316179174,
+            "owner=>unknown_actor": 0.12849282523613118,
+            "unknown:guest": 0.015948314992040306,
+            "unknown:owner": 0.07763613355517254,
+            "unknown_actor=>guest": 0.07626676886857027,
+            "unknown_actor=>owner": 0.04335201483740412
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.07328137462947797
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.028329991336693533
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.028329991336693533
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable"
+            ],
+            "reference": 0.005215027225966054,
+            "sampled": 0.033205862927005066
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 0.008704692400942507,
+            "sampled": 0.07390100700996058
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable"
+            ],
+            "reference": 0.005215027225966054,
+            "sampled": 0.033205862927005066
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0021933007706647907,
+            "sampled": 0.024383849515544932
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.010789298798460112,
+            "sampled": 0.05997459213041714
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.006879560650157134,
+            "sampled": 0.06495263273052662
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010390300414095962,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.006879560650157134,
+            "sampled": 0.038241488324387625
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable"
+            ],
+            "reference": 0.0014803231814725496,
+            "sampled": 0.08514081039872706
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0014803231814725496,
+            "sampled": 0.03291475403116615
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04335201483740412
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00226511283552061,
+            "sampled": 0.015948314992040306
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.003552404061457165,
+            "sampled": 0.04443027062816744
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|unresolved|stay|stable"
+            ],
+            "reference": 0.00031606225611915495,
+            "sampled": 0.03320586292700509
+          }
+        ],
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.7706142761866073
+      },
+      "reference": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25557658593224836,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.24814113802258386,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.24814113802258386,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.24814113802258386
+        },
+        "depth": 1,
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.2604772177001524,
+            "habit": 0.18641055389678776,
+            "identity": 0.13934632931162558,
+            "noise": 0.17002101805360514,
+            "observation": 0.17002101805360514,
+            "unresolved": 0.02372386298422398
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.377011221127958,
+            "target_instance": 0.4648232571298469,
+            "unknown_instance": 0.10816552174219494
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.33418224013762216,
+            "handoff_relocation": 0.5415550398317952,
+            "unknown_mechanism": 0.07426272003058274
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.3112034880522725,
+            "owner": 0.32759302389545525,
+            "unknown_actor": 0.3112034880522725
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "create": 3.282601145628387e-301,
+            "stay": 0.8636363636363629,
+            "unresolved": 0.08636363636363627
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.10927004952307875,
+            "direct:owner": 0.11564214109146467,
+            "direct:unknown_actor": 0.10927004952307875,
+            "guest=>owner": 0.09312631461405468,
+            "guest=>unknown_actor": 0.08882560265092142,
+            "owner=>guest": 0.08882560265092142,
+            "owner=>unknown_actor": 0.08882560265092142,
+            "unknown:guest": 0.024282233227350833,
+            "unknown:owner": 0.02569825357588105,
+            "unknown:unknown_actor": 0.024282233227350833,
+            "unknown_actor=>guest": 0.08882560265092142,
+            "unknown_actor=>owner": 0.09312631461405468
+          }
+        },
+        "numeric_zero_mass_paths": 0,
+        "posterior_trace": "exact-505d3813-83a3-016a-475e-f3eb0ca3d9da-stateful_full_joint-1.jsonl.gz",
+        "posterior_trace_sha256": "617582ae97b926b9a208ba990caa44e73c9e0a912fe8141575a10267badd8542",
+        "seconds_including_worlds_readout_and_trace": 0.01639795769006014,
+        "streamed_vs_native_readout_tv": 0.0,
+        "support_paths": 468,
+        "target_evaluations": 468,
+        "terminal": false,
+        "transition_evaluations": 468,
+        "unresolved_probability": 0.05
+      }
+    },
+    {
+      "arm": "stateful_full_joint",
+      "depth": 2,
+      "episode": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+      "original": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.016242596257733683,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9764740422702383,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0036416807360140353,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0036416807360140353
+        },
+        "action_tv": 0.019169011865507353,
+        "candidate_support": 11232,
+        "distinct_sample_paths": 24,
+        "ess": 10.1067440986209,
+        "latent_path_tv": 0.9374899121991455,
+        "marginals": {
+          "change_cause": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "actor": 0.5484327392955322,
+              "habit": 0.20433082293290156,
+              "identity": 0.02014001708746859,
+              "observation": 0.1770964206840978
+            },
+            "tv": 0.2141229003509671
+          },
+          "instance_association_key": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "identity_mismatch": 0.14422760427200076,
+              "target_instance": 0.7784969601917374,
+              "unknown_instance": 0.02727543553626191
+            },
+            "tv": 0.08847239610389385
+          },
+          "mechanism": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "handoff_relocation": 0.35442421909508104,
+              "unknown_mechanism": 0.595575780904919
+            },
+            "tv": 0.16697989276359565
+          },
+          "placement_actor": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "guest": 0.07214537999047663,
+              "owner": 0.3850254821084945,
+              "unknown_actor": 0.4928291379010289
+            },
+            "tv": 0.23386683875537184
+          },
+          "regime_decision": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "create": 0.0035845972564038406,
+              "stay": 0.9464154027435961
+            },
+            "tv": 0.2790543640865853
+          },
+          "role_key": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "guest=>owner": 0.23463341721360734,
+              "guest=>unknown_actor": 0.023636932205288345,
+              "unknown:guest": 0.07214537999047663,
+              "unknown:owner": 0.05423819521870185,
+              "unknown:unknown_actor": 0.4691922056957405,
+              "unknown_actor=>owner": 0.09615386967618536
+            },
+            "tv": 0.2773318005084059
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0006375959396722373,
+            "sampled": 0.005269459479559413
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 5.8721040834072644e-05,
+            "sampled": 0.08024509638775311
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 1.1314139815810114e-05,
+            "sampled": 0.018283271204309174
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.00010539023610461641,
+            "sampled": 0.019352283304888907
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0006160404309423168,
+            "sampled": 0.010638410128415111
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|actor|stay|stable",
+              "handoff_relocation|guest=>unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 4.716791989195978e-05,
+            "sampled": 0.023636932205288345
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 1.989209704910958e-05,
+            "sampled": 0.010813324766125539
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|create|stable:route-c:3"
+            ],
+            "reference": 1.8446255340405008e-05,
+            "sampled": 0.0035845972564038406
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|identity|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0008867358150610905,
+            "sampled": 0.03367536350141966
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0010698023271731832,
+            "sampled": 0.030470728962046917
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|unknown_instance|actor|stay|stable"
+            ],
+            "reference": 1.0393507879820997e-05,
+            "sampled": 0.02727543553626191
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 1.0794131985032513e-05,
+            "sampled": 0.03488591191381295
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0005715410041193264,
+            "sampled": 0.04948309442584196
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00013518759350017014,
+            "sampled": 0.09615386967618536
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00042865575308949523,
+            "sampled": 0.01511896199797321
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|identity|stay|stable"
+            ],
+            "reference": 3.844560193430375e-05,
+            "sampled": 0.02014001708746859
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.004667300951637953,
+            "sampled": 0.05785988832411986
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00013591665510674663,
+            "sampled": 0.03277269407024281
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0020971535018228025,
+            "sampled": 0.025998123684614887
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 5.900662374653556e-05,
+            "sampled": 0.008602759962280583
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable",
+              "handoff_relocation|guest=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 9.526177527219954e-05,
+            "sampled": 0.23463341721360734
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0003114719963998973,
+            "sampled": 0.018538564681956513
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00047197087194567327,
+            "sampled": 0.03870568544325656
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|unresolved|stay|stable",
+              "unknown_mechanism|unknown:guest|target_instance|observation|stay|stable"
+            ],
+            "reference": 5.881630529750132e-06,
+            "sampled": 0.053862108786167456
+          }
+        ],
+        "method": "independent_strata_v1",
+        "proposal_sha256": "fcd8d8008d5728290051d728b7ec92f89f12a8c8efe126a8d8d475b7e0bed496",
+        "reference_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "sample_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "sampling_seed": "1c25e112b5355efc16267d91c0c52f8883037e3f5339f7b0a9d0449d46b7c30e",
+        "seconds": 0.047339542768895626,
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.9374899121991455
+      },
+      "posterior_parent": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.005657677047162078,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9920595033864634,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.001141409783187242,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.001141409783187242
+        },
+        "action_tv": 0.003583550749282175,
+        "distinct_sample_paths": 24,
+        "ess": 14.57132949681592,
+        "latent_path_tv": 0.9335546541446631,
+        "marginal_tv": {
+          "change_cause": 0.1141515443513907,
+          "instance_association_key": 0.04858104172806142,
+          "mechanism": 0.09271829852372396,
+          "placement_actor": 0.04810832315505202,
+          "regime_decision": 0.28263896134298916,
+          "role_key": 0.20056785088604295
+        },
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.04999999999999997,
+            "actor": 0.36590833128835143,
+            "habit": 0.19713399534360282,
+            "identity": 0.06043361857590184,
+            "observation": 0.31373167617405257,
+            "unresolved": 0.012792378618091325
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.04999999999999997,
+            "identity_mismatch": 0.07949933206851414,
+            "target_instance": 0.8183883145675699,
+            "unknown_instance": 0.052112353363916106
+          },
+          "mechanism": {
+            "__unresolved__": 0.04999999999999997,
+            "direct_relocation": 0.060215092553176155,
+            "handoff_relocation": 0.2801626248552093,
+            "unknown_mechanism": 0.6096222825916146
+          },
+          "placement_actor": {
+            "__unresolved__": 0.04999999999999997,
+            "guest": 0.12194656543043031,
+            "owner": 0.19926696650817466,
+            "unknown_actor": 0.628786468061395
+          },
+          "regime_decision": {
+            "__unresolved__": 0.04999999999999997,
+            "stay": 0.95
+          },
+          "role_key": {
+            "__unresolved__": 0.04999999999999997,
+            "direct:unknown_actor": 0.060215092553176155,
+            "owner=>guest": 0.03477329034032572,
+            "owner=>unknown_actor": 0.10625122338801926,
+            "unknown:guest": 0.08717327509010458,
+            "unknown:owner": 0.06012885538131034,
+            "unknown:unknown_actor": 0.4623201521201996,
+            "unknown_actor=>owner": 0.13913811112686433
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 6.525242548091431e-05,
+            "sampled": 0.03455476431760003
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00034992007081842815,
+            "sampled": 0.008174003997520335
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|unresolved|stay|stable"
+            ],
+            "reference": 3.3220259887825504e-05,
+            "sampled": 0.012792378618091325
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.00034992007081842815,
+            "sampled": 0.023224865467435643
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|target_instance|observation|stay|stable"
+            ],
+            "reference": 5.3707697606768155e-05,
+            "sampled": 0.13913811112686433
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00048069317147891985,
+            "sampled": 0.027933284025939205
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|identity|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|observation|stay|stable"
+            ],
+            "reference": 5.392058591398992e-05,
+            "sampled": 0.02299937507852222
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable",
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00010815402146763492,
+            "sampled": 0.10625122338801926
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 1.3126926035621157e-05,
+            "sampled": 0.012352169945636189
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 1.0794131985032513e-05,
+            "sampled": 0.024777310357151933
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 7.734697473102448e-05,
+            "sampled": 0.03245125337874238
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0005715410041193264,
+            "sampled": 0.013594343947574732
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.004667300951637953,
+            "sampled": 0.05685120685788014
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.0025614690714116277,
+            "sampled": 0.09381456018363031
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0005522186459654542,
+            "sampled": 0.022419437529441002
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.004667300951637953,
+            "sampled": 0.05685120685788014
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable"
+            ],
+            "reference": 1.1828189922264352e-06,
+            "sampled": 0.025660328235576124
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00013591665510674663,
+            "sampled": 0.016396295938165304
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 6.543832017839192e-06,
+            "sampled": 0.052112353363916106
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0011509422444756895,
+            "sampled": 0.029915082863642934
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 5.900662374653556e-05,
+            "sampled": 0.01113316319638998
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:guest|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 3.882068076817578e-06,
+            "sampled": 0.05472202171136221
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00047197087194567327,
+            "sampled": 0.03710796927269243
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|unresolved|stay|stable",
+              "handoff_relocation|owner=>guest|target_instance|identity|stay|stable"
+            ],
+            "reference": 1.3779978559171505e-08,
+            "sampled": 0.03477329034032572
+          }
+        ],
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.9335546541446631
+      },
+      "reference": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.002791291683163966,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9956430541357456,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0007828270905452146,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0007828270905452146
+        },
+        "depth": 2,
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.3343098389445727,
+            "habit": 0.3012284351892994,
+            "identity": 0.020223354002033907,
+            "noise": 8.588255972794576e-301,
+            "observation": 0.27138888874031625,
+            "unresolved": 0.02284948312379313
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.06759541916184489,
+            "target_instance": 0.8669693562956197,
+            "unknown_instance": 0.015435224542512341
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.09480395743026304,
+            "handoff_relocation": 0.18744432633147526,
+            "unknown_mechanism": 0.6677517162382415
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.12844541048031138,
+            "owner": 0.1511586433531084,
+            "unknown_actor": 0.6703959461665517
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "create": 0.008476466468893933,
+            "reactivate": 4.330976843602592e-301,
+            "stay": 0.6673610386570005,
+            "unresolved": 0.27416249487408484
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.009984134498908764,
+            "direct:owner": 0.011926681510291788,
+            "direct:unknown_actor": 0.07289314142106293,
+            "guest=>owner": 0.006588589774521027,
+            "guest=>unknown_actor": 0.042018216664795945,
+            "owner=>guest": 0.005737555797132623,
+            "owner=>unknown_actor": 0.042018216664795945,
+            "unknown:guest": 0.07032712467569015,
+            "unknown:owner": 0.08395822014664663,
+            "unknown:unknown_actor": 0.5134663714159181,
+            "unknown_actor=>guest": 0.04239659550858325,
+            "unknown_actor=>owner": 0.048685151921651626
+          }
+        },
+        "numeric_zero_mass_paths": 2592,
+        "posterior_trace": "exact-505d3813-83a3-016a-475e-f3eb0ca3d9da-stateful_full_joint-2.jsonl.gz",
+        "posterior_trace_sha256": "c6f676b0705d5df7cf172035d151867fe6d774d28c75f575b0cda836c24ce771",
+        "seconds_including_worlds_readout_and_trace": 8.26866624969989,
+        "streamed_vs_native_readout_tv": null,
+        "support_paths": 220320,
+        "target_evaluations": 220320,
+        "terminal": true,
+        "transition_evaluations": 220320,
+        "unresolved_probability": 0.05
+      }
+    },
+    {
+      "arm": "matched_full_state_factorized",
+      "depth": 1,
+      "episode": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+      "original": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.2582926912573069,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.2472357695808977,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.2472357695808977,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.2472357695808977
+        },
+        "action_tv": 0.003445639320547811,
+        "candidate_support": 468,
+        "distinct_sample_paths": 24,
+        "ess": 18.688254679311736,
+        "latent_path_tv": 0.7808069009109263,
+        "marginals": {
+          "change_cause": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "actor": 0.22708264361364666,
+              "habit": 0.27112923636105757,
+              "identity": 0.14184210320714313,
+              "noise": 0.1941515953151372,
+              "observation": 0.06851372043396765,
+              "unresolved": 0.04728070106904773
+            },
+            "tv": 0.14583468425089516
+          },
+          "instance_association_key": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "identity_mismatch": 0.28279473337804606,
+              "target_instance": 0.5079578618896312,
+              "unknown_instance": 0.15924740473232277
+            },
+            "tv": 0.07976802923155532
+          },
+          "mechanism": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "direct_relocation": 0.4524135841665456,
+              "handoff_relocation": 0.3872593373829589,
+              "unknown_mechanism": 0.11032707845049552
+            },
+            "tv": 0.04024066261704095
+          },
+          "placement_actor": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "guest": 0.31057148095940235,
+              "owner": 0.3522142547164065,
+              "unknown_actor": 0.2872142643241912
+            },
+            "tv": 0.03554758804973987
+          },
+          "regime_decision": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "stay": 0.9499999999999998
+            },
+            "tv": 0.08636363636363557
+          },
+          "role_key": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "direct:guest": 0.16738923922490428,
+              "direct:owner": 0.13303534281186014,
+              "direct:unknown_actor": 0.15198900212978117,
+              "guest=>owner": 0.10885183345405075,
+              "guest=>unknown_actor": 0.022708264361364666,
+              "owner=>guest": 0.06304637738144778,
+              "owner=>unknown_actor": 0.11251699783304539,
+              "unknown:guest": 0.022708264361364666,
+              "unknown:owner": 0.08761881408913086,
+              "unknown_actor=>guest": 0.05742759999168567,
+              "unknown_actor=>owner": 0.022708264361364666
+            },
+            "tv": 0.16919922006424576
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.1043428618434565
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.040338113020083104
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.040338113020083104
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable"
+            ],
+            "reference": 0.007251255252192027,
+            "sampled": 0.047280701069047686
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 0.0054384414391440246,
+            "sampled": 0.04728070106904777
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable"
+            ],
+            "reference": 0.007251255252192027,
+            "sampled": 0.047280701069047686
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0030496837396613444,
+            "sampled": 0.034719335630321035
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.040338113020083104
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.06851372043396765
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.040338113020083104
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable"
+            ],
+            "reference": 0.001524841869830672,
+            "sampled": 0.08980873347168072
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.001524841869830672,
+            "sampled": 0.034719335630321
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0031495351095379522,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0031495351095379522,
+            "sampled": 0.04033811302008314
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|unresolved|stay|stable"
+            ],
+            "reference": 0.0004394700152843655,
+            "sampled": 0.04728070106904773
+          }
+        ],
+        "method": "independent_strata_v1",
+        "proposal_sha256": "7253bad2c1c5e43c4edce556b4272d0dafc9077d699c391b0c68123996384322",
+        "reference_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sample_choice": "1d6baa09-4ba2-c25c-b729-e982aa1a1723",
+        "sampling_seed": "840bd6fe2d17b2ed512e517401707d83ebe31828290fcf942dd782347dc3a121",
+        "seconds": 0.0055870842188596725,
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.7808069009109263
+      },
+      "posterior_parent": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.2582926912573069,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.2472357695808977,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.2472357695808977,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.2472357695808977
+        },
+        "action_tv": 0.003445639320547811,
+        "distinct_sample_paths": 24,
+        "ess": 18.688254679311736,
+        "latent_path_tv": 0.7808069009109263,
+        "marginal_tv": {
+          "change_cause": 0.14583468425089516,
+          "instance_association_key": 0.07976802923155532,
+          "mechanism": 0.04024066261704095,
+          "placement_actor": 0.03554758804973987,
+          "regime_decision": 0.08636363636363557,
+          "role_key": 0.16919922006424576
+        },
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.22708264361364666,
+            "habit": 0.27112923636105757,
+            "identity": 0.14184210320714313,
+            "noise": 0.1941515953151372,
+            "observation": 0.06851372043396765,
+            "unresolved": 0.04728070106904773
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.28279473337804606,
+            "target_instance": 0.5079578618896312,
+            "unknown_instance": 0.15924740473232277
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.4524135841665456,
+            "handoff_relocation": 0.3872593373829589,
+            "unknown_mechanism": 0.11032707845049552
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.31057148095940235,
+            "owner": 0.3522142547164065,
+            "unknown_actor": 0.2872142643241912
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "stay": 0.9499999999999998
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.16738923922490428,
+            "direct:owner": 0.13303534281186014,
+            "direct:unknown_actor": 0.15198900212978117,
+            "guest=>owner": 0.10885183345405075,
+            "guest=>unknown_actor": 0.022708264361364666,
+            "owner=>guest": 0.06304637738144778,
+            "owner=>unknown_actor": 0.11251699783304539,
+            "unknown:guest": 0.022708264361364666,
+            "unknown:owner": 0.08761881408913086,
+            "unknown_actor=>guest": 0.05742759999168567,
+            "unknown_actor=>owner": 0.022708264361364666
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.1043428618434565
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.040338113020083104
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.040338113020083104
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable"
+            ],
+            "reference": 0.007251255252192027,
+            "sampled": 0.047280701069047686
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 0.0054384414391440246,
+            "sampled": 0.04728070106904777
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable"
+            ],
+            "reference": 0.007251255252192027,
+            "sampled": 0.047280701069047686
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0030496837396613444,
+            "sampled": 0.034719335630321035
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.040338113020083104
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.06851372043396765
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.040338113020083104
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable"
+            ],
+            "reference": 0.001524841869830672,
+            "sampled": 0.08980873347168072
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.001524841869830672,
+            "sampled": 0.034719335630321
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0031495351095379522,
+            "sampled": 0.022708264361364666
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0031495351095379522,
+            "sampled": 0.04033811302008314
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|unresolved|stay|stable"
+            ],
+            "reference": 0.0004394700152843655,
+            "sampled": 0.04728070106904773
+          }
+        ],
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.7808069009109263
+      },
+      "reference": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.25484705193675905,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.2483843160210803,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.2483843160210803,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.2483843160210803
+        },
+        "depth": 1,
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.20425,
+            "habit": 0.20425,
+            "identity": 0.10449999999999993,
+            "noise": 0.20425,
+            "observation": 0.20425,
+            "unresolved": 0.0285
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.3625627626096018,
+            "target_instance": 0.48341701681280286,
+            "unknown_instance": 0.10402022057759623
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.4275000000000003,
+            "handoff_relocation": 0.4275000000000001,
+            "unknown_mechanism": 0.09500000000000007
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.3166666666666668,
+            "owner": 0.3166666666666668,
+            "unknown_actor": 0.3166666666666668
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "create": 1.8568181818181712e-301,
+            "stay": 0.863636363636365,
+            "unresolved": 0.08636363636363628
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.14250000000000004,
+            "direct:owner": 0.14250000000000004,
+            "direct:unknown_actor": 0.14250000000000004,
+            "guest=>owner": 0.07125000000000001,
+            "guest=>unknown_actor": 0.07125000000000001,
+            "owner=>guest": 0.07125000000000001,
+            "owner=>unknown_actor": 0.07125000000000001,
+            "unknown:guest": 0.031666666666666676,
+            "unknown:owner": 0.031666666666666676,
+            "unknown:unknown_actor": 0.031666666666666676,
+            "unknown_actor=>guest": 0.07125000000000001,
+            "unknown_actor=>owner": 0.07125000000000001
+          }
+        },
+        "numeric_zero_mass_paths": 0,
+        "posterior_trace": "exact-505d3813-83a3-016a-475e-f3eb0ca3d9da-matched_full_state_factorized-1.jsonl.gz",
+        "posterior_trace_sha256": "90b489264f74217d70b4f8b700cec65ffb83a7233533a94d7802a14b75c072d2",
+        "seconds_including_worlds_readout_and_trace": 0.016951540485024452,
+        "streamed_vs_native_readout_tv": 6.938893903907228e-17,
+        "support_paths": 468,
+        "target_evaluations": 468,
+        "terminal": false,
+        "transition_evaluations": 468,
+        "unresolved_probability": 0.05
+      }
+    },
+    {
+      "arm": "matched_full_state_factorized",
+      "depth": 2,
+      "episode": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+      "original": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.0041020093334469265,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9939191544349746,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0009894181157892445,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0009894181157892445
+        },
+        "action_tv": 0.0031944903554132096,
+        "candidate_support": 11232,
+        "distinct_sample_paths": 24,
+        "ess": 15.200784939791678,
+        "latent_path_tv": 0.9395789951508521,
+        "marginals": {
+          "change_cause": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "actor": 0.4213359047096444,
+              "habit": 0.1893783892430235,
+              "identity": 0.027232056637202733,
+              "observation": 0.3120536494101295
+            },
+            "tv": 0.14085496929872882
+          },
+          "instance_association_key": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "identity_mismatch": 0.22964701673435906,
+              "target_instance": 0.6705700312513915,
+              "unknown_instance": 0.04978295201424945
+            },
+            "tv": 0.1979882020841477
+          },
+          "mechanism": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "handoff_relocation": 0.12041512054326861,
+              "unknown_mechanism": 0.8295848794567315
+            },
+            "tv": 0.10781564146937977
+          },
+          "placement_actor": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "guest": 0.13167929015618277,
+              "owner": 0.15385367443399772,
+              "unknown_actor": 0.6644670354098194
+            },
+            "tv": 0.04945416407197921
+          },
+          "regime_decision": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "create": 0.00883156488778715,
+              "stay": 0.9411684351122129
+            },
+            "tv": 0.27465973917733705
+          },
+          "role_key": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "guest=>owner": 0.057957527969239066,
+              "guest=>unknown_actor": 0.03196036397330775,
+              "unknown:guest": 0.13167929015618277,
+              "unknown:owner": 0.06539891786403687,
+              "unknown:unknown_actor": 0.6325066714365117,
+              "unknown_actor=>owner": 0.030497228600721786
+            },
+            "tv": 0.17375045515972448
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0009643952266054343,
+            "sampled": 0.009617784033665713
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 8.881846316460819e-05,
+            "sampled": 0.1464628411722083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 1.7113193093925303e-05,
+            "sampled": 0.03337051068598167
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.00015940791699890677,
+            "sampled": 0.03532166479441234
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0009317914591835882,
+            "sampled": 0.019417158718755986
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|actor|stay|stable",
+              "handoff_relocation|guest=>unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 5.2852786498533376e-05,
+            "sampled": 0.03196036397330775
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 3.0087775419641178e-05,
+            "sampled": 0.019736411806544497
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|create|stable:route-c:3"
+            ],
+            "reference": 3.766223335918601e-05,
+            "sampled": 0.00883156488778715
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|identity|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0006026541807933094,
+            "sampled": 0.02761758239255662
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0016181286509879078,
+            "sampled": 0.05561498131679977
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|unknown_instance|actor|stay|stable"
+            ],
+            "reference": 1.5720691998349266e-05,
+            "sampled": 0.04978295201424945
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 7.712166055216608e-06,
+            "sampled": 0.03007725306962454
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0006404254148808733,
+            "sampled": 0.06690790897228335
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 3.553292859903327e-05,
+            "sampled": 0.030497228600721786
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00023851938690326802,
+            "sampled": 0.010151645534110314
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|identity|stay|stable"
+            ],
+            "reference": 4.3079219848906745e-05,
+            "sampled": 0.027232056637202733
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0025970531211914048,
+            "sampled": 0.03885009281645221
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00015229787470819088,
+            "sampled": 0.04431316305237282
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0011669311887023302,
+            "sampled": 0.017456471961074367
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 6.611833835408415e-05,
+            "sampled": 0.011632107634846624
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable",
+              "handoff_relocation|guest=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 1.950020676120543e-05,
+            "sampled": 0.057957527969239066
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0004711167180640148,
+            "sampled": 0.033836470722820394
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00045518945144079777,
+            "sampled": 0.045045477762781484
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|unresolved|stay|stable",
+              "unknown_mechanism|unknown:guest|target_instance|observation|stay|stable"
+            ],
+            "reference": 8.896255535227641e-06,
+            "sampled": 0.09830877947020109
+          }
+        ],
+        "method": "independent_strata_v1",
+        "proposal_sha256": "fcd8d8008d5728290051d728b7ec92f89f12a8c8efe126a8d8d475b7e0bed496",
+        "reference_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "sample_choice": "37f6ba12-079f-abe4-e66d-7c4bf9020764",
+        "sampling_seed": "1c25e112b5355efc16267d91c0c52f8883037e3f5339f7b0a9d0449d46b7c30e",
+        "seconds": 0.043779333122074604,
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.9395789951508521
+      },
+      "posterior_parent": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.0005668487321421035,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9982994538035738,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0005668487321421035,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0005668487321421035
+        },
+        "action_tv": 0.0012734941940463966,
+        "distinct_sample_paths": 24,
+        "ess": 10.040183655763974,
+        "latent_path_tv": 0.9409620190337012,
+        "marginal_tv": {
+          "change_cause": 0.2767333028213581,
+          "instance_association_key": 0.06393567341534519,
+          "mechanism": 0.07706816200788966,
+          "placement_actor": 0.19494828392588967,
+          "regime_decision": 0.035234751850851,
+          "role_key": 0.26027465695757057
+        },
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.04999999999999996,
+            "actor": 0.5769378161572615,
+            "habit": 0.24771175693877606,
+            "noise": 6.388969307583392e-301,
+            "observation": 0.12535042690396245
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.04999999999999996,
+            "identity_mismatch": 0.12272941534220043,
+            "target_instance": 0.804622559920194,
+            "unknown_instance": 0.022648024737605646
+          },
+          "mechanism": {
+            "__unresolved__": 0.04999999999999996,
+            "direct_relocation": 0.03074747946149005,
+            "handoff_relocation": 0.14139783821148572,
+            "unknown_mechanism": 0.7778546823270243
+          },
+          "placement_actor": {
+            "__unresolved__": 0.04999999999999996,
+            "guest": 0.07034622103836909,
+            "owner": 0.3129876841849869,
+            "unknown_actor": 0.5666660947766439
+          },
+          "regime_decision": {
+            "__unresolved__": 0.04999999999999996,
+            "create": 0.0030848836265706665,
+            "stay": 0.7038061729667113,
+            "unresolved": 0.2431089434067181
+          },
+          "role_key": {
+            "__unresolved__": 0.04999999999999996,
+            "direct:guest": 0.03074747946149005,
+            "guest=>unknown_actor": 0.04428541852545865,
+            "owner=>unknown_actor": 0.036494641752448355,
+            "unknown:guest": 0.039598741576879044,
+            "unknown:owner": 0.2523699062514082,
+            "unknown:unknown_actor": 0.485886034498737,
+            "unknown_actor=>owner": 0.060617777933578726
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "direct_relocation|direct:guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 2.972608344731485e-05,
+            "sampled": 0.03074747946149005
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 7.162659421720275e-05,
+            "sampled": 0.009260962844690107
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0005292713221545979,
+            "sampled": 0.009260962844690102
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable",
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 9.304825897784425e-05,
+            "sampled": 0.036494641752448355
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0005292713221545979,
+            "sampled": 0.018673685999617537
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|actor|unresolved|-"
+            ],
+            "reference": 6.32733392857465e-05,
+            "sampled": 0.2431089434067181
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|unknown_instance|observation|stay|stable"
+            ],
+            "reference": 1.6872149950796277e-05,
+            "sampled": 0.022648024737605646
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable",
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00013051216393110746,
+            "sampled": 0.015945713053845654
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|identity|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0001011330406867442,
+            "sampled": 0.04428541852545861
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|identity|stay|stable",
+              "handoff_relocation|guest=>unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 6.018076441446319e-05,
+            "sampled": 0.04428541852545865
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00032652180962991576,
+            "sampled": 0.03114584656373732
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0005949615280642001,
+            "sampled": 0.04033281673039522
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 3.272496610142503e-06,
+            "sampled": 0.060617777933578726
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0006404254148808733,
+            "sampled": 0.015402086203361212
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable",
+              "handoff_relocation|guest=>unknown_actor|target_instance|noise|stay|stable"
+            ],
+            "reference": 4.187926457978702e-305,
+            "sampled": 6.388969307583392e-301
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.000618774248738843,
+            "sampled": 0.025400718915966913
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0025970531211914048,
+            "sampled": 0.06441113982160232
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable",
+              "unknown_mechanism|unknown:guest|target_instance|observation|stay|stable"
+            ],
+            "reference": 9.260921345728333e-06,
+            "sampled": 0.02365302852303339
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|noise|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00015229787470819088,
+            "sampled": 0.034064342998292835
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.0011669311887023302,
+            "sampled": 0.02894179073365007
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|habit|create|stable:route-c:3"
+            ],
+            "reference": 3.2100329859185546e-07,
+            "sampled": 0.0030848836265706665
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|target_instance|actor|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.0004711167180640148,
+            "sampled": 0.07904937364332341
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00082940925720972,
+            "sampled": 0.05444360789787272
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|unresolved|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 2.720344634430587e-06,
+            "sampled": 0.01474133525659242
+          }
+        ],
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.9409620190337012
+      },
+      "reference": {
+        "action": {
+          "1d6baa09-4ba2-c25c-b729-e982aa1a1723": 0.0018403429261884443,
+          "37f6ba12-079f-abe4-e66d-7c4bf9020764": 0.9971136447903878,
+          "a5e438b7-1ab3-47ed-d26d-fee499669ad8": 0.0005230061417118722,
+          "b6e61ee3-0632-8249-fa7a-91b70d90de76": 0.0005230061417118722
+        },
+        "depth": 2,
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.30020451333590514,
+            "habit": 0.3054394157115713,
+            "identity": 0.019357614786439235,
+            "noise": 9.50014282708596e-301,
+            "observation": 0.30020451333590514,
+            "unresolved": 0.024793942830182717
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.06622199751864352,
+            "target_instance": 0.86855823333553,
+            "unknown_instance": 0.015219769145808127
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.10781564146937031,
+            "handoff_relocation": 0.10581474967848087,
+            "unknown_mechanism": 0.7363696088521301
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.11803940025910402,
+            "owner": 0.11803940025910464,
+            "unknown_actor": 0.713921199481806
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "create": 0.00676883970680273,
+            "reactivate": 3.370598537395374e-301,
+            "stay": 0.6685714211158659,
+            "unresolved": 0.27465973917734254
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.01148280409145354,
+            "direct:owner": 0.011482804091453615,
+            "direct:unknown_actor": 0.08485003328646427,
+            "guest=>owner": 0.0033531040657670597,
+            "guest=>unknown_actor": 0.024777135386736912,
+            "owner=>guest": 0.003353104065767053,
+            "owner=>unknown_actor": 0.024777135386736912,
+            "unknown:guest": 0.0784263567151471,
+            "unknown:owner": 0.07842635671514672,
+            "unknown:unknown_actor": 0.5795168954218483,
+            "unknown_actor=>guest": 0.024777135386736808,
+            "unknown_actor=>owner": 0.02477713538673692
+          }
+        },
+        "numeric_zero_mass_paths": 2592,
+        "posterior_trace": "exact-505d3813-83a3-016a-475e-f3eb0ca3d9da-matched_full_state_factorized-2.jsonl.gz",
+        "posterior_trace_sha256": "8a14105b910c5b132bfef527478dc1f23328a2344135c6828e709daff376f6b1",
+        "seconds_including_worlds_readout_and_trace": 8.304692375473678,
+        "streamed_vs_native_readout_tv": null,
+        "support_paths": 220320,
+        "target_evaluations": 220320,
+        "terminal": true,
+        "transition_evaluations": 220320,
+        "unresolved_probability": 0.05
+      }
+    },
+    {
+      "arm": "stateful_full_joint",
+      "depth": 1,
+      "episode": "7557ad11-2f02-c500-3916-45c4f2866718",
+      "original": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.24795925870922686,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24795925870922686,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.2561222238723195,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24795925870922686
+        },
+        "action_tv": 0.0005456379400710643,
+        "candidate_support": 468,
+        "distinct_sample_paths": 23,
+        "ess": 19.005222971017968,
+        "latent_path_tv": 0.7758955950574237,
+        "marginals": {
+          "change_cause": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "actor": 0.3375482171927674,
+              "habit": 0.27818933159509707,
+              "identity": 0.09278142312491605,
+              "noise": 0.13631571684517824,
+              "observation": 0.10516531124204125
+            },
+            "tv": 0.1688497771909243
+          },
+          "instance_association_key": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "identity_mismatch": 0.42467891498506105,
+              "target_instance": 0.47996301220363297,
+              "unknown_instance": 0.04535807281130607
+            },
+            "tv": 0.062807448930889
+          },
+          "mechanism": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "direct_relocation": 0.3465453652523041,
+              "handoff_relocation": 0.5025435730600559,
+              "unknown_mechanism": 0.10091106168764001
+            },
+            "tv": 0.03901146677173926
+          },
+          "placement_actor": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "guest": 0.34442577771095506,
+              "owner": 0.2778873925927148,
+              "unknown_actor": 0.3276868296963303
+            },
+            "tv": 0.049705631302740416
+          },
+          "regime_decision": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "stay": 0.8733900433955143,
+              "unresolved": 0.07660995660448569
+            },
+            "tv": 0.009753679759151
+          },
+          "role_key": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "direct:guest": 0.13201945382368838,
+              "direct:owner": 0.13583103812023933,
+              "direct:unknown_actor": 0.07869487330837645,
+              "guest=>owner": 0.060411426071159624,
+              "guest=>unknown_actor": 0.07588883894199537,
+              "owner=>guest": 0.08064205958366918,
+              "owner=>unknown_actor": 0.12834923227507683,
+              "unknown:guest": 0.014833277907277186,
+              "unknown:owner": 0.0413238986094812,
+              "unknown:unknown_actor": 0.04475388517088162,
+              "unknown_actor=>guest": 0.11693098639632028,
+              "unknown_actor=>owner": 0.04032102979183459
+            },
+            "tv": 0.14666461167606945
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.014833277907277186
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.06815785842258912
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.026349281088169037
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0021933007706647907,
+            "sampled": 0.022679036405653035
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.026349281088169037
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.015985818276557227,
+            "sampled": 0.041323898609481165
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.06815785842258912
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.026349281088169037
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.029666555814554373
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0021933007706647907,
+            "sampled": 0.022679036405653035
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 0.005159670487617856,
+            "sampled": 0.060411426071159624
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010390300414095962,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.006879560650157134,
+            "sampled": 0.03556780915016078
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010390300414095962,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 0.005875052852326067,
+            "sampled": 0.09278142312491605
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.006879560650157134,
+            "sampled": 0.03556780915016078
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010390300414095962,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-"
+            ],
+            "reference": 0.001385373388546128,
+            "sampled": 0.07660995660448569
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0016988346266404596,
+            "sampled": 0.014833277907277186
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.003552404061457165,
+            "sampled": 0.0413238986094812
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.00226511283552061,
+            "sampled": 0.04475388517088162
+          }
+        ],
+        "method": "independent_strata_v1",
+        "proposal_sha256": "7253bad2c1c5e43c4edce556b4272d0dafc9077d699c391b0c68123996384322",
+        "reference_choice": "84df03e5-a62e-f9fe-a018-60b21515505b",
+        "sample_choice": "84df03e5-a62e-f9fe-a018-60b21515505b",
+        "sampling_seed": "e636854006862c4faaafb1de584feae80785b352d79aa96712303f8e0cfe3bc2",
+        "seconds": 0.00531404186040163,
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.7758955950574237
+      },
+      "posterior_parent": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.24795925870922686,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24795925870922686,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.2561222238723195,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24795925870922686
+        },
+        "action_tv": 0.0005456379400710643,
+        "distinct_sample_paths": 23,
+        "ess": 19.005222971017968,
+        "latent_path_tv": 0.7758955950574237,
+        "marginal_tv": {
+          "change_cause": 0.1688497771909243,
+          "instance_association_key": 0.062807448930889,
+          "mechanism": 0.03901146677173926,
+          "placement_actor": 0.049705631302740416,
+          "regime_decision": 0.009753679759151,
+          "role_key": 0.14666461167606945
+        },
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.3375482171927674,
+            "habit": 0.27818933159509707,
+            "identity": 0.09278142312491605,
+            "noise": 0.13631571684517824,
+            "observation": 0.10516531124204125
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.42467891498506105,
+            "target_instance": 0.47996301220363297,
+            "unknown_instance": 0.04535807281130607
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.3465453652523041,
+            "handoff_relocation": 0.5025435730600559,
+            "unknown_mechanism": 0.10091106168764001
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.34442577771095506,
+            "owner": 0.2778873925927148,
+            "unknown_actor": 0.3276868296963303
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "stay": 0.8733900433955143,
+            "unresolved": 0.07660995660448569
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.13201945382368838,
+            "direct:owner": 0.13583103812023933,
+            "direct:unknown_actor": 0.07869487330837645,
+            "guest=>owner": 0.060411426071159624,
+            "guest=>unknown_actor": 0.07588883894199537,
+            "owner=>guest": 0.08064205958366918,
+            "owner=>unknown_actor": 0.12834923227507683,
+            "unknown:guest": 0.014833277907277186,
+            "unknown:owner": 0.0413238986094812,
+            "unknown:unknown_actor": 0.04475388517088162,
+            "unknown_actor=>guest": 0.11693098639632028,
+            "unknown_actor=>owner": 0.04032102979183459
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.014833277907277186
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.06815785842258912
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.026349281088169037
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0021933007706647907,
+            "sampled": 0.022679036405653035
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.026349281088169037
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.015985818276557227,
+            "sampled": 0.041323898609481165
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.06815785842258912
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.0076447558198820586,
+            "sampled": 0.026349281088169037
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.010193007759842752,
+            "sampled": 0.029666555814554373
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0021933007706647907,
+            "sampled": 0.022679036405653035
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 0.005159670487617856,
+            "sampled": 0.060411426071159624
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010390300414095962,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.006879560650157134,
+            "sampled": 0.03556780915016078
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010390300414095962,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 0.005875052852326067,
+            "sampled": 0.09278142312491605
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.006879560650157134,
+            "sampled": 0.03556780915016078
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010390300414095962,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-"
+            ],
+            "reference": 0.001385373388546128,
+            "sampled": 0.07660995660448569
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.013853733885461295,
+            "sampled": 0.04032102979183459
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0016988346266404596,
+            "sampled": 0.014833277907277186
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.003552404061457165,
+            "sampled": 0.0413238986094812
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.00226511283552061,
+            "sampled": 0.04475388517088162
+          }
+        ],
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.7758955950574237
+      },
+      "reference": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.24814113802258386,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24814113802258386,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.25557658593224836,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24814113802258386
+        },
+        "depth": 1,
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.2604772177001524,
+            "habit": 0.18641055389678776,
+            "identity": 0.13934632931162558,
+            "noise": 0.17002101805360514,
+            "observation": 0.17002101805360514,
+            "unresolved": 0.02372386298422398
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.377011221127958,
+            "target_instance": 0.4648232571298469,
+            "unknown_instance": 0.10816552174219494
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.33418224013762216,
+            "handoff_relocation": 0.5415550398317952,
+            "unknown_mechanism": 0.07426272003058274
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.3112034880522725,
+            "owner": 0.32759302389545525,
+            "unknown_actor": 0.3112034880522725
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "create": 3.282601145628387e-301,
+            "stay": 0.8636363636363629,
+            "unresolved": 0.08636363636363627
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.10927004952307875,
+            "direct:owner": 0.11564214109146467,
+            "direct:unknown_actor": 0.10927004952307875,
+            "guest=>owner": 0.09312631461405468,
+            "guest=>unknown_actor": 0.08882560265092142,
+            "owner=>guest": 0.08882560265092142,
+            "owner=>unknown_actor": 0.08882560265092142,
+            "unknown:guest": 0.024282233227350833,
+            "unknown:owner": 0.02569825357588105,
+            "unknown:unknown_actor": 0.024282233227350833,
+            "unknown_actor=>guest": 0.08882560265092142,
+            "unknown_actor=>owner": 0.09312631461405468
+          }
+        },
+        "numeric_zero_mass_paths": 0,
+        "posterior_trace": "exact-7557ad11-2f02-c500-3916-45c4f2866718-stateful_full_joint-1.jsonl.gz",
+        "posterior_trace_sha256": "00cf4bcdaeda2087404a0188c99e6170c4d5b30ae691fb6913a5ed38dc2c6c78",
+        "seconds_including_worlds_readout_and_trace": 0.02985324990004301,
+        "streamed_vs_native_readout_tv": 0.0,
+        "support_paths": 468,
+        "target_evaluations": 468,
+        "terminal": false,
+        "transition_evaluations": 468,
+        "unresolved_probability": 0.05
+      }
+    },
+    {
+      "arm": "stateful_full_joint",
+      "depth": 2,
+      "episode": "7557ad11-2f02-c500-3916-45c4f2866718",
+      "original": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.25632055005211496,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24789314998262835,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.24789314998262835,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24789314998262835
+        },
+        "action_tv": 0.002184375392005805,
+        "candidate_support": 11232,
+        "distinct_sample_paths": 24,
+        "ess": 16.790159767695226,
+        "latent_path_tv": 0.9491155501159897,
+        "marginals": {
+          "change_cause": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "actor": 0.11443536999705126,
+              "habit": 0.20156548238371502,
+              "identity": 0.11097871610694791,
+              "noise": 0.11889498374245874,
+              "observation": 0.34132128656960464,
+              "unresolved": 0.06280416120022259
+            },
+            "tv": 0.23192196138821558
+          },
+          "instance_association_key": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "identity_mismatch": 0.20493062832198666,
+              "target_instance": 0.6916223654745244,
+              "unknown_instance": 0.05344700620348912
+            },
+            "tv": 0.19893389847661885
+          },
+          "mechanism": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "direct_relocation": 0.336021364200985,
+              "handoff_relocation": 0.46969756403141333,
+              "unknown_mechanism": 0.1442810717676018
+            },
+            "tv": 0.09559338867089173
+          },
+          "placement_actor": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "guest": 0.5087959868767827,
+              "owner": 0.24748886978078688,
+              "unknown_actor": 0.19371514334243042
+            },
+            "tv": 0.1995516340593457
+          },
+          "regime_decision": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "create": 1.4646598866725827e-301,
+              "stay": 0.8283059824690956,
+              "unresolved": 0.12169401753090447
+            },
+            "tv": 0.03533038116725245
+          },
+          "role_key": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999996,
+              "direct:guest": 0.15478978001584587,
+              "direct:owner": 0.043043572535971464,
+              "direct:unknown_actor": 0.13818801164916766,
+              "guest=>owner": 0.10754731357063557,
+              "guest=>unknown_actor": 0.05552713169326276,
+              "owner=>guest": 0.15176119513799968,
+              "owner=>unknown_actor": 1.4646598866725827e-301,
+              "unknown:guest": 0.13013574675499995,
+              "unknown:owner": 0.014145325012601845,
+              "unknown_actor=>guest": 0.07210926496793726,
+              "unknown_actor=>owner": 0.08275265866157805
+            },
+            "tv": 0.26252067818817393
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable",
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 3.1416061368897986e-05,
+            "sampled": 0.025720130967548802
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 4.188808182519728e-05,
+            "sampled": 0.035917018395052444
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable",
+              "handoff_relocation|guest=>unknown_actor|target_instance|unresolved|stay|stable"
+            ],
+            "reference": 7.529665404665787e-06,
+            "sampled": 0.02980700072571396
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 5.42526461384436e-06,
+            "sampled": 0.014145325012601845
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 9.007198463066393e-05,
+            "sampled": 0.0468356402665256
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable",
+              "direct_relocation|direct:guest|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.00012694530957311183,
+            "sampled": 0.024517427266807282
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable",
+              "unknown_mechanism|unknown:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 1.8389009923266865e-05,
+            "sampled": 0.05499264334733968
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable",
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00012694530957311183,
+            "sampled": 0.024517427266807282
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|noise|stay|stable"
+            ],
+            "reference": 5.585077576692964e-05,
+            "sampled": 0.03911210449342865
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|unresolved|unresolved|-"
+            ],
+            "reference": 7.793131502362295e-07,
+            "sampled": 0.03299716047450862
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 5.168378374936522e-05,
+            "sampled": 0.02994565328666982
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable",
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 2.8315683782452253e-05,
+            "sampled": 0.019545501306101984
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|actor|stay|stable",
+              "direct_relocation|direct:guest|target_instance|identity|stay|stable"
+            ],
+            "reference": 1.9316125370975174e-05,
+            "sampled": 0.015653025219433802
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable",
+              "handoff_relocation|owner=>guest|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 1.8238934675708332e-05,
+            "sampled": 0.04786725534449707
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable",
+              "handoff_relocation|owner=>guest|target_instance|observation|stay|stable"
+            ],
+            "reference": 8.460139368464314e-05,
+            "sampled": 0.10389393979350262
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|actor|stay|stable",
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 6.879271968789187e-05,
+            "sampled": 0.012137210029371227
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable",
+              "direct_relocation|direct:guest|target_instance|noise|stay|stable"
+            ],
+            "reference": 2.1347620009904895e-05,
+            "sampled": 0.07978287924903009
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable",
+              "handoff_relocation|guest=>owner|target_instance|identity|stay|stable"
+            ],
+            "reference": 2.5055239995685824e-05,
+            "sampled": 0.054100307367146445
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|identity_mismatch|actor|stay|stable",
+              "direct_relocation|direct:guest|target_instance|identity|stay|stable"
+            ],
+            "reference": 4.2988827592996875e-05,
+            "sampled": 0.0348364482805747
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-",
+              "handoff_relocation|guest=>owner|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 1.0906276526425373e-06,
+            "sampled": 0.05344700620348912
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|observation|unresolved|-"
+            ],
+            "reference": 1.0137028423251745e-05,
+            "sampled": 0.08869685705639586
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable",
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable"
+            ],
+            "reference": 3.5040290536345175e-06,
+            "sampled": 0.006388935239792957
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable",
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|create|stable:route-c:3"
+            ],
+            "reference": 1.5397633912074771e-305,
+            "sampled": 1.4646598866725827e-301
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:guest|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 4.137094501254056e-06,
+            "sampled": 0.07514310340766028
+          }
+        ],
+        "method": "independent_strata_v1",
+        "proposal_sha256": "15fbfa74f178b015af1badaacafa209b1ac34668462fe20700d4a25beafc6c41",
+        "reference_choice": "58265e96-fddb-95bf-47ee-b19457b9cd40",
+        "sample_choice": "58265e96-fddb-95bf-47ee-b19457b9cd40",
+        "sampling_seed": "3f431c43b490df6d52a7af5daf6b8c93931e79ca7541c530ce6fe22938591815",
+        "seconds": 0.044163165614008904,
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.9491155501159897
+      },
+      "posterior_parent": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.2524963423487672,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24916788588374425,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.24916788588374425,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24916788588374425
+        },
+        "action_tv": 0.0035868459267184155,
+        "distinct_sample_paths": 24,
+        "ess": 16.60548574460435,
+        "latent_path_tv": 0.9487521113434086,
+        "marginal_tv": {
+          "change_cause": 0.3988638261156692,
+          "instance_association_key": 0.15861523037203756,
+          "mechanism": 0.029620141786909644,
+          "placement_actor": 0.14781169913405517,
+          "regime_decision": 0.086363636363652,
+          "role_key": 0.2845544750273155
+        },
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05000000000000002,
+            "actor": 0.1401824787868145,
+            "habit": 0.5369887768392193,
+            "identity": 0.057896955365644494,
+            "observation": 0.21493178900832166
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05000000000000002,
+            "identity_mismatch": 0.5309685547353138,
+            "target_instance": 0.34608055861950704,
+            "unknown_instance": 0.0729508866451792
+          },
+          "mechanism": {
+            "__unresolved__": 0.05000000000000002,
+            "direct_relocation": 0.2921847027640906,
+            "handoff_relocation": 0.5727405523985989,
+            "unknown_mechanism": 0.08507474483731059
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05000000000000002,
+            "guest": 0.4570560519514922,
+            "owner": 0.242520782246131,
+            "unknown_actor": 0.2504231658023768
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05000000000000002,
+            "create": 1.2399311135683021e-301,
+            "stay": 0.95
+          },
+          "role_key": {
+            "__unresolved__": 0.05000000000000002,
+            "direct:guest": 0.1875165553688073,
+            "direct:owner": 0.053162120447049516,
+            "direct:unknown_actor": 0.051506026948233745,
+            "guest=>unknown_actor": 0.04062064921361845,
+            "owner=>guest": 0.12088471639224403,
+            "owner=>unknown_actor": 0.12209337633562117,
+            "unknown:guest": 0.048871631532407186,
+            "unknown:unknown_actor": 0.036203113304903396,
+            "unknown_actor=>guest": 0.09978314865803369,
+            "unknown_actor=>owner": 0.18935866179908148
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00010232443735066979,
+            "sampled": 0.04426732040629015
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 4.188808182519728e-05,
+            "sampled": 0.017536045942948882
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable",
+              "handoff_relocation|owner=>unknown_actor|unknown_instance|actor|stay|stable"
+            ],
+            "reference": 1.1611510506880351e-05,
+            "sampled": 0.022875746065256636
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable",
+              "unknown_mechanism|unknown:guest|unknown_instance|habit|create|stable:route-c:3"
+            ],
+            "reference": 3.8705035022932627e-306,
+            "sampled": 1.2399311135683021e-301
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.00014126099106755334,
+            "sampled": 0.05915003756499054
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 1.03779043433538e-05,
+            "sampled": 0.024674439177910738
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable",
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00012694530957311183,
+            "sampled": 0.030963743328284672
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable",
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 8.150050201058447e-05,
+            "sampled": 0.039758233429313006
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable",
+              "direct_relocation|direct:guest|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 3.22416206947478e-05,
+            "sampled": 0.057896955365644494
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable",
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 2.851039244039557e-05,
+            "sampled": 0.059459396841051525
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|actor|stay|stable",
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 3.775424504326963e-05,
+            "sampled": 0.013394408373995656
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable",
+              "direct_relocation|direct:guest|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 3.300654111938893e-05,
+            "sampled": 0.011928297609496024
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|unknown_instance|observation|stay|stable"
+            ],
+            "reference": 5.232798852292579e-06,
+            "sampled": 0.038546466452929896
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|actor|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0001013702842325172,
+            "sampled": 0.02697302612809898
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable",
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 3.2241620694747693e-05,
+            "sampled": 0.022198377118764843
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 4.7510002057948156e-05,
+            "sampled": 0.024533000820134765
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 2.1494413796498475e-05,
+            "sampled": 0.022198377118764826
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|identity_mismatch|actor|stay|stable",
+              "direct_relocation|direct:guest|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.00012690209052696459,
+            "sampled": 0.060029573613380974
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|identity_mismatch|actor|stay|stable",
+              "handoff_relocation|owner=>guest|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.00012777471419116938,
+            "sampled": 0.12088471639224403
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-",
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 1.3948411729874645e-05,
+            "sampled": 0.04062064921361845
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-",
+              "unknown_mechanism|unknown:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 2.407065174270247e-07,
+            "sampled": 0.011528674126992659
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.00010206734216514174,
+            "sampled": 0.07758477153926886
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 1.5588473814034798e-05,
+            "sampled": 0.07412611183821216
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 6.096262037488879e-06,
+            "sampled": 0.048871631532407186
+          }
+        ],
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.9487521113434086
+      },
+      "reference": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.25517354878459575,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24737446292038504,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.2500775253746341,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24737446292038504
+        },
+        "depth": 2,
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.2781178184506819,
+            "habit": 0.18601324539390712,
+            "identity": 0.13106971844602677,
+            "noise": 0.1670434943379608,
+            "observation": 0.1670434943379608,
+            "unresolved": 0.020712229033454762
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.3723533243632894,
+            "target_instance": 0.49268846699791863,
+            "unknown_instance": 0.0849582086388183
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.3218048445510008,
+            "handoff_relocation": 0.5652909527023056,
+            "unknown_mechanism": 0.06290420274669484
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.3092443528174287,
+            "owner": 0.3315112943651305,
+            "unknown_actor": 0.30924435281742413
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "create": 1.9949035851021345e-301,
+            "reactivate": 0.0,
+            "stay": 0.86363636363633,
+            "unresolved": 0.08636363636363403
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.10449449669706161,
+            "direct:owner": 0.11281585115685974,
+            "direct:unknown_actor": 0.10449449669706057,
+            "guest=>owner": 0.09832350506770376,
+            "guest=>unknown_actor": 0.09216098564172585,
+            "owner=>guest": 0.09216098564172542,
+            "owner=>unknown_actor": 0.09216098564172585,
+            "unknown:guest": 0.02042788483691744,
+            "unknown:owner": 0.022048433072861372,
+            "unknown:unknown_actor": 0.0204278848369173,
+            "unknown_actor=>guest": 0.09216098564172542,
+            "unknown_actor=>owner": 0.09832350506770376
+          }
+        },
+        "numeric_zero_mass_paths": 2592,
+        "posterior_trace": "exact-7557ad11-2f02-c500-3916-45c4f2866718-stateful_full_joint-2.jsonl.gz",
+        "posterior_trace_sha256": "3377e9bdcd95eac35b0136cb3a1ac504f4f0566f8f33b7e337911238daf86d82",
+        "seconds_including_worlds_readout_and_trace": 8.283717082813382,
+        "streamed_vs_native_readout_tv": null,
+        "support_paths": 220320,
+        "target_evaluations": 220320,
+        "terminal": true,
+        "transition_evaluations": 220320,
+        "unresolved_probability": 0.05
+      }
+    },
+    {
+      "arm": "matched_full_state_factorized",
+      "depth": 1,
+      "episode": "7557ad11-2f02-c500-3916-45c4f2866718",
+      "original": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.248154217852271,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.248154217852271,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.255537346443187,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.248154217852271
+        },
+        "action_tv": 0.0006902945064279353,
+        "candidate_support": 468,
+        "distinct_sample_paths": 23,
+        "ess": 18.33628718304118,
+        "latent_path_tv": 0.7829960109245615,
+        "marginals": {
+          "change_cause": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "actor": 0.23696410167493215,
+              "habit": 0.3368020277140504,
+              "identity": 0.04526432273992386,
+              "noise": 0.19978591126185372,
+              "observation": 0.13118363660923985
+            },
+            "tv": 0.16526612938898252
+          },
+          "instance_association_key": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "identity_mismatch": 0.3966838558632493,
+              "target_instance": 0.48683882134952994,
+              "unknown_instance": 0.06647732278722072
+            },
+            "tv": 0.03754289779037504
+          },
+          "mechanism": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "direct_relocation": 0.4859539715324735,
+              "handoff_relocation": 0.3380965693316226,
+              "unknown_mechanism": 0.12594945913590394
+            },
+            "tv": 0.08940343066837729
+          },
+          "placement_actor": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "guest": 0.3217542303220689,
+              "owner": 0.303078044745925,
+              "unknown_actor": 0.3251677249320061
+            },
+            "tv": 0.013588621920741596
+          },
+          "regime_decision": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "stay": 0.9086943309007002,
+              "unresolved": 0.04130566909930009
+            },
+            "tv": 0.045057967264335703
+          },
+          "role_key": {
+            "sampled": {
+              "__unresolved__": 0.04999999999999999,
+              "direct:guest": 0.19348925785582122,
+              "direct:owner": 0.17712858561002104,
+              "direct:unknown_actor": 0.11533612806663124,
+              "guest=>owner": 0.06559181830461992,
+              "guest=>unknown_actor": 0.06035764083128398,
+              "owner=>guest": 0.0434796516834738,
+              "owner=>unknown_actor": 0.08388213772947095,
+              "unknown:guest": 0.0217398258417369,
+              "unknown:owner": 0.03861781498954712,
+              "unknown:unknown_actor": 0.06559181830461992,
+              "unknown_actor=>guest": 0.06304549494103699,
+              "unknown_actor=>owner": 0.0217398258417369
+            },
+            "tv": 0.13912628115614692
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.09989295563092686
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0030496837396613444,
+            "sampled": 0.03323866139361036
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.09989295563092686
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.0434796516834738
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0030496837396613444,
+            "sampled": 0.03323866139361036
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.06559181830461992
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 0.0027192207195720123,
+            "sampled": 0.04526432273992386
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-"
+            ],
+            "reference": 0.0007086453996460389,
+            "sampled": 0.04130566909930009
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.002362151332153467,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0031495351095379522,
+            "sampled": 0.03861781498954712
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.0031495351095379522,
+            "sampled": 0.06559181830461992
+          }
+        ],
+        "method": "independent_strata_v1",
+        "proposal_sha256": "7253bad2c1c5e43c4edce556b4272d0dafc9077d699c391b0c68123996384322",
+        "reference_choice": "84df03e5-a62e-f9fe-a018-60b21515505b",
+        "sample_choice": "84df03e5-a62e-f9fe-a018-60b21515505b",
+        "sampling_seed": "e636854006862c4faaafb1de584feae80785b352d79aa96712303f8e0cfe3bc2",
+        "seconds": 0.0052613746374845505,
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.7829960109245615
+      },
+      "posterior_parent": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.248154217852271,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.248154217852271,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.255537346443187,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.248154217852271
+        },
+        "action_tv": 0.0006902945064279353,
+        "distinct_sample_paths": 23,
+        "ess": 18.33628718304118,
+        "latent_path_tv": 0.7829960109245615,
+        "marginal_tv": {
+          "change_cause": 0.16526612938898252,
+          "instance_association_key": 0.03754289779037504,
+          "mechanism": 0.08940343066837729,
+          "placement_actor": 0.013588621920741596,
+          "regime_decision": 0.045057967264335703,
+          "role_key": 0.13912628115614692
+        },
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.04999999999999999,
+            "actor": 0.23696410167493215,
+            "habit": 0.3368020277140504,
+            "identity": 0.04526432273992386,
+            "noise": 0.19978591126185372,
+            "observation": 0.13118363660923985
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.04999999999999999,
+            "identity_mismatch": 0.3966838558632493,
+            "target_instance": 0.48683882134952994,
+            "unknown_instance": 0.06647732278722072
+          },
+          "mechanism": {
+            "__unresolved__": 0.04999999999999999,
+            "direct_relocation": 0.4859539715324735,
+            "handoff_relocation": 0.3380965693316226,
+            "unknown_mechanism": 0.12594945913590394
+          },
+          "placement_actor": {
+            "__unresolved__": 0.04999999999999999,
+            "guest": 0.3217542303220689,
+            "owner": 0.303078044745925,
+            "unknown_actor": 0.3251677249320061
+          },
+          "regime_decision": {
+            "__unresolved__": 0.04999999999999999,
+            "stay": 0.9086943309007002,
+            "unresolved": 0.04130566909930009
+          },
+          "role_key": {
+            "__unresolved__": 0.04999999999999999,
+            "direct:guest": 0.19348925785582122,
+            "direct:owner": 0.17712858561002104,
+            "direct:unknown_actor": 0.11533612806663124,
+            "guest=>owner": 0.06559181830461992,
+            "guest=>unknown_actor": 0.06035764083128398,
+            "owner=>guest": 0.0434796516834738,
+            "owner=>unknown_actor": 0.08388213772947095,
+            "unknown:guest": 0.0217398258417369,
+            "unknown:owner": 0.03861781498954712,
+            "unknown:unknown_actor": 0.06559181830461992,
+            "unknown_actor=>guest": 0.06304549494103699,
+            "unknown_actor=>owner": 0.0217398258417369
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.09989295563092686
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0030496837396613444,
+            "sampled": 0.03323866139361036
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.09989295563092686
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.010629680994690588,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.014172907992920794,
+            "sampled": 0.0434796516834738
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 0.0030496837396613444,
+            "sampled": 0.03323866139361036
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.06559181830461992
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 0.0027192207195720123,
+            "sampled": 0.04526432273992386
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.038617814989547083
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.005314840497345293,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-"
+            ],
+            "reference": 0.0007086453996460389,
+            "sampled": 0.04130566909930009
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.007086453996460396,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.002362151332153467,
+            "sampled": 0.0217398258417369
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0031495351095379522,
+            "sampled": 0.03861781498954712
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable"
+            ],
+            "reference": 0.0031495351095379522,
+            "sampled": 0.06559181830461992
+          }
+        ],
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.7829960109245615
+      },
+      "reference": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.2483843160210803,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.2483843160210803,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.25484705193675905,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.2483843160210803
+        },
+        "depth": 1,
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.20425,
+            "habit": 0.20425,
+            "identity": 0.10449999999999993,
+            "noise": 0.20425,
+            "observation": 0.20425,
+            "unresolved": 0.0285
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.3625627626096018,
+            "target_instance": 0.48341701681280286,
+            "unknown_instance": 0.10402022057759623
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.4275000000000003,
+            "handoff_relocation": 0.4275000000000001,
+            "unknown_mechanism": 0.09500000000000007
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.3166666666666668,
+            "owner": 0.3166666666666668,
+            "unknown_actor": 0.3166666666666668
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "create": 1.8568181818181712e-301,
+            "stay": 0.863636363636365,
+            "unresolved": 0.08636363636363628
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.14250000000000004,
+            "direct:owner": 0.14250000000000004,
+            "direct:unknown_actor": 0.14250000000000004,
+            "guest=>owner": 0.07125000000000001,
+            "guest=>unknown_actor": 0.07125000000000001,
+            "owner=>guest": 0.07125000000000001,
+            "owner=>unknown_actor": 0.07125000000000001,
+            "unknown:guest": 0.031666666666666676,
+            "unknown:owner": 0.031666666666666676,
+            "unknown:unknown_actor": 0.031666666666666676,
+            "unknown_actor=>guest": 0.07125000000000001,
+            "unknown_actor=>owner": 0.07125000000000001
+          }
+        },
+        "numeric_zero_mass_paths": 0,
+        "posterior_trace": "exact-7557ad11-2f02-c500-3916-45c4f2866718-matched_full_state_factorized-1.jsonl.gz",
+        "posterior_trace_sha256": "42d655ba968d20321ed448d70d0edfde9ec5623ebeb18784db937a07e742049e",
+        "seconds_including_worlds_readout_and_trace": 0.016159875318408012,
+        "streamed_vs_native_readout_tv": 6.938893903907228e-17,
+        "support_paths": 468,
+        "target_evaluations": 468,
+        "terminal": false,
+        "transition_evaluations": 468,
+        "unresolved_probability": 0.05
+      }
+    },
+    {
+      "arm": "matched_full_state_factorized",
+      "depth": 2,
+      "episode": "7557ad11-2f02-c500-3916-45c4f2866718",
+      "original": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.2556278820329531,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24812403932234894,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.24812403932234894,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24812403932234894
+        },
+        "action_tv": 0.0018638192256353603,
+        "candidate_support": 11232,
+        "distinct_sample_paths": 24,
+        "ess": 15.69103406285892,
+        "latent_path_tv": 0.9490525062006326,
+        "marginals": {
+          "change_cause": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "actor": 0.08897815449227676,
+              "habit": 0.25184887284885393,
+              "identity": 0.09846580036122204,
+              "noise": 0.1000485655253751,
+              "observation": 0.326835315694023,
+              "unresolved": 0.08382329107824914
+            },
+            "tv": 0.22490381123021672
+          },
+          "instance_association_key": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "identity_mismatch": 0.2793328229125066,
+              "target_instance": 0.6444246780387624,
+              "unknown_instance": 0.026242499048731265
+            },
+            "tv": 0.1292122298591218
+          },
+          "mechanism": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "direct_relocation": 0.2960188368379393,
+              "handoff_relocation": 0.4032755336427876,
+              "unknown_mechanism": 0.2507056295192731
+            },
+            "tv": 0.1676931883975739
+          },
+          "placement_actor": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "guest": 0.5385142302412878,
+              "owner": 0.19855055540322755,
+              "unknown_actor": 0.21293521435548476
+            },
+            "tv": 0.22184756357462604
+          },
+          "regime_decision": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "create": 1.6825535828380228e-301,
+              "stay": 0.8471728321738503,
+              "unresolved": 0.10282716782614967
+            },
+            "tv": 0.016463531462533196
+          },
+          "role_key": {
+            "sampled": {
+              "__unresolved__": 0.05,
+              "direct:guest": 0.10947481936860828,
+              "direct:owner": 0.04771960777575373,
+              "direct:unknown_actor": 0.13882440969357734,
+              "guest=>owner": 0.079734356237326,
+              "guest=>unknown_actor": 0.07411080466190742,
+              "owner=>guest": 0.09834086783871093,
+              "owner=>unknown_actor": 1.6825535828380228e-301,
+              "unknown:guest": 0.23445594077110168,
+              "unknown:owner": 0.016249688748171443,
+              "unknown_actor=>guest": 0.09624260226286688,
+              "unknown_actor=>owner": 0.054846902641976385
+            },
+            "tv": 0.26892468023532234
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable",
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 4.504321805012589e-05,
+            "sampled": 0.03432807609340212
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 2.9823733492219276e-05,
+            "sampled": 0.023805122916469572
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable",
+              "handoff_relocation|guest=>unknown_actor|target_instance|unresolved|stay|stable"
+            ],
+            "reference": 1.0795763246204388e-05,
+            "sampled": 0.039782728568505295
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 6.695059285368363e-06,
+            "sampled": 0.016249688748171443
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 6.413000423247575e-05,
+            "sampled": 0.031041779725506813
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable",
+              "direct_relocation|direct:guest|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 0.0001566571281007387,
+            "sampled": 0.028164822062174005
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable",
+              "unknown_mechanism|unknown:guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 3.558970315071685e-05,
+            "sampled": 0.09907617432559751
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable",
+              "direct_relocation|direct:owner|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.0001566571281007387,
+            "sampled": 0.028164822062174005
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|noise|stay|stable"
+            ],
+            "reference": 8.00768320891128e-05,
+            "sampled": 0.05220203975312304
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|unresolved|unresolved|-"
+            ],
+            "reference": 1.1173511454294798e-06,
+            "sampled": 0.04404056250974384
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|habit|stay|stable"
+            ],
+            "reference": 0.00010002770834434178,
+            "sampled": 0.05395086660200572
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable",
+              "direct_relocation|direct:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 4.059800825682401e-05,
+            "sampled": 0.026086937775165766
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|identity_mismatch|actor|stay|stable",
+              "direct_relocation|direct:guest|target_instance|identity|stay|stable"
+            ],
+            "reference": 1.375281345109781e-05,
+            "sampled": 0.010374530125656214
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable",
+              "handoff_relocation|owner=>guest|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 1.937263951426763e-05,
+            "sampled": 0.04732890646112589
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|identity_mismatch|actor|stay|stable",
+              "handoff_relocation|owner=>guest|target_instance|observation|stay|stable"
+            ],
+            "reference": 4.4623199840723474e-05,
+            "sampled": 0.05101196137758504
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|actor|stay|stable",
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 4.897946262467632e-05,
+            "sampled": 0.008044314075134623
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable",
+              "direct_relocation|direct:guest|target_instance|noise|stay|stable"
+            ],
+            "reference": 1.375281345109781e-05,
+            "sampled": 0.047846525772252055
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable",
+              "handoff_relocation|guest=>owner|target_instance|identity|stay|stable"
+            ],
+            "reference": 2.6612636155024202e-05,
+            "sampled": 0.05349185718859473
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|identity_mismatch|actor|stay|stable",
+              "direct_relocation|direct:guest|target_instance|identity|stay|stable"
+            ],
+            "reference": 3.060744921733983e-05,
+            "sampled": 0.023088941408526003
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-",
+              "handoff_relocation|guest=>owner|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 5.752540658738701e-07,
+            "sampled": 0.026242499048731265
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|observation|unresolved|-"
+            ],
+            "reference": 7.217423690102048e-06,
+            "sampled": 0.05878660531640584
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable",
+              "direct_relocation|direct:owner|target_instance|identity|stay|stable"
+            ],
+            "reference": 6.7816241532695134e-06,
+            "sampled": 0.011510471638445102
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:owner|target_instance|habit|stay|stable",
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|create|stable:route-c:3"
+            ],
+            "reference": 1.9001482735549196e-305,
+            "sampled": 1.6825535828380228e-301
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:guest|identity_mismatch|observation|stay|stable"
+            ],
+            "reference": 8.006845709501743e-06,
+            "sampled": 0.13537976644550417
+          }
+        ],
+        "method": "independent_strata_v1",
+        "proposal_sha256": "15fbfa74f178b015af1badaacafa209b1ac34668462fe20700d4a25beafc6c41",
+        "reference_choice": "58265e96-fddb-95bf-47ee-b19457b9cd40",
+        "sample_choice": "58265e96-fddb-95bf-47ee-b19457b9cd40",
+        "sampling_seed": "3f431c43b490df6d52a7af5daf6b8c93931e79ca7541c530ce6fe22938591815",
+        "seconds": 0.044292875565588474,
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.9490525062006326
+      },
+      "posterior_parent": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.2511653553282554,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24961154822391488,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.24961154822391488,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24961154822391488
+        },
+        "action_tv": 0.0036849898175848467,
+        "distinct_sample_paths": 24,
+        "ess": 11.605696975361077,
+        "latent_path_tv": 0.9483269446102451,
+        "marginal_tv": {
+          "change_cause": 0.22784578129102698,
+          "instance_association_key": 0.05279822681208182,
+          "mechanism": 0.044402166277702736,
+          "placement_actor": 0.16641436321435296,
+          "regime_decision": 0.06233288758480047,
+          "role_key": 0.2746777049712187
+        },
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.04999999999999999,
+            "actor": 0.30744115556823326,
+            "habit": 0.1850272317214819,
+            "identity": 0.20667394199737632,
+            "noise": 0.22389520462307289,
+            "unresolved": 0.026962466089835716
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.04999999999999999,
+            "identity_mismatch": 0.30073659146382037,
+            "target_instance": 0.5614764657002588,
+            "unknown_instance": 0.08778694283592098
+          },
+          "mechanism": {
+            "__unresolved__": 0.04999999999999999,
+            "direct_relocation": 0.45937738927206495,
+            "handoff_relocation": 0.45201233588393863,
+            "unknown_mechanism": 0.0386102748439965
+          },
+          "placement_actor": {
+            "__unresolved__": 0.04999999999999999,
+            "guest": 0.4830810298810146,
+            "owner": 0.2465660777681519,
+            "unknown_actor": 0.22035289235083344
+          },
+          "regime_decision": {
+            "__unresolved__": 0.04999999999999999,
+            "create": 1.8236441505115538e-301,
+            "stay": 0.801303476051583,
+            "unresolved": 0.14869652394841693
+          },
+          "role_key": {
+            "__unresolved__": 0.04999999999999999,
+            "direct:guest": 0.15865450259025993,
+            "direct:owner": 0.15202636273338807,
+            "direct:unknown_actor": 0.14869652394841693,
+            "guest=>owner": 0.04360114122016352,
+            "owner=>unknown_actor": 0.05797741804895939,
+            "unknown:guest": 1.8236441505115538e-301,
+            "unknown:owner": 0.024931324490539364,
+            "unknown:unknown_actor": 0.013678950353457132,
+            "unknown_actor=>guest": 0.3244265272907547,
+            "unknown_actor=>owner": 0.026007249324060983
+          }
+        },
+        "matched_paths": [
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "direct_relocation|direct:guest|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0002990975010054709,
+            "sampled": 0.06034267023386636
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "handoff_relocation|guest=>owner|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 6.417381325882078e-06,
+            "sampled": 0.01605511791053499
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|identity_mismatch|noise|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|noise|stay|stable"
+            ],
+            "reference": 0.00012094120306883228,
+            "sampled": 0.18319186573727408
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|target_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:guest|identity_mismatch|habit|create|stable:route-c:3"
+            ],
+            "reference": 3.1499829179468796e-305,
+            "sampled": 1.8236441505115538e-301
+          },
+          {
+            "path": [
+              "direct_relocation|direct:guest|unknown_instance|habit|stay|stable",
+              "unknown_mechanism|unknown:unknown_actor|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 2.755744830112135e-06,
+            "sampled": 0.013678950353457132
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable",
+              "direct_relocation|direct:guest|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 3.370900993003701e-05,
+            "sampled": 0.023774127395421944
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable",
+              "direct_relocation|direct:guest|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 8.898356439912804e-05,
+            "sampled": 0.027827581570651672
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable",
+              "direct_relocation|direct:owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 0.0001980365645334042,
+            "sampled": 0.02996528322966939
+          },
+          {
+            "path": [
+              "direct_relocation|direct:owner|target_instance|noise|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 8.00768320891128e-05,
+            "sampled": 0.018174863005767285
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|identity_mismatch|habit|stay|stable",
+              "handoff_relocation|guest=>owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 4.352042058626153e-05,
+            "sampled": 0.027546023309628537
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable",
+              "direct_relocation|direct:guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00043534279509680233,
+            "sampled": 0.046710123390319956
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|target_instance|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|stay|stable"
+            ],
+            "reference": 0.00014590950122528613,
+            "sampled": 0.03131073206132962
+          },
+          {
+            "path": [
+              "direct_relocation|direct:unknown_actor|unknown_instance|habit|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 1.5063883392078797e-05,
+            "sampled": 0.01851530903239391
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>owner|identity_mismatch|observation|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|unresolved|stay|stable"
+            ],
+            "reference": 2.7977436502364692e-06,
+            "sampled": 0.026962466089835716
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable",
+              "direct_relocation|direct:owner|identity_mismatch|habit|stay|stable"
+            ],
+            "reference": 4.7323590671138236e-05,
+            "sampled": 0.016688076507728026
+          },
+          {
+            "path": [
+              "handoff_relocation|guest=>unknown_actor|target_instance|habit|stay|stable",
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable"
+            ],
+            "reference": 2.2058633648895928e-05,
+            "sampled": 0.05797741804895939
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>guest|target_instance|actor|stay|stable",
+              "direct_relocation|direct:owner|identity_mismatch|noise|stay|stable"
+            ],
+            "reference": 2.6880499018054885e-05,
+            "sampled": 0.04070333888579881
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|identity_mismatch|identity|stay|stable",
+              "handoff_relocation|unknown_actor=>owner|identity_mismatch|actor|stay|stable"
+            ],
+            "reference": 1.5493400588798084e-05,
+            "sampled": 0.026007249324060983
+          },
+          {
+            "path": [
+              "handoff_relocation|owner=>unknown_actor|target_instance|habit|stay|stable",
+              "direct_relocation|direct:unknown_actor|target_instance|identity|unresolved|-"
+            ],
+            "reference": 7.940277577081219e-06,
+            "sampled": 0.14869652394841693
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>guest|target_instance|actor|unresolved|-",
+              "direct_relocation|direct:owner|unknown_instance|actor|stay|stable"
+            ],
+            "reference": 1.4052338054023957e-06,
+            "sampled": 0.01206196958936682
+          },
+          {
+            "path": [
+              "handoff_relocation|unknown_actor=>owner|target_instance|actor|stay|stable",
+              "direct_relocation|direct:owner|unknown_instance|habit|stay|stable"
+            ],
+            "reference": 1.7163564457783982e-05,
+            "sampled": 0.035895727940597234
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:guest|identity_mismatch|actor|stay|stable",
+              "handoff_relocation|unknown_actor=>guest|target_instance|habit|stay|stable"
+            ],
+            "reference": 1.4749764339419023e-05,
+            "sampled": 0.04627129136415411
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable",
+              "direct_relocation|direct:owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 3.5589703150716723e-05,
+            "sampled": 0.016711966580227788
+          },
+          {
+            "path": [
+              "unknown_mechanism|unknown:unknown_actor|target_instance|observation|stay|stable",
+              "unknown_mechanism|unknown:owner|target_instance|actor|stay|stable"
+            ],
+            "reference": 1.1798577364880141e-05,
+            "sampled": 0.024931324490539364
+          }
+        ],
+        "target_evaluations": 24,
+        "unrepresented_reference_mass": 0.9483269446102451
+      },
+      "reference": {
+        "action": {
+          "58265e96-fddb-95bf-47ee-b19457b9cd40": 0.2544740348217708,
+          "82a56461-6f13-2f20-22b7-80da264ce9d1": 0.24776905331512245,
+          "84df03e5-a62e-f9fe-a018-60b21515505b": 0.24998785854798433,
+          "d97823ef-291b-28e6-af59-6891312e80c3": 0.24776905331512245
+        },
+        "depth": 2,
+        "marginals": {
+          "change_cause": {
+            "__unresolved__": 0.05,
+            "actor": 0.2069652656239385,
+            "habit": 0.20590774738857884,
+            "identity": 0.09807328405824534,
+            "noise": 0.20696526562393877,
+            "observation": 0.20696526562393866,
+            "unresolved": 0.025123171681377253
+          },
+          "instance_association_key": {
+            "__unresolved__": 0.05,
+            "identity_mismatch": 0.3535348182759111,
+            "target_instance": 0.5152124481796494,
+            "unknown_instance": 0.08125273354445746
+          },
+          "mechanism": {
+            "__unresolved__": 0.05,
+            "direct_relocation": 0.43755394213425103,
+            "handoff_relocation": 0.4294336167440697,
+            "unknown_mechanism": 0.08301244112171911
+          },
+          "placement_actor": {
+            "__unresolved__": 0.05,
+            "guest": 0.3166666666666808,
+            "owner": 0.3166666666666869,
+            "unknown_actor": 0.31666666666667054
+          },
+          "regime_decision": {
+            "__unresolved__": 0.05,
+            "create": 1.1353578351230667e-301,
+            "reactivate": 0.0,
+            "stay": 0.8636363636364022,
+            "unresolved": 0.08636363636363514
+          },
+          "role_key": {
+            "__unresolved__": 0.05,
+            "direct:guest": 0.14585131404475163,
+            "direct:owner": 0.14585131404475077,
+            "direct:unknown_actor": 0.14585131404475174,
+            "guest=>owner": 0.07157226945733518,
+            "guest=>unknown_actor": 0.07157226945733558,
+            "owner=>guest": 0.07157226945733586,
+            "owner=>unknown_actor": 0.07157226945733558,
+            "unknown:guest": 0.02767081370723708,
+            "unknown:owner": 0.027670813707236803,
+            "unknown:unknown_actor": 0.02767081370723689,
+            "unknown_actor=>guest": 0.07157226945733586,
+            "unknown_actor=>owner": 0.07157226945733518
+          }
+        },
+        "numeric_zero_mass_paths": 2592,
+        "posterior_trace": "exact-7557ad11-2f02-c500-3916-45c4f2866718-matched_full_state_factorized-2.jsonl.gz",
+        "posterior_trace_sha256": "b6294f0a3c8233deca263c2acb7b2a5275bb49f90a368e7d25b324a8a7609727",
+        "seconds_including_worlds_readout_and_trace": 8.292298333719373,
+        "streamed_vs_native_readout_tv": null,
+        "support_paths": 220320,
+        "target_evaluations": 220320,
+        "terminal": true,
+        "transition_evaluations": 220320,
+        "unresolved_probability": 0.05
+      }
+    }
+  ],
+  "scientific_acceptance": false,
+  "source_sha": "3ca57e4cf2e57f71b795313a3c2f182d7e39f6ae"
+}

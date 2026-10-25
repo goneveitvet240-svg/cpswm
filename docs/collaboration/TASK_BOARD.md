@@ -1,3 +1,11 @@
+## 2026-10-25 A进行中：五步协同审计
+
+分支 `codex/pc-a-five-stage-synergy-20261025`，base `dfcfbb2b78cd06865923eda916700c3abee5e3e9`；独立工作树 `.local/simulation-stack/cpswm-synergy`。配对运行源码 `5c8905ed855e5f60d57b1b4704659db5aa3c8ad8`，真实目标运行源码 `3a00679365c2f50cec2d63d80efa585dbd18fafc`，审计器 `94aa2e675c256942e95cdfc5dddb4a1b26d3aab4`。
+
+768时点×6方法已跑完；原/新数据四原生臂各15/30错，改采样修复0/损害0。旧记忆统计仍在退休制度，单改采样或读取门槛不够。两步参考、八配置来源修订矩阵及101定向测试完成；完整原生状态复核、π0.5完整任务及物理重放正在执行。[阶段报告](../reviews/pc_a/five_stage_synergy_2026-10-25/REPORT.md)。当前提交前为本地进行中，推送/PR回执另记。生产默认/完整范围不变；B、全仓、统一及科学收益未验收。
+
+---
+
 ## 2026-10-25 A任务分支交付更新：三个问题
 
 分支 `codex/pc-a-joint-three-questions-20261025`，base `fbec4e9c2103b8bc505f261112d37313085a4cae`，实际源码 `d1bb6442037fc90cfe2fff22410f7f05e85d6b0d`；[报告](../reviews/pc_a/joint_three_questions_2026-10-25/REPORT.md)。Q1两步精确参考和真值描述未建立稳定联合优势，已披露平局/近似误差。Q2两个读取干预提高解析质量但未改动作。Q3四臂各384点均15错、修复0/损害0、回归5错保留。68测试通过、1536读出核验、8精确路径完整重复一致，生产默认不变。

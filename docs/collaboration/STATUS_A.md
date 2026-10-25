@@ -1,3 +1,23 @@
+# 2026-10-25 A交付：联合模型三个问题首轮完成
+
+分支 `codex/pc-a-joint-three-questions-20261025`，base `fbec4e9c2103b8bc505f261112d37313085a4cae`（PR124），实际运行/测试/核验源码 `d1bb6442037fc90cfe2fff22410f7f05e85d6b0d`。开工已fetch；独立目录 `.local/simulation-stack/cpswm-three-questions`，生产src/模型/先验/24粒子/v06默认均未改。共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。
+
+Q1：两validation世界各前两步，两模型8参考/三采样24比较完整重跑一致。当前联合人物边际对自身参考TV均值0.125740，消融0.080109；精确联合/消融真实人物概率均值0.408707/0.415980，第一名1错/3错受3次消融平局影响，不构成稳定准确性优势。Q2：仅放开人物/同时放开实例读取条件，联合解析质量0.095159→0.173452/0.215906；分布227/277步变化但动作未变。Q3：9轨迹384点，两臂×两干预均15错、修复0/损害0、原5回归错误全保留，与最近主人和匹配AMG放回动作一致。没有建立独有科学收益。
+
+68定向测试通过，Ruff通过；1536干预时点独立标量重建最大误差2.22e-16，固定状态与实时反馈运行一致；各臂384步写入/反馈审计/目标预算/搜索均与对应原版相同。两步完整再次重跑8路径文件与数值一致；28份交付文件hash和压缩解包核验完成。完整证据：[报告](../reviews/pc_a/joint_three_questions_2026-10-25/REPORT.md)、[命令](../reviews/pc_a/joint_three_questions_2026-10-25/COMMANDS.md)、[清单](../reviews/pc_a/joint_three_questions_2026-10-25/MANIFEST.json)。
+
+已推送草稿[PR125](https://github.com/goneveitvet240-svg/cpswm/pull/125)，堆叠PR124；报告/原件提交 `1c55590c9416e000441c2dbc8d2e29af7b6e9683`，未合并。PR124 static-quality已失败（130 mypy错误/8文件，与当前源码blob一致），本轮未修复；B独立复核、全仓CI、统一/科学验收和共享集成仍待完成。不自动合并。接续定位：把旧习惯无有效质量和有质量但内容错误分开追溯候选历史/制度/RB；目标真值校准与采样逼近分别验证。新的正式策略/确认集/科学阈值仍由用户决定。全E0–E6、H/R/I/C/Z/r/V、三个RB blocks、七算子及全部已定范围保留。
+
+---
+
+# 2026-10-25 A开工：联合模型三个问题
+
+用户已授权推进后验准确性、历史读取门控、动作净收益。分支 `codex/pc-a-joint-three-questions-20261025`，base `fbec4e9c2103b8bc505f261112d37313085a4cae`，独立目录 `.local/simulation-stack/cpswm-three-questions`。已fetch核对远端/集成和B交接；集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，未覆盖旧工作树。
+
+[冻结开发协议](../reviews/pc_a/joint_three_questions_2026-10-25/PROTOCOL.md)：既有两步精确参考+真值描述、两个固定只读门控干预、完整384点配对得失。生产模型/默认权重/数据权限不变。当前本地进行中，实际运行SHA、测试与结果待补。后续提交源绑定运行、存档和草稿PR；B/全仓/统一/科学验收仍未完成，完整范围保留。
+
+---
+
 # 2026-10-25 A交付：PR123动作不变的读出定位
 
 分支 `codex/pc-a-matched-readout-diagnostic-20261025`，base `cc7c6f7566bbdfa611a79a096f5a4eb6d6fd7f04`；最终实际运行/测试源码 `d3465ee69b9451bc1d458bcb0b12ab587a3eba2c`。独立工作树 `.local/simulation-stack/cpswm-matched-readout`，开工fetch成功；共享集成仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。生产src、模型/先验、原实验输入和完整研究范围均未改。

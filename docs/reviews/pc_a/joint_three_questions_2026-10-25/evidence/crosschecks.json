@@ -1,0 +1,749 @@
+{
+  "source_sha": "d1bb6442037fc90cfe2fff22410f7f05e85d6b0d",
+  "q1_ties": {
+    "stateful_full_joint/exact": [
+      {
+        "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+        "depth": 1,
+        "max_set": [
+          "owner"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.016389535843182756
+      },
+      {
+        "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+        "depth": 2,
+        "max_set": [
+          "unknown_actor"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.5192373028134434
+      },
+      {
+        "episode_id": "7557ad11-2f02-c500-3916-45c4f2866718",
+        "depth": 1,
+        "max_set": [
+          "owner"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.016389535843182756
+      },
+      {
+        "episode_id": "7557ad11-2f02-c500-3916-45c4f2866718",
+        "depth": 2,
+        "max_set": [
+          "owner"
+        ],
+        "truth_in_max_set": false,
+        "top_gap": 0.022266941547701813
+      }
+    ],
+    "stateful_full_joint/independent_strata_v1": [
+      {
+        "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+        "depth": 1,
+        "max_set": [
+          "owner"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.02006398298321349
+      },
+      {
+        "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+        "depth": 2,
+        "max_set": [
+          "unknown_actor"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.10780365579253437
+      },
+      {
+        "episode_id": "7557ad11-2f02-c500-3916-45c4f2866718",
+        "depth": 1,
+        "max_set": [
+          "guest"
+        ],
+        "truth_in_max_set": false,
+        "top_gap": 0.016738948014624777
+      },
+      {
+        "episode_id": "7557ad11-2f02-c500-3916-45c4f2866718",
+        "depth": 2,
+        "max_set": [
+          "guest"
+        ],
+        "truth_in_max_set": false,
+        "top_gap": 0.26130711709599586
+      }
+    ],
+    "matched_full_state_factorized/exact": [
+      {
+        "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+        "depth": 1,
+        "max_set": [
+          "guest",
+          "owner",
+          "unknown_actor"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.0
+      },
+      {
+        "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+        "depth": 2,
+        "max_set": [
+          "unknown_actor"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.5958817992227013
+      },
+      {
+        "episode_id": "7557ad11-2f02-c500-3916-45c4f2866718",
+        "depth": 1,
+        "max_set": [
+          "guest",
+          "owner",
+          "unknown_actor"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.0
+      },
+      {
+        "episode_id": "7557ad11-2f02-c500-3916-45c4f2866718",
+        "depth": 2,
+        "max_set": [
+          "guest",
+          "owner",
+          "unknown_actor"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 6.106226635438361e-15
+      }
+    ],
+    "matched_full_state_factorized/independent_strata_v1": [
+      {
+        "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+        "depth": 1,
+        "max_set": [
+          "owner"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.04164277375700415
+      },
+      {
+        "episode_id": "505d3813-83a3-016a-475e-f3eb0ca3d9da",
+        "depth": 2,
+        "max_set": [
+          "unknown_actor"
+        ],
+        "truth_in_max_set": true,
+        "top_gap": 0.5106133609758217
+      },
+      {
+        "episode_id": "7557ad11-2f02-c500-3916-45c4f2866718",
+        "depth": 1,
+        "max_set": [
+          "unknown_actor"
+        ],
+        "truth_in_max_set": false,
+        "top_gap": 0.0034134946099371732
+      },
+      {
+        "episode_id": "7557ad11-2f02-c500-3916-45c4f2866718",
+        "depth": 2,
+        "max_set": [
+          "guest"
+        ],
+        "truth_in_max_set": false,
+        "top_gap": 0.32557901588580296
+      }
+    ]
+  },
+  "q23": {
+    "native_joint/actor_read": {
+      "errors": 15,
+      "repaired": [],
+      "harmed": [],
+      "fixed_state_truth_probability_mean": 0.8847051835184873,
+      "residual_errors": [
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 18,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.23621173968916276
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 19,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.27056979761353434
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 20,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.19872795327225234
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 21,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 5.1706322177452976e-08
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 22,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 2.581162792614676e-14
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 27,
+          "class": "recurrence",
+          "truth": "47874108-1c1a-5b84-d1ab-c943508c6289",
+          "action": "21bda951-9147-bae1-cbe7-ac42bdd35243",
+          "analytic_mass": 0.3634026618441352
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 28,
+          "class": "recurrence",
+          "truth": "47874108-1c1a-5b84-d1ab-c943508c6289",
+          "action": "21bda951-9147-bae1-cbe7-ac42bdd35243",
+          "analytic_mass": 6.67673577014644e-15
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 1,
+          "class": "cold",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "07be17de-d56c-c36c-aced-d679cbc58044",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 2,
+          "class": "cold",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "07be17de-d56c-c36c-aced-d679cbc58044",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 27,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 3.3543457835047804e-272
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 28,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 9.55779445277201e-273
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 29,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 35,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 7.716453296745773e-260
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 36,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 8.949759362638192e-265
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 37,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 4.156779668483165e-269
+        }
+      ]
+    },
+    "native_joint/history_read": {
+      "errors": 15,
+      "repaired": [],
+      "harmed": [],
+      "fixed_state_truth_probability_mean": 0.876686017198984,
+      "residual_errors": [
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 18,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.23621173968916878
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 19,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.27056980126247626
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 20,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.1991801552490099
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 21,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.2362104385788218
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 22,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.23621043368225228
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 27,
+          "class": "recurrence",
+          "truth": "47874108-1c1a-5b84-d1ab-c943508c6289",
+          "action": "21bda951-9147-bae1-cbe7-ac42bdd35243",
+          "analytic_mass": 0.36340266184414216
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 28,
+          "class": "recurrence",
+          "truth": "47874108-1c1a-5b84-d1ab-c943508c6289",
+          "action": "21bda951-9147-bae1-cbe7-ac42bdd35243",
+          "analytic_mass": 0.12719093668773995
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 1,
+          "class": "cold",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "07be17de-d56c-c36c-aced-d679cbc58044",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 2,
+          "class": "cold",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "07be17de-d56c-c36c-aced-d679cbc58044",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 27,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 3.354345791227255e-272
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 28,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 2.4371429842148587e-272
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 29,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 1.551512344277744e-272
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 35,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 0.18207861622629576
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 36,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 0.18207861622629576
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 37,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 0.18207861622629576
+        }
+      ]
+    },
+    "native_six_potential_ablation/actor_read": {
+      "errors": 15,
+      "repaired": [],
+      "harmed": [],
+      "fixed_state_truth_probability_mean": 0.884966728446893,
+      "residual_errors": [
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 18,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.23621193460476872
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 19,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.27056963611875756
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 20,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.1988865304221421
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 21,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 7.411849284425409e-07
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 22,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 1.1060754220352038e-15
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 27,
+          "class": "recurrence",
+          "truth": "47874108-1c1a-5b84-d1ab-c943508c6289",
+          "action": "21bda951-9147-bae1-cbe7-ac42bdd35243",
+          "analytic_mass": 0.36340266217945794
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 28,
+          "class": "recurrence",
+          "truth": "47874108-1c1a-5b84-d1ab-c943508c6289",
+          "action": "21bda951-9147-bae1-cbe7-ac42bdd35243",
+          "analytic_mass": 2.1141001464031537e-15
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 1,
+          "class": "cold",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "07be17de-d56c-c36c-aced-d679cbc58044",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 2,
+          "class": "cold",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "07be17de-d56c-c36c-aced-d679cbc58044",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 27,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 4.9915540312844e-273
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 28,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 1.2935068193830782e-273
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 29,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 35,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 4.417847243251763e-257
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 36,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 5.138869752027006e-263
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 37,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 1.5093396577282383e-266
+        }
+      ]
+    },
+    "native_six_potential_ablation/history_read": {
+      "errors": 15,
+      "repaired": [],
+      "harmed": [],
+      "fixed_state_truth_probability_mean": 0.8767969801438159,
+      "residual_errors": [
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 18,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.2362119346051883
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 19,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.27056985629683
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 20,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.19927603435969884
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 21,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.23621118428339863
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+          "step": 22,
+          "class": "new_habit",
+          "truth": "ca17712f-e98d-d1c6-597e-411332394b82",
+          "action": "3702935e-950c-3a34-cb51-cb5e04cb9fc2",
+          "analytic_mass": 0.23620970432412375
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 27,
+          "class": "recurrence",
+          "truth": "47874108-1c1a-5b84-d1ab-c943508c6289",
+          "action": "21bda951-9147-bae1-cbe7-ac42bdd35243",
+          "analytic_mass": 0.3634026621794595
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 28,
+          "class": "recurrence",
+          "truth": "47874108-1c1a-5b84-d1ab-c943508c6289",
+          "action": "21bda951-9147-bae1-cbe7-ac42bdd35243",
+          "analytic_mass": 0.12719093318654512
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 1,
+          "class": "cold",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "07be17de-d56c-c36c-aced-d679cbc58044",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 2,
+          "class": "cold",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "07be17de-d56c-c36c-aced-d679cbc58044",
+          "analytic_mass": 0.0
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 27,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 4.991554055736599e-273
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 28,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 1.0277183159369152e-272
+        },
+        {
+          "condition": "sparse32",
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 29,
+          "class": "recurrence",
+          "truth": "c835d9c9-a542-fd9b-5555-4f8007ad1613",
+          "action": "eb83ae14-9510-3463-0b4e-a8f661177adf",
+          "analytic_mass": 2.0997436353919823e-273
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 35,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 0.18207861622629576
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 36,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 0.18207861622629576
+        },
+        {
+          "condition": "long64",
+          "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+          "step": 37,
+          "class": "new_habit",
+          "truth": "60eae337-8200-8849-e1d9-e9de5dc38a49",
+          "action": "d70f9b1d-742d-ebbf-2d45-5ededf74e76a",
+          "analytic_mass": 0.18207861622629576
+        }
+      ]
+    }
+  },
+  "joint_vs_ablation": {
+    "actor_read": {
+      "joint_wins": 0,
+      "joint_losses": 0,
+      "same_correctness": 384
+    },
+    "history_read": {
+      "joint_wins": 0,
+      "joint_losses": 0,
+      "same_correctness": 384
+    }
+  }
+}

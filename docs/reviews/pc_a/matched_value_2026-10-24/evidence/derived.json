@@ -1,0 +1,725 @@
+{
+  "aggregate": {
+    "latest_owner": {
+      "points": 384,
+      "put_error": 15,
+      "rank_checks": 431,
+      "search_error": 30
+    },
+    "markov": {
+      "points": 384,
+      "put_error": 137,
+      "rank_checks": 436,
+      "search_error": 30
+    },
+    "matched_amg": {
+      "points": 384,
+      "put_error": 15,
+      "rank_checks": 447,
+      "search_error": 30
+    },
+    "native_joint": {
+      "points": 384,
+      "put_error": 15,
+      "rank_checks": 430,
+      "search_error": 30
+    },
+    "native_six_potential_ablation": {
+      "points": 384,
+      "put_error": 15,
+      "rank_checks": 430,
+      "search_error": 30
+    },
+    "recency": {
+      "points": 384,
+      "put_error": 133,
+      "rank_checks": 435,
+      "search_error": 30
+    },
+    "source_owner_counts": {
+      "points": 384,
+      "put_error": 100,
+      "rank_checks": 431,
+      "search_error": 30
+    }
+  },
+  "checks": {
+    "full_prefix_replay_checks": 60,
+    "joint_operator_executions": {
+      "ccrr": 384,
+      "cf_bocpd": 384,
+      "opceu": 384,
+      "orrer_cheh": 242,
+      "pchmp": 384,
+      "rgrc": 403
+    },
+    "rescored_method_steps": 2688,
+    "target_score_evaluations": {
+      "native_joint": 9216,
+      "native_six_potential_ablation": 9216
+    }
+  },
+  "conditions": {
+    "complete32": {
+      "champion": "latest_owner",
+      "method_seconds": {
+        "latest_owner": 0.010464834980666637,
+        "markov": 0.010148867033421993,
+        "matched_amg": 0.03890484385192394,
+        "native_joint": 29.67718408908695,
+        "native_six_potential_ablation": 30.022454324178398,
+        "recency": 0.010212961584329605,
+        "source_owner_counts": 0.014023588970303535
+      },
+      "paired": {
+        "latest_owner": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "a8e319fb-48d6-d2df-81a6-4a6bc5198753"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "22e965fe-0fbc-6bc4-a241-04ba6b5a0da7"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "0fc21b4d-6ac0-0b08-9469-da248bf4aca2"
+          }
+        ],
+        "markov": [
+          {
+            "action_disagreements": 8,
+            "both_correct": 24,
+            "episode_id": "a8e319fb-48d6-d2df-81a6-4a6bc5198753",
+            "wins": 8
+          },
+          {
+            "action_disagreements": 9,
+            "both_correct": 23,
+            "episode_id": "22e965fe-0fbc-6bc4-a241-04ba6b5a0da7",
+            "wins": 9
+          },
+          {
+            "action_disagreements": 9,
+            "both_correct": 23,
+            "episode_id": "0fc21b4d-6ac0-0b08-9469-da248bf4aca2",
+            "wins": 9
+          }
+        ],
+        "matched_amg": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "a8e319fb-48d6-d2df-81a6-4a6bc5198753"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "22e965fe-0fbc-6bc4-a241-04ba6b5a0da7"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "0fc21b4d-6ac0-0b08-9469-da248bf4aca2"
+          }
+        ],
+        "native_six_potential_ablation": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "a8e319fb-48d6-d2df-81a6-4a6bc5198753"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "22e965fe-0fbc-6bc4-a241-04ba6b5a0da7"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 32,
+            "episode_id": "0fc21b4d-6ac0-0b08-9469-da248bf4aca2"
+          }
+        ],
+        "recency": [
+          {
+            "action_disagreements": 9,
+            "both_correct": 23,
+            "episode_id": "a8e319fb-48d6-d2df-81a6-4a6bc5198753",
+            "wins": 9
+          },
+          {
+            "action_disagreements": 9,
+            "both_correct": 23,
+            "episode_id": "22e965fe-0fbc-6bc4-a241-04ba6b5a0da7",
+            "wins": 9
+          },
+          {
+            "action_disagreements": 9,
+            "both_correct": 23,
+            "episode_id": "0fc21b4d-6ac0-0b08-9469-da248bf4aca2",
+            "wins": 9
+          }
+        ],
+        "source_owner_counts": [
+          {
+            "action_disagreements": 8,
+            "both_correct": 24,
+            "episode_id": "a8e319fb-48d6-d2df-81a6-4a6bc5198753",
+            "wins": 8
+          },
+          {
+            "action_disagreements": 8,
+            "both_correct": 24,
+            "episode_id": "22e965fe-0fbc-6bc4-a241-04ba6b5a0da7",
+            "wins": 8
+          },
+          {
+            "action_disagreements": 8,
+            "both_correct": 24,
+            "episode_id": "0fc21b4d-6ac0-0b08-9469-da248bf4aca2",
+            "wins": 8
+          }
+        ]
+      },
+      "selected": {
+        "latest_owner": 0.3,
+        "markov": 0.1,
+        "matched_amg": 0.2,
+        "recency": 0.5,
+        "source_owner_counts": 1.0
+      },
+      "totals": {
+        "latest_owner": {
+          "points": 96,
+          "put_error": 0,
+          "rank_checks": 96,
+          "search_error": 0
+        },
+        "markov": {
+          "points": 96,
+          "put_error": 26,
+          "rank_checks": 96,
+          "search_error": 0
+        },
+        "matched_amg": {
+          "points": 96,
+          "put_error": 0,
+          "rank_checks": 96,
+          "search_error": 0
+        },
+        "native_joint": {
+          "points": 96,
+          "put_error": 0,
+          "rank_checks": 96,
+          "search_error": 0
+        },
+        "native_six_potential_ablation": {
+          "points": 96,
+          "put_error": 0,
+          "rank_checks": 96,
+          "search_error": 0
+        },
+        "recency": {
+          "points": 96,
+          "put_error": 27,
+          "rank_checks": 96,
+          "search_error": 0
+        },
+        "source_owner_counts": {
+          "points": 96,
+          "put_error": 24,
+          "rank_checks": 96,
+          "search_error": 0
+        }
+      }
+    },
+    "long64": {
+      "champion": "latest_owner",
+      "method_seconds": {
+        "latest_owner": 0.020773995667696,
+        "markov": 0.018755814991891384,
+        "matched_amg": 0.06368776876479387,
+        "native_joint": 85.41064460761845,
+        "native_six_potential_ablation": 85.52557545993477,
+        "recency": 0.01950098481029272,
+        "source_owner_counts": 0.028621245175600052
+      },
+      "paired": {
+        "latest_owner": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 64,
+            "episode_id": "853bb5e8-03e5-3007-f0ea-48668db10396"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 61,
+            "both_wrong": 3,
+            "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 64,
+            "episode_id": "9c6b2746-83f8-e494-4bfe-3e85198b2d92"
+          }
+        ],
+        "markov": [
+          {
+            "action_disagreements": 22,
+            "both_correct": 42,
+            "episode_id": "853bb5e8-03e5-3007-f0ea-48668db10396",
+            "wins": 22
+          },
+          {
+            "action_disagreements": 17,
+            "both_correct": 44,
+            "both_wrong": 3,
+            "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+            "wins": 17
+          },
+          {
+            "action_disagreements": 19,
+            "both_correct": 45,
+            "episode_id": "9c6b2746-83f8-e494-4bfe-3e85198b2d92",
+            "wins": 19
+          }
+        ],
+        "matched_amg": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 64,
+            "episode_id": "853bb5e8-03e5-3007-f0ea-48668db10396"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 61,
+            "both_wrong": 3,
+            "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 64,
+            "episode_id": "9c6b2746-83f8-e494-4bfe-3e85198b2d92"
+          }
+        ],
+        "native_six_potential_ablation": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 64,
+            "episode_id": "853bb5e8-03e5-3007-f0ea-48668db10396"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 61,
+            "both_wrong": 3,
+            "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 64,
+            "episode_id": "9c6b2746-83f8-e494-4bfe-3e85198b2d92"
+          }
+        ],
+        "recency": [
+          {
+            "action_disagreements": 29,
+            "both_correct": 35,
+            "episode_id": "853bb5e8-03e5-3007-f0ea-48668db10396",
+            "wins": 29
+          },
+          {
+            "action_disagreements": 18,
+            "both_correct": 43,
+            "both_wrong": 3,
+            "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+            "wins": 18
+          },
+          {
+            "action_disagreements": 20,
+            "both_correct": 44,
+            "episode_id": "9c6b2746-83f8-e494-4bfe-3e85198b2d92",
+            "wins": 20
+          }
+        ],
+        "source_owner_counts": [
+          {
+            "action_disagreements": 18,
+            "both_correct": 46,
+            "episode_id": "853bb5e8-03e5-3007-f0ea-48668db10396",
+            "wins": 18
+          },
+          {
+            "action_disagreements": 15,
+            "both_correct": 46,
+            "both_wrong": 3,
+            "episode_id": "cb508235-d3fe-dbc8-4d20-68b32a53bd97",
+            "wins": 15
+          },
+          {
+            "action_disagreements": 17,
+            "both_correct": 47,
+            "episode_id": "9c6b2746-83f8-e494-4bfe-3e85198b2d92",
+            "wins": 17
+          }
+        ]
+      },
+      "selected": {
+        "latest_owner": 0.3,
+        "markov": 0.1,
+        "matched_amg": 0.2,
+        "recency": 0.8,
+        "source_owner_counts": 1.0
+      },
+      "totals": {
+        "latest_owner": {
+          "points": 192,
+          "put_error": 3,
+          "rank_checks": 205,
+          "search_error": 8
+        },
+        "markov": {
+          "points": 192,
+          "put_error": 61,
+          "rank_checks": 205,
+          "search_error": 8
+        },
+        "matched_amg": {
+          "points": 192,
+          "put_error": 3,
+          "rank_checks": 205,
+          "search_error": 8
+        },
+        "native_joint": {
+          "points": 192,
+          "put_error": 3,
+          "rank_checks": 204,
+          "search_error": 8
+        },
+        "native_six_potential_ablation": {
+          "points": 192,
+          "put_error": 3,
+          "rank_checks": 204,
+          "search_error": 8
+        },
+        "recency": {
+          "points": 192,
+          "put_error": 70,
+          "rank_checks": 204,
+          "search_error": 8
+        },
+        "source_owner_counts": {
+          "points": 192,
+          "put_error": 53,
+          "rank_checks": 205,
+          "search_error": 8
+        }
+      }
+    },
+    "sparse32": {
+      "champion": "latest_owner",
+      "method_seconds": {
+        "latest_owner": 0.006801784969866276,
+        "markov": 0.006539857015013695,
+        "matched_amg": 0.013825120404362679,
+        "native_joint": 11.918140965513885,
+        "native_six_potential_ablation": 11.50670400261879,
+        "recency": 0.0068108756095170975,
+        "source_owner_counts": 0.00880150031298399
+      },
+      "paired": {
+        "latest_owner": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 27,
+            "both_wrong": 5,
+            "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 30,
+            "both_wrong": 2,
+            "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 27,
+            "both_wrong": 5,
+            "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598"
+          }
+        ],
+        "markov": [
+          {
+            "action_disagreements": 4,
+            "both_correct": 23,
+            "both_wrong": 5,
+            "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+            "wins": 4
+          },
+          {
+            "action_disagreements": 20,
+            "both_correct": 10,
+            "both_wrong": 2,
+            "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+            "wins": 20
+          },
+          {
+            "action_disagreements": 14,
+            "both_correct": 13,
+            "both_wrong": 5,
+            "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+            "wins": 14
+          }
+        ],
+        "matched_amg": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 27,
+            "both_wrong": 5,
+            "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 30,
+            "both_wrong": 2,
+            "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 27,
+            "both_wrong": 5,
+            "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598"
+          }
+        ],
+        "native_six_potential_ablation": [
+          {
+            "action_disagreements": 0,
+            "both_correct": 27,
+            "both_wrong": 5,
+            "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 30,
+            "both_wrong": 2,
+            "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270"
+          },
+          {
+            "action_disagreements": 0,
+            "both_correct": 27,
+            "both_wrong": 5,
+            "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598"
+          }
+        ],
+        "recency": [
+          {
+            "action_disagreements": 4,
+            "both_correct": 23,
+            "both_wrong": 5,
+            "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+            "wins": 4
+          },
+          {
+            "action_disagreements": 11,
+            "both_correct": 19,
+            "both_wrong": 2,
+            "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+            "wins": 11
+          },
+          {
+            "action_disagreements": 9,
+            "both_correct": 18,
+            "both_wrong": 5,
+            "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+            "wins": 9
+          }
+        ],
+        "source_owner_counts": [
+          {
+            "action_disagreements": 4,
+            "both_correct": 23,
+            "both_wrong": 5,
+            "episode_id": "01ff2fb5-7033-062c-7a68-2148e8296d6c",
+            "wins": 4
+          },
+          {
+            "action_disagreements": 5,
+            "both_correct": 25,
+            "both_wrong": 2,
+            "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+            "wins": 5
+          },
+          {
+            "action_disagreements": 2,
+            "both_correct": 25,
+            "both_wrong": 5,
+            "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+            "wins": 2
+          }
+        ]
+      },
+      "selected": {
+        "latest_owner": 0.3,
+        "markov": 0.1,
+        "matched_amg": 0.2,
+        "recency": 0.5,
+        "source_owner_counts": 1.0
+      },
+      "totals": {
+        "latest_owner": {
+          "points": 96,
+          "put_error": 12,
+          "rank_checks": 130,
+          "search_error": 22
+        },
+        "markov": {
+          "points": 96,
+          "put_error": 50,
+          "rank_checks": 135,
+          "search_error": 22
+        },
+        "matched_amg": {
+          "points": 96,
+          "put_error": 12,
+          "rank_checks": 146,
+          "search_error": 22
+        },
+        "native_joint": {
+          "points": 96,
+          "put_error": 12,
+          "rank_checks": 130,
+          "search_error": 22
+        },
+        "native_six_potential_ablation": {
+          "points": 96,
+          "put_error": 12,
+          "rank_checks": 130,
+          "search_error": 22
+        },
+        "recency": {
+          "points": 96,
+          "put_error": 36,
+          "rank_checks": 135,
+          "search_error": 22
+        },
+        "source_owner_counts": {
+          "points": 96,
+          "put_error": 23,
+          "rank_checks": 130,
+          "search_error": 22
+        }
+      }
+    }
+  },
+  "e2": {
+    "followup_errors": {
+      "delayed_attribution/correct_late": {
+        "latest_owner:0.3": 0,
+        "latest_owner:0.5": 0,
+        "latest_owner:0.7": 0,
+        "native_factorized": 0,
+        "native_joint": 0,
+        "ordinary_memory": 3,
+        "owner_recency:0.5": 0,
+        "owner_recency:0.8": 0,
+        "owner_recency:0.95": 0,
+        "source_replay": 0
+      },
+      "delayed_attribution/no_revision": {
+        "latest_owner:0.3": 3,
+        "latest_owner:0.5": 3,
+        "latest_owner:0.7": 3,
+        "native_factorized": 3,
+        "native_joint": 3,
+        "ordinary_memory": 3,
+        "owner_recency:0.5": 3,
+        "owner_recency:0.8": 3,
+        "owner_recency:0.95": 3,
+        "source_replay": 3
+      },
+      "delayed_attribution/wrong_revision": {
+        "latest_owner:0.3": 3,
+        "latest_owner:0.5": 3,
+        "latest_owner:0.7": 3,
+        "native_factorized": 3,
+        "native_joint": 3,
+        "ordinary_memory": 0,
+        "owner_recency:0.5": 3,
+        "owner_recency:0.8": 3,
+        "owner_recency:0.95": 3,
+        "source_replay": 3
+      },
+      "delayed_attribution/wrong_then_recorrect": {
+        "latest_owner:0.3": 0,
+        "latest_owner:0.5": 0,
+        "latest_owner:0.7": 0,
+        "native_factorized": 0,
+        "native_joint": 0,
+        "ordinary_memory": 0,
+        "owner_recency:0.5": 0,
+        "owner_recency:0.8": 0,
+        "owner_recency:0.95": 0,
+        "source_replay": 0
+      },
+      "identity_correction/correct_late": {
+        "latest_owner:0.3": 0,
+        "latest_owner:0.5": 0,
+        "latest_owner:0.7": 0,
+        "native_factorized": 0,
+        "native_joint": 0,
+        "ordinary_memory": 3,
+        "owner_recency:0.5": 0,
+        "owner_recency:0.8": 0,
+        "owner_recency:0.95": 0,
+        "source_replay": 0
+      },
+      "identity_correction/no_revision": {
+        "latest_owner:0.3": 3,
+        "latest_owner:0.5": 3,
+        "latest_owner:0.7": 3,
+        "native_factorized": 3,
+        "native_joint": 3,
+        "ordinary_memory": 3,
+        "owner_recency:0.5": 3,
+        "owner_recency:0.8": 3,
+        "owner_recency:0.95": 3,
+        "source_replay": 3
+      },
+      "identity_correction/wrong_revision": {
+        "latest_owner:0.3": 3,
+        "latest_owner:0.5": 3,
+        "latest_owner:0.7": 3,
+        "native_factorized": 3,
+        "native_joint": 3,
+        "ordinary_memory": 0,
+        "owner_recency:0.5": 3,
+        "owner_recency:0.8": 3,
+        "owner_recency:0.95": 3,
+        "source_replay": 3
+      },
+      "identity_correction/wrong_then_recorrect": {
+        "latest_owner:0.3": 0,
+        "latest_owner:0.5": 0,
+        "latest_owner:0.7": 0,
+        "native_factorized": 0,
+        "native_joint": 0,
+        "ordinary_memory": 0,
+        "owner_recency:0.5": 0,
+        "owner_recency:0.8": 0,
+        "owner_recency:0.95": 0,
+        "source_replay": 0
+      }
+    },
+    "method_input_checkpoints": 640,
+    "methods": 10,
+    "trajectories": 8
+  },
+  "native_distributions": {
+    "differing_habit_distributions_tv_gt_1e-12": 206,
+    "joint_ablation_search_order_disagreements": 0,
+    "joint_latest_owner_search_order_disagreements": 59,
+    "max_tv": 0.0950810551981513
+  }
+}

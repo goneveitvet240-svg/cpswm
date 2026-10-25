@@ -1,3 +1,31 @@
+# 2026-10-25 A交付回执：PR127
+
+已推送草稿 [PR127](https://github.com/goneveitvet240-svg/cpswm/pull/127)，堆叠 PR126，未合并；报告/原件提交 `e52a086c66aae6e07a46dbc99e78d657883c87fe`，实际最终代码 `7a26b5eeedef2427f957bd41bc917b9806736031`。本次回执仅增加文档/CI原件。e52a 的 Ruff 通过，mypy 130错/8文件；8文件Git blob逐一核对均继承base，日志和核验位于 memory_action 证据目录。current-inputs仍运行，未有全仓test结果；最终新SHA的检查需另验。负收益、T²Mem原型尚未训练真实π0.5、B/统一/科学验收待完成等边界保持不变。
+
+---
+
+# 2026-10-25 A交付：三篇论文启发的机制实现与负收益验证
+
+分支 `codex/pc-a-memory-action-20261025`，base/PR126 `0acc47c10e2bc183b717d43c72eab1d6c32e09eb`。独立工作树 `.local/simulation-stack/cpswm-memory-action`。实际配对源码 `531b3ca36635d59c68f30a880b3cadffd5045194`，完整 π0.5/训练 `6e67a78355b8c79c38dbbccbc04d4f5db4656397`，版本绑定修复/10步执行 `d6369829a21941680aaaf4668959b4275ad127a1`，最终检查/审计源码 `7a26b5eeedef2427f957bd41bc917b9806736031`。
+
+已实现缺失制度证据分型、任务化主人读出、三类 RB 内容绑定与 live 原生后验目标接口；真实 π0.5 完整任务104步/21次推理成功，历史版本核心/物理重放通过；绑定修复版本10步/2推理通过核心与物理重放。完整结构的EEF伪造被物理核验拒绝。跨世界映射为显式操作者绑定，不是自然语义/迁移或独有收益。
+
+768开发时点×8方法完成，4608读出标量核验及739源文件hash通过。联合新读出旧/新35/46错，最近主人和AMG15/30错；修正1/损害37，净多错36。有效协同未通过，候选不替换默认。独立快速记忆合成训练完整/清空/乱序/反向历史准确率100%/51.17%/50.78%/0%；重复参数完全一致，但尚未接入或训练π0.5。
+
+最终70项核心交付测试、3项快速记忆测试通过；历史72项重叠套件也通过。12文件Ruff及3模块定向mypy通过。证据：[报告](../reviews/pc_a/memory_action_2026-10-25/REPORT.md)、[命令](../reviews/pc_a/memory_action_2026-10-25/COMMANDS.md)、[清单](../reviews/pc_a/memory_action_2026-10-25/MANIFEST.json)。推送/草稿PR回执另记；未推送之前仅本地完成。
+
+交付前fetch成功：集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B仍 `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`，未改B/共享分支。B独立复核、全仓CI、统一/科学验收待完成。真实VLA训练欠缺动作专家记忆接口和兼容示范/训练资源，不将小原型当作完成。下一步分解错误制度后验、cell内容和读出聚合，再做等预算动作验证；完整E0–E6、H/R/I/C/Z/r/V、三类RB和七算子及用户科学决策权限保留。
+
+---
+
+# 2026-10-25 A开工：三篇论文机制落实到动作
+
+用户已授权落实 LEDGER/T²Mem/MEMORA。分支 `codex/pc-a-memory-action-20261025`，base `0acc47c10e2bc183b717d43c72eab1d6c32e09eb`；独立工作树 `.local/simulation-stack/cpswm-memory-action`。fetch成功；集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`。
+
+[实施协议](../reviews/pc_a/memory_action_2026-10-25/PROTOCOL.md)：缺失制度证据分型、主人习惯读出、原生后验到目标、配对内容干预、独立T²Mem训练路径。本地进行中，未运行新实验；实际源码/测试/证据待补。旧默认保留；不宣称已训练π0.5或科学收益。下一步实现并做因果内容对照，B/全仓/统一验收待完成。
+
+---
+
 ## 2026-10-25 A交付：五步协同首轮实现与验证
 
 草稿[PR126](https://github.com/goneveitvet240-svg/cpswm/pull/126)，分支 `codex/pc-a-five-stage-synergy-20261025`，base `dfcfbb2b78cd06865923eda916700c3abee5e3e9`。独立工作树 `.local/simulation-stack/cpswm-synergy`。配对源码 `5c8905ed855e5f60d57b1b4704659db5aa3c8ad8`，π0.5运行 `3a00679365c2f50cec2d63d80efa585dbd18fafc`，完整状态审计 `3ca57e4cf2e57f71b795313a3c2f182d7e39f6ae`，目标干预 `7219ab9e065ae01803e3c2b9951bbd03ffe0c9d4`，最终物理负例工具 `b0ec243868b8db1f711e0247f8818b05143322a3`。

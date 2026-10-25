@@ -1,0 +1,642 @@
+﻿2026-10-25T14:36:32.3138045Z Current runner version: '2.338.0'
+2026-10-25T14:36:32.3164022Z ##[group]Runner Image Provisioner
+2026-10-25T14:36:32.3164873Z Hosted Compute Agent
+2026-10-25T14:36:32.3165379Z Version: 20261021.618
+2026-10-25T14:36:32.3166006Z Commit: 21505ad2541d5be6135ed84fc33697146cf75b8e
+2026-10-25T14:36:32.3166688Z Build Date: 2026-10-21T00:45:21Z
+2026-10-25T14:36:32.3167312Z Worker ID: {f3a3ee8a-cd0b-479b-9480-b7994ee18bf2}
+2026-10-25T14:36:32.3167964Z Region: westus3
+2026-10-25T14:36:32.3168436Z Cloud: Azure
+2026-10-25T14:36:32.3168938Z ##[endgroup]
+2026-10-25T14:36:32.3170684Z ##[group]Operating System
+2026-10-25T14:36:32.3171715Z Ubuntu
+2026-10-25T14:36:32.3172221Z 24.04.5
+2026-10-25T14:36:32.3172681Z LTS
+2026-10-25T14:36:32.3173181Z ##[endgroup]
+2026-10-25T14:36:32.3173709Z ##[group]Runner Image
+2026-10-25T14:36:32.3174254Z Image: ubuntu-24.04
+2026-10-25T14:36:32.3174792Z Version: 20261012.334.1
+2026-10-25T14:36:32.3175956Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-25T14:36:32.3177322Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-25T14:36:32.3178204Z ##[endgroup]
+2026-10-25T14:36:32.3179271Z ##[group]GITHUB_TOKEN Permissions
+2026-10-25T14:36:32.3181955Z Contents: read
+2026-10-25T14:36:32.3182534Z Metadata: read
+2026-10-25T14:36:32.3183040Z Packages: read
+2026-10-25T14:36:32.3183580Z ##[endgroup]
+2026-10-25T14:36:32.3185715Z Secret source: Actions
+2026-10-25T14:36:32.3186611Z Cache mode: write
+2026-10-25T14:36:32.3187484Z Prepare workflow directory
+2026-10-25T14:36:32.3563447Z Prepare all required actions
+2026-10-25T14:36:32.3613248Z Getting action download info
+2026-10-25T14:36:32.6591970Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-25T14:36:32.7574223Z Download action repository 'astral-sh/setup-uv@v5' (SHA:d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86)
+2026-10-25T14:36:33.8620738Z Complete job name: static-quality
+2026-10-25T14:36:33.9620039Z ##[group]Run actions/checkout@v4
+2026-10-25T14:36:33.9621842Z with:
+2026-10-25T14:36:33.9622401Z   repository: goneveitvet240-svg/cpswm
+2026-10-25T14:36:33.9626501Z   token: ***
+2026-10-25T14:36:33.9626981Z   ssh-strict: true
+2026-10-25T14:36:33.9627477Z   ssh-user: git
+2026-10-25T14:36:33.9627986Z   persist-credentials: true
+2026-10-25T14:36:33.9628528Z   clean: true
+2026-10-25T14:36:33.9629032Z   sparse-checkout-cone-mode: true
+2026-10-25T14:36:33.9629611Z   fetch-depth: 1
+2026-10-25T14:36:33.9630094Z   fetch-tags: false
+2026-10-25T14:36:33.9630609Z   show-progress: true
+2026-10-25T14:36:33.9631233Z   lfs: false
+2026-10-25T14:36:33.9631713Z   submodules: false
+2026-10-25T14:36:33.9632235Z   set-safe-directory: true
+2026-10-25T14:36:33.9632802Z   allow-unsafe-pr-checkout: false
+2026-10-25T14:36:33.9633716Z ##[endgroup]
+2026-10-25T14:36:34.0673503Z Syncing repository: goneveitvet240-svg/cpswm
+2026-10-25T14:36:34.0677508Z ##[group]Getting Git version info
+2026-10-25T14:36:34.0679360Z Working directory is '/home/runner/work/cpswm/cpswm'
+2026-10-25T14:36:34.0681945Z [command]/usr/bin/git version
+2026-10-25T14:36:34.0712208Z git version 2.55.0
+2026-10-25T14:36:34.0733458Z ##[endgroup]
+2026-10-25T14:36:34.0747427Z Temporarily overriding HOME='/home/runner/work/_temp/ef1fbc31-ed14-44d1-b25f-e1431bd114be' before making global git config changes
+2026-10-25T14:36:34.0751044Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-25T14:36:34.0753661Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cpswm/cpswm
+2026-10-25T14:36:34.0841538Z Deleting the contents of '/home/runner/work/cpswm/cpswm'
+2026-10-25T14:36:34.0844240Z ##[group]Initializing the repository
+2026-10-25T14:36:34.0846030Z [command]/usr/bin/git init /home/runner/work/cpswm/cpswm
+2026-10-25T14:36:34.0961160Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-25T14:36:34.0963637Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-25T14:36:34.0965475Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-25T14:36:34.0967265Z hint: call:
+2026-10-25T14:36:34.0967958Z hint:
+2026-10-25T14:36:34.0968925Z hint: 	git config --global init.defaultBranch <name>
+2026-10-25T14:36:34.0970038Z hint:
+2026-10-25T14:36:34.0970779Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-25T14:36:34.0972107Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-25T14:36:34.0973020Z hint:
+2026-10-25T14:36:34.0973688Z hint: 	git branch -m <name>
+2026-10-25T14:36:34.0974742Z hint:
+2026-10-25T14:36:34.0975566Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-25T14:36:34.0977503Z Initialized empty Git repository in /home/runner/work/cpswm/cpswm/.git/
+2026-10-25T14:36:34.0979819Z [command]/usr/bin/git remote add origin https://github.com/goneveitvet240-svg/cpswm
+2026-10-25T14:36:34.1027684Z ##[endgroup]
+2026-10-25T14:36:34.1028643Z ##[group]Disabling automatic garbage collection
+2026-10-25T14:36:34.1033886Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-25T14:36:34.1067657Z ##[endgroup]
+2026-10-25T14:36:34.1068545Z ##[group]Setting up auth
+2026-10-25T14:36:34.1077042Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-25T14:36:34.1110257Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-25T14:36:34.1466289Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-25T14:36:34.1504860Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-25T14:36:34.1695943Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-25T14:36:34.1729198Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-25T14:36:34.1911014Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-25T14:36:34.1946341Z ##[endgroup]
+2026-10-25T14:36:34.1947248Z ##[group]Fetching the repository
+2026-10-25T14:36:34.1955253Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +fa2cccbbe330b2218f9b5a6c420baf4e223c7e4b:refs/remotes/pull/127/merge
+2026-10-25T14:38:34.8614003Z From https://github.com/goneveitvet240-svg/cpswm
+2026-10-25T14:38:34.8631485Z  * [new ref]         fa2cccbbe330b2218f9b5a6c420baf4e223c7e4b -> pull/127/merge
+2026-10-25T14:38:34.8635534Z ##[endgroup]
+2026-10-25T14:38:34.8636351Z ##[group]Determining the checkout info
+2026-10-25T14:38:34.8637211Z ##[endgroup]
+2026-10-25T14:38:34.8637855Z [command]/usr/bin/git sparse-checkout disable
+2026-10-25T14:38:34.8690440Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-25T14:38:34.8718214Z ##[group]Checking out the ref
+2026-10-25T14:38:34.8723164Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/127/merge
+2026-10-25T14:38:35.8877490Z Updating files:   6% (714/10387)
+2026-10-25T14:38:35.8935416Z Updating files:   7% (728/10387)
+2026-10-25T14:38:35.9366841Z Updating files:   8% (831/10387)
+2026-10-25T14:38:35.9705009Z Updating files:   9% (935/10387)
+2026-10-25T14:38:35.9854251Z Updating files:  10% (1039/10387)
+2026-10-25T14:38:35.9889973Z Updating files:  11% (1143/10387)
+2026-10-25T14:38:35.9966972Z Updating files:  12% (1247/10387)
+2026-10-25T14:38:36.2919131Z Updating files:  13% (1351/10387)
+2026-10-25T14:38:36.3406031Z Updating files:  14% (1455/10387)
+2026-10-25T14:38:36.4387484Z Updating files:  15% (1559/10387)
+2026-10-25T14:38:36.9354802Z Updating files:  16% (1662/10387)
+2026-10-25T14:38:37.7055497Z Updating files:  16% (1746/10387)
+2026-10-25T14:38:37.9365276Z Updating files:  17% (1766/10387)
+2026-10-25T14:38:37.9869294Z Updating files:  17% (1813/10387)
+2026-10-25T14:38:37.9921174Z Updating files:  18% (1870/10387)
+2026-10-25T14:38:38.2485171Z Updating files:  19% (1974/10387)
+2026-10-25T14:38:38.4261190Z Updating files:  20% (2078/10387)
+2026-10-25T14:38:38.4587156Z Updating files:  21% (2182/10387)
+2026-10-25T14:38:38.4709392Z Updating files:  22% (2286/10387)
+2026-10-25T14:38:38.7457549Z Updating files:  23% (2390/10387)
+2026-10-25T14:38:38.7508910Z Updating files:  24% (2493/10387)
+2026-10-25T14:38:38.9600602Z Updating files:  25% (2597/10387)
+2026-10-25T14:38:38.9644417Z Updating files:  25% (2641/10387)
+2026-10-25T14:38:39.3297657Z Updating files:  26% (2701/10387)
+2026-10-25T14:38:39.3556463Z Updating files:  27% (2805/10387)
+2026-10-25T14:38:39.3957680Z Updating files:  28% (2909/10387)
+2026-10-25T14:38:39.4680240Z Updating files:  29% (3013/10387)
+2026-10-25T14:38:39.5029547Z Updating files:  30% (3117/10387)
+2026-10-25T14:38:39.5397954Z Updating files:  31% (3220/10387)
+2026-10-25T14:38:39.5917752Z Updating files:  32% (3324/10387)
+2026-10-25T14:38:39.6083470Z Updating files:  33% (3428/10387)
+2026-10-25T14:38:39.6124003Z Updating files:  34% (3532/10387)
+2026-10-25T14:38:39.7047295Z Updating files:  35% (3636/10387)
+2026-10-25T14:38:39.9589698Z Updating files:  36% (3740/10387)
+2026-10-25T14:38:40.2488452Z Updating files:  36% (3807/10387)
+2026-10-25T14:38:40.6923918Z Updating files:  37% (3844/10387)
+2026-10-25T14:38:40.7026678Z Updating files:  38% (3948/10387)
+2026-10-25T14:38:40.8875661Z Updating files:  39% (4051/10387)
+2026-10-25T14:38:40.9684679Z Updating files:  39% (4106/10387)
+2026-10-25T14:38:41.0657790Z Updating files:  40% (4155/10387)
+2026-10-25T14:38:41.0746022Z Updating files:  41% (4259/10387)
+2026-10-25T14:38:41.0811218Z Updating files:  42% (4363/10387)
+2026-10-25T14:38:41.0848363Z Updating files:  43% (4467/10387)
+2026-10-25T14:38:41.0926088Z Updating files:  44% (4571/10387)
+2026-10-25T14:38:41.1019076Z Updating files:  45% (4675/10387)
+2026-10-25T14:38:41.1050028Z Updating files:  46% (4779/10387)
+2026-10-25T14:38:41.1153435Z Updating files:  47% (4882/10387)
+2026-10-25T14:38:41.1184248Z Updating files:  48% (4986/10387)
+2026-10-25T14:38:41.1243886Z Updating files:  49% (5090/10387)
+2026-10-25T14:38:41.1275515Z Updating files:  50% (5194/10387)
+2026-10-25T14:38:41.1344614Z Updating files:  51% (5298/10387)
+2026-10-25T14:38:41.1410439Z Updating files:  52% (5402/10387)
+2026-10-25T14:38:41.1444729Z Updating files:  53% (5506/10387)
+2026-10-25T14:38:41.1476272Z Updating files:  54% (5609/10387)
+2026-10-25T14:38:41.1497160Z Updating files:  55% (5713/10387)
+2026-10-25T14:38:41.1521789Z Updating files:  56% (5817/10387)
+2026-10-25T14:38:41.1537856Z Updating files:  57% (5921/10387)
+2026-10-25T14:38:41.1557598Z Updating files:  58% (6025/10387)
+2026-10-25T14:38:41.1576635Z Updating files:  59% (6129/10387)
+2026-10-25T14:38:41.1596152Z Updating files:  60% (6233/10387)
+2026-10-25T14:38:41.1617484Z Updating files:  61% (6337/10387)
+2026-10-25T14:38:41.1637316Z Updating files:  62% (6440/10387)
+2026-10-25T14:38:41.1657308Z Updating files:  63% (6544/10387)
+2026-10-25T14:38:41.1676165Z Updating files:  64% (6648/10387)
+2026-10-25T14:38:41.1695763Z Updating files:  65% (6752/10387)
+2026-10-25T14:38:41.1715401Z Updating files:  66% (6856/10387)
+2026-10-25T14:38:41.1774428Z Updating files:  67% (6960/10387)
+2026-10-25T14:38:41.3701792Z Updating files:  68% (7064/10387)
+2026-10-25T14:38:41.4373761Z Updating files:  69% (7168/10387)
+2026-10-25T14:38:41.4517447Z Updating files:  70% (7271/10387)
+2026-10-25T14:38:41.5499921Z Updating files:  71% (7375/10387)
+2026-10-25T14:38:41.6569768Z Updating files:  72% (7479/10387)
+2026-10-25T14:38:41.7075947Z Updating files:  73% (7583/10387)
+2026-10-25T14:38:41.7502836Z Updating files:  74% (7687/10387)
+2026-10-25T14:38:42.0324244Z Updating files:  75% (7791/10387)
+2026-10-25T14:38:42.1939328Z Updating files:  75% (7846/10387)
+2026-10-25T14:38:42.8989617Z Updating files:  76% (7895/10387)
+2026-10-25T14:38:43.4569334Z Updating files:  76% (7906/10387)
+2026-10-25T14:38:43.6156843Z Updating files:  77% (7998/10387)
+2026-10-25T14:38:43.6757878Z Updating files:  78% (8102/10387)
+2026-10-25T14:38:43.6897703Z Updating files:  79% (8206/10387)
+2026-10-25T14:38:43.6953489Z Updating files:  80% (8310/10387)
+2026-10-25T14:38:43.8802721Z Updating files:  81% (8414/10387)
+2026-10-25T14:38:43.8843141Z Updating files:  82% (8518/10387)
+2026-10-25T14:38:43.8849709Z Updating files:  83% (8622/10387)
+2026-10-25T14:38:43.8886209Z Updating files:  83% (8638/10387)
+2026-10-25T14:38:43.9356689Z Updating files:  84% (8726/10387)
+2026-10-25T14:38:43.9419449Z Updating files:  85% (8829/10387)
+2026-10-25T14:38:43.9557469Z Updating files:  86% (8933/10387)
+2026-10-25T14:38:43.9602977Z Updating files:  87% (9037/10387)
+2026-10-25T14:38:43.9682632Z Updating files:  88% (9141/10387)
+2026-10-25T14:38:43.9743219Z Updating files:  89% (9245/10387)
+2026-10-25T14:38:43.9822814Z Updating files:  90% (9349/10387)
+2026-10-25T14:38:43.9957674Z Updating files:  91% (9453/10387)
+2026-10-25T14:38:44.0058225Z Updating files:  92% (9557/10387)
+2026-10-25T14:38:44.0111641Z Updating files:  93% (9660/10387)
+2026-10-25T14:38:44.0170816Z Updating files:  94% (9764/10387)
+2026-10-25T14:38:44.0230056Z Updating files:  95% (9868/10387)
+2026-10-25T14:38:44.0301906Z Updating files:  96% (9972/10387)
+2026-10-25T14:38:44.0358491Z Updating files:  97% (10076/10387)
+2026-10-25T14:38:44.0420592Z Updating files:  98% (10180/10387)
+2026-10-25T14:38:44.0515184Z Updating files:  99% (10284/10387)
+2026-10-25T14:38:44.0516051Z Updating files: 100% (10387/10387)
+2026-10-25T14:38:44.0516514Z Updating files: 100% (10387/10387), done.
+2026-10-25T14:38:44.0639487Z Note: switching to 'refs/remotes/pull/127/merge'.
+2026-10-25T14:38:44.0639939Z 
+2026-10-25T14:38:44.0640288Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-25T14:38:44.0641596Z changes and commit them, and you can discard any commits you make in this
+2026-10-25T14:38:44.0642474Z state without impacting any branches by switching back to a branch.
+2026-10-25T14:38:44.0643227Z 
+2026-10-25T14:38:44.0643674Z If you want to create a new branch to retain commits you create, you may
+2026-10-25T14:38:44.0644490Z do so (now or later) by using -c with the switch command. Example:
+2026-10-25T14:38:44.0644881Z 
+2026-10-25T14:38:44.0645055Z   git switch -c <new-branch-name>
+2026-10-25T14:38:44.0645348Z 
+2026-10-25T14:38:44.0645519Z Or undo this operation with:
+2026-10-25T14:38:44.0645787Z 
+2026-10-25T14:38:44.0645927Z   git switch -
+2026-10-25T14:38:44.0646132Z 
+2026-10-25T14:38:44.0646478Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-25T14:38:44.0646998Z 
+2026-10-25T14:38:44.0647618Z HEAD is now at fa2cccb Merge e52a086c66aae6e07a46dbc99e78d657883c87fe into 0acc47c10e2bc183b717d43c72eab1d6c32e09eb
+2026-10-25T14:38:44.0853102Z ##[endgroup]
+2026-10-25T14:38:44.0894477Z [command]/usr/bin/git log -1 --format=%H
+2026-10-25T14:38:44.0926690Z fa2cccbbe330b2218f9b5a6c420baf4e223c7e4b
+2026-10-25T14:38:44.1170460Z ##[group]Run astral-sh/setup-uv@v5
+2026-10-25T14:38:44.1170734Z with:
+2026-10-25T14:38:44.1171197Z   python-version: 3.13
+2026-10-25T14:38:44.1171464Z   enable-cache: true
+2026-10-25T14:38:44.1173911Z   github-token: ***
+2026-10-25T14:38:44.1174189Z   cache-dependency-glob: **/uv.lock
+**/requirements*.txt
+
+2026-10-25T14:38:44.1174500Z   prune-cache: true
+2026-10-25T14:38:44.1174716Z   ignore-nothing-to-cache: false
+2026-10-25T14:38:44.1174974Z   ignore-empty-workdir: false
+2026-10-25T14:38:44.1175219Z ##[endgroup]
+2026-10-25T14:38:44.2856383Z (node:2302) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-25T14:38:44.2857578Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-25T14:38:44.6232396Z Downloading uv from "https://github.com/astral-sh/uv/releases/download/0.13.5/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+2026-10-25T14:38:45.0442670Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/d0ea4b4c-31a6-40b2-a9c8-74fd8e3ad58b -f /home/runner/work/_temp/bb88420b-08cc-44ef-aec1-3dc462b076d4
+2026-10-25T14:38:45.3419017Z Added /home/runner/.local/bin to the path
+2026-10-25T14:38:45.3419663Z Added /opt/hostedtoolcache/uv/0.13.5/x86_64 to the path
+2026-10-25T14:38:45.3420213Z Set UV_PYTHON to 3.13
+2026-10-25T14:38:45.3420595Z Activating python venv...
+2026-10-25T14:38:46.3795708Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+2026-10-25T14:38:46.3796399Z Successfully installed uv version 0.13.5
+2026-10-25T14:38:46.3797151Z Searching files using cache dependency glob: **/uv.lock,**/requirements*.txt
+2026-10-25T14:38:46.7088554Z /home/runner/work/cpswm/cpswm/docs/reviews/pc_a/object_memory_integration_2026-10-10/requirements-component.txt
+2026-10-25T14:38:46.7104633Z /home/runner/work/cpswm/cpswm/docs/reviews/pc_a/object_memory_integration_2026-10-10/requirements-host.txt
+2026-10-25T14:38:47.1561256Z /home/runner/work/cpswm/cpswm/uv.lock
+2026-10-25T14:38:47.1587760Z Found 3 files to hash.
+2026-10-25T14:38:47.1648535Z Trying to restore uv cache from GitHub Actions cache with key: setup-uv-1-x86_64-unknown-linux-gnu-3.13-73a11f0a425d8a2e2f3eacd2802d4cb18281c4ed5eb31527cd798bc6a06f1768
+2026-10-25T14:38:47.3518913Z Cache hit for: setup-uv-1-x86_64-unknown-linux-gnu-3.13-73a11f0a425d8a2e2f3eacd2802d4cb18281c4ed5eb31527cd798bc6a06f1768
+2026-10-25T14:38:47.3662884Z (node:2302) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-25T14:38:47.8647501Z Received 313906 of 313906 (100.0%), 1.0 MBs/sec
+2026-10-25T14:38:47.8648184Z Cache Size: ~0 MB (313906 B)
+2026-10-25T14:38:47.8673686Z [command]/usr/bin/tar -xf /home/runner/work/_temp/c0cd8366-de2f-4607-a227-f82f87aae2bf/cache.tzst -P -C /home/runner/work/cpswm/cpswm --use-compress-program unzstd
+2026-10-25T14:38:47.8771475Z Cache restored successfully
+2026-10-25T14:38:47.8778797Z uv cache restored from GitHub Actions cache with key: setup-uv-1-x86_64-unknown-linux-gnu-3.13-73a11f0a425d8a2e2f3eacd2802d4cb18281c4ed5eb31527cd798bc6a06f1768
+2026-10-25T14:38:47.8907648Z ##[group]Run uv sync --frozen --extra dev --extra perception --extra hand-perception
+2026-10-25T14:38:47.8908383Z [36;1muv sync --frozen --extra dev --extra perception --extra hand-perception[0m
+2026-10-25T14:38:47.9094454Z shell: /usr/bin/bash -e {0}
+2026-10-25T14:38:47.9094752Z env:
+2026-10-25T14:38:47.9094966Z   UV_PYTHON: 3.13
+2026-10-25T14:38:47.9095216Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+2026-10-25T14:38:47.9095583Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-25T14:38:47.9095888Z ##[endgroup]
+2026-10-25T14:38:48.0806948Z    Building cpswm @ file:///home/runner/work/cpswm/cpswm
+2026-10-25T14:38:48.1585762Z Downloading nvidia-cusparse (139.2MiB)
+2026-10-25T14:38:48.1587646Z Downloading nvidia-cuda-nvrtc (86.0MiB)
+2026-10-25T14:38:48.1591861Z Downloading nvidia-curand (56.8MiB)
+2026-10-25T14:38:48.1593031Z Downloading numpy (15.9MiB)
+2026-10-25T14:38:48.1593923Z Downloading nvidia-cuda-cupti (10.2MiB)
+2026-10-25T14:38:48.1595326Z Downloading scikit-learn (8.7MiB)
+2026-10-25T14:38:48.1595801Z Downloading pillow (6.6MiB)
+2026-10-25T14:38:48.1596205Z Downloading sympy (6.0MiB)
+2026-10-25T14:38:48.1597619Z Downloading hf-xet (4.3MiB)
+2026-10-25T14:38:48.1598008Z Downloading tokenizers (3.1MiB)
+2026-10-25T14:38:48.1598438Z Downloading pydantic-core (2.0MiB)
+2026-10-25T14:38:48.1598937Z Downloading networkx (2.0MiB)
+2026-10-25T14:38:48.1601381Z Downloading kiwisolver (1.4MiB)
+2026-10-25T14:38:48.1602400Z Downloading pygments (1.2MiB)
+2026-10-25T14:38:48.1603715Z Downloading nvidia-cufile (1.2MiB)
+2026-10-25T14:38:48.1712041Z Downloading scipy (33.6MiB)
+2026-10-25T14:38:48.1712619Z Downloading cryptography (4.5MiB)
+2026-10-25T14:38:48.1713664Z Downloading hypothesis (1.1MiB)
+2026-10-25T14:38:48.1714801Z Downloading torch (502.2MiB)
+2026-10-25T14:38:48.1716081Z Downloading transformers (11.2MiB)
+2026-10-25T14:38:48.1717244Z Downloading nvidia-cublas (403.5MiB)
+2026-10-25T14:38:48.1718351Z Downloading torchvision (7.3MiB)
+2026-10-25T14:38:48.1719531Z Downloading nvidia-cusparselt-cu13 (162.3MiB)
+2026-10-25T14:38:48.1720545Z Downloading matplotlib (9.6MiB)
+2026-10-25T14:38:48.1721895Z Downloading nvidia-cuda-runtime (2.1MiB)
+2026-10-25T14:38:48.1722920Z Downloading nvidia-nvshmem-cu13 (57.6MiB)
+2026-10-25T14:38:48.1723990Z Downloading mypy (14.5MiB)
+2026-10-25T14:38:48.1725022Z Downloading virtualenv (5.1MiB)
+2026-10-25T14:38:48.1726008Z Downloading fonttools (4.7MiB)
+2026-10-25T14:38:48.1728486Z Downloading ruff (10.5MiB)
+2026-10-25T14:38:48.1729939Z Downloading nvidia-cufft (204.2MiB)
+2026-10-25T14:38:48.1731816Z Downloading nvidia-nccl-cu13 (196.4MiB)
+2026-10-25T14:38:48.1733061Z Downloading ast-serialize (1.2MiB)
+2026-10-25T14:38:48.1734030Z Downloading nvidia-cusolver (191.6MiB)
+2026-10-25T14:38:48.1735414Z Downloading triton (188.6MiB)
+2026-10-25T14:38:48.1736615Z Downloading opencv-contrib-python (78.3MiB)
+2026-10-25T14:38:48.1737890Z Downloading mediapipe (11.8MiB)
+2026-10-25T14:38:48.1739403Z Downloading nvidia-nvjitlink (38.9MiB)
+2026-10-25T14:38:48.1740780Z Downloading nvidia-cudnn-cu13 (349.2MiB)
+2026-10-25T14:38:48.1800215Z Downloading cuda-bindings (6.2MiB)
+2026-10-25T14:38:48.4285921Z  Downloaded ast-serialize
+2026-10-25T14:38:48.4306276Z  Downloaded nvidia-cufile
+2026-10-25T14:38:48.4496537Z  Downloaded kiwisolver
+2026-10-25T14:38:48.7700013Z  Downloaded hypothesis
+2026-10-25T14:38:48.8628306Z  Downloaded pygments
+2026-10-25T14:38:49.2135096Z  Downloaded networkx
+2026-10-25T14:38:49.2202332Z  Downloaded pydantic-core
+2026-10-25T14:38:49.2585094Z  Downloaded nvidia-cuda-runtime
+2026-10-25T14:38:49.5088683Z  Downloaded tokenizers
+2026-10-25T14:38:50.0120523Z  Downloaded hf-xet
+2026-10-25T14:38:50.1102137Z  Downloaded cryptography
+2026-10-25T14:38:50.2611937Z  Downloaded virtualenv
+2026-10-25T14:38:50.5141999Z  Downloaded fonttools
+2026-10-25T14:38:50.5831944Z  Downloaded cuda-bindings
+2026-10-25T14:38:50.5959288Z  Downloaded sympy
+2026-10-25T14:38:50.6422028Z  Downloaded pillow
+2026-10-25T14:38:50.7090506Z  Downloaded torchvision
+2026-10-25T14:38:50.7772635Z  Downloaded scikit-learn
+2026-10-25T14:38:50.8354615Z  Downloaded matplotlib
+2026-10-25T14:38:50.8839964Z  Downloaded nvidia-cuda-cupti
+2026-10-25T14:38:50.9157607Z  Downloaded ruff
+2026-10-25T14:38:50.9746513Z  Downloaded transformers
+2026-10-25T14:38:50.9755982Z  Downloaded mediapipe
+2026-10-25T14:38:51.3071551Z  Downloaded numpy
+2026-10-25T14:38:51.5865961Z  Downloaded mypy
+2026-10-25T14:38:52.0909542Z  Downloaded scipy
+2026-10-25T14:38:52.4022050Z  Downloaded nvidia-nvjitlink
+2026-10-25T14:38:52.7749335Z  Downloaded nvidia-curand
+2026-10-25T14:38:52.8093378Z  Downloaded nvidia-nvshmem-cu13
+2026-10-25T14:38:53.3812162Z  Downloaded opencv-contrib-python
+2026-10-25T14:38:53.5188286Z  Downloaded nvidia-cuda-nvrtc
+2026-10-25T14:38:54.0072905Z       Built cpswm @ file:///home/runner/work/cpswm/cpswm
+2026-10-25T14:38:54.5254256Z  Downloaded nvidia-cusparse
+2026-10-25T14:38:54.8094292Z  Downloaded nvidia-cusparselt-cu13
+2026-10-25T14:38:55.1347653Z  Downloaded nvidia-cusolver
+2026-10-25T14:38:55.2722351Z  Downloaded nvidia-cufft
+2026-10-25T14:38:55.2797101Z  Downloaded nvidia-nccl-cu13
+2026-10-25T14:38:58.0203284Z  Downloaded triton
+2026-10-25T14:38:58.0359119Z  Downloaded nvidia-cudnn-cu13
+2026-10-25T14:38:58.0538955Z  Downloaded nvidia-cublas
+2026-10-25T14:39:01.0907440Z  Downloaded torch
+2026-10-25T14:39:01.1519986Z Prepared 107 packages in 13.07s
+2026-10-25T14:39:02.1197848Z Installed 107 packages in 967ms
+2026-10-25T14:39:02.1199037Z  + absl-py==2.5.0
+2026-10-25T14:39:02.1199939Z  + annotated-doc==0.0.5
+2026-10-25T14:39:02.1200529Z  + annotated-types==0.8.0
+2026-10-25T14:39:02.1201699Z  + antlr4-python3-runtime==4.9.3
+2026-10-25T14:39:02.1202431Z  + anyio==4.14.2
+2026-10-25T14:39:02.1203137Z  + ast-serialize==0.8.0
+2026-10-25T14:39:02.1203810Z  + certifi==2026.7.22
+2026-10-25T14:39:02.1204751Z  + cffi==2.1.1
+2026-10-25T14:39:02.1205459Z  + cfgv==3.5.0
+2026-10-25T14:39:02.1206078Z  + click==8.4.2
+2026-10-25T14:39:02.1206738Z  + contourpy==1.3.3
+2026-10-25T14:39:02.1207390Z  + coverage==7.15.4
+2026-10-25T14:39:02.1208204Z  + cpswm==0.1.0 (from file:///home/runner/work/cpswm/cpswm)
+2026-10-25T14:39:02.1209056Z  + cryptography==47.0.0
+2026-10-25T14:39:02.1209721Z  + cuda-bindings==13.3.1
+2026-10-25T14:39:02.1210422Z  + cuda-pathfinder==1.6.0
+2026-10-25T14:39:02.1211350Z  + cuda-toolkit==13.0.3.0
+2026-10-25T14:39:02.1212042Z  + cycler==0.12.1
+2026-10-25T14:39:02.1212673Z  + distlib==0.4.3
+2026-10-25T14:39:02.1213311Z  + execnet==2.1.2
+2026-10-25T14:39:02.1213982Z  + filelock==3.32.3
+2026-10-25T14:39:02.1214631Z  + flatbuffers==25.12.19
+2026-10-25T14:39:02.1215302Z  + fonttools==4.63.0
+2026-10-25T14:39:02.1215990Z  + fsspec==2026.6.0
+2026-10-25T14:39:02.1216588Z  + h11==0.16.0
+2026-10-25T14:39:02.1217241Z  + hf-xet==1.6.0
+2026-10-25T14:39:02.1217934Z  + httpcore==1.0.9
+2026-10-25T14:39:02.1218595Z  + httpx==0.28.1
+2026-10-25T14:39:02.1219158Z  + huggingface-hub==1.27.0
+2026-10-25T14:39:02.1219854Z  + hydra-core==1.3.5
+2026-10-25T14:39:02.1220655Z  + hypothesis==6.165.10
+2026-10-25T14:39:02.1221386Z  + identify==2.6.19
+2026-10-25T14:39:02.1222027Z  + idna==3.18
+2026-10-25T14:39:02.1222610Z  + iniconfig==2.3.0
+2026-10-25T14:39:02.1223267Z  + jinja2==3.1.6
+2026-10-25T14:39:02.1223865Z  + joblib==1.5.3
+2026-10-25T14:39:02.1224416Z  + kiwisolver==1.5.0
+2026-10-25T14:39:02.1225092Z  + librt==0.15.0
+2026-10-25T14:39:02.1225681Z  + markdown-it-py==4.2.0
+2026-10-25T14:39:02.1226353Z  + markupsafe==3.0.3
+2026-10-25T14:39:02.1227034Z  + matplotlib==3.11.1
+2026-10-25T14:39:02.1227727Z  + mdurl==0.1.2
+2026-10-25T14:39:02.1228420Z  + mediapipe==0.10.35
+2026-10-25T14:39:02.1229040Z  + mpmath==1.3.0
+2026-10-25T14:39:02.1229775Z  + mypy==2.3.1
+2026-10-25T14:39:02.1230345Z  + mypy-extensions==1.1.0
+2026-10-25T14:39:02.1231080Z  + narwhals==2.24.0
+2026-10-25T14:39:02.1231723Z  + networkx==3.6.1
+2026-10-25T14:39:02.1232358Z  + nodeenv==1.10.0
+2026-10-25T14:39:02.1232863Z  + numpy==2.5.2
+2026-10-25T14:39:02.1233307Z  + nvidia-cublas==13.1.1.3
+2026-10-25T14:39:02.1233961Z  + nvidia-cuda-cupti==13.0.85
+2026-10-25T14:39:02.1234827Z  + nvidia-cuda-nvrtc==13.0.88
+2026-10-25T14:39:02.1235242Z  + nvidia-cuda-runtime==13.0.96
+2026-10-25T14:39:02.1235590Z  + nvidia-cudnn-cu13==9.20.0.48
+2026-10-25T14:39:02.1235895Z  + nvidia-cufft==12.0.0.61
+2026-10-25T14:39:02.1236273Z  + nvidia-cufile==1.15.1.6
+2026-10-25T14:39:02.1236655Z  + nvidia-curand==10.4.0.35
+2026-10-25T14:39:02.1237071Z  + nvidia-cusolver==12.0.4.66
+2026-10-25T14:39:02.1237392Z  + nvidia-cusparse==12.6.3.3
+2026-10-25T14:39:02.1237759Z  + nvidia-cusparselt-cu13==0.8.1
+2026-10-25T14:39:02.1238095Z  + nvidia-nccl-cu13==2.29.7
+2026-10-25T14:39:02.1238465Z  + nvidia-nvjitlink==13.3.33
+2026-10-25T14:39:02.1238834Z  + nvidia-nvshmem-cu13==3.4.5
+2026-10-25T14:39:02.1239198Z  + nvidia-nvtx==13.0.85
+2026-10-25T14:39:02.1239610Z  + omegaconf==2.3.1
+2026-10-25T14:39:02.1239934Z  + opencv-contrib-python==5.0.0.93
+2026-10-25T14:39:02.1240391Z  + packaging==26.3
+2026-10-25T14:39:02.1240734Z  + pathspec==1.1.1
+2026-10-25T14:39:02.1241173Z  + pillow==12.3.0
+2026-10-25T14:39:02.1241468Z  + platformdirs==4.11.3
+2026-10-25T14:39:02.1241810Z  + pluggy==1.6.0
+2026-10-25T14:39:02.1242132Z  + pre-commit==4.6.2
+2026-10-25T14:39:02.1242470Z  + pycparser==3.0
+2026-10-25T14:39:02.1242743Z  + pydantic==2.13.4
+2026-10-25T14:39:02.1243131Z  + pydantic-core==2.46.4
+2026-10-25T14:39:02.1243429Z  + pygments==2.20.0
+2026-10-25T14:39:02.1243689Z  + pyparsing==3.3.2
+2026-10-25T14:39:02.1244030Z  + pytest==9.1.1
+2026-10-25T14:39:02.1244467Z  + pytest-cov==7.1.0
+2026-10-25T14:39:02.1244783Z  + pytest-xdist==3.8.0
+2026-10-25T14:39:02.1245094Z  + python-dateutil==2.9.0.post0
+2026-10-25T14:39:02.1245470Z  + python-discovery==1.5.2
+2026-10-25T14:39:02.1245801Z  + pyyaml==6.0.3
+2026-10-25T14:39:02.1246101Z  + regex==2026.7.19
+2026-10-25T14:39:02.1246394Z  + rich==15.0.0
+2026-10-25T14:39:02.1246849Z  + ruff==0.16.3
+2026-10-25T14:39:02.1247180Z  + safetensors==0.8.0
+2026-10-25T14:39:02.1247533Z  + scikit-learn==1.9.0
+2026-10-25T14:39:02.1247821Z  + scipy==1.18.0
+2026-10-25T14:39:02.1248109Z  + setuptools==84.0.0
+2026-10-25T14:39:02.1248407Z  + shellingham==1.5.4
+2026-10-25T14:39:02.1248795Z  + six==1.17.0
+2026-10-25T14:39:02.1249080Z  + sortedcontainers==2.4.0
+2026-10-25T14:39:02.1249377Z  + sounddevice==0.5.6
+2026-10-25T14:39:02.1249729Z  + sympy==1.14.0
+2026-10-25T14:39:02.1250061Z  + threadpoolctl==3.6.0
+2026-10-25T14:39:02.1250356Z  + tokenizers==0.22.2
+2026-10-25T14:39:02.1250694Z  + torch==2.13.0
+2026-10-25T14:39:02.1251260Z  + torchvision==0.28.0
+2026-10-25T14:39:02.1251778Z  + tqdm==4.70.0
+2026-10-25T14:39:02.1252244Z  + transformers==5.15.0
+2026-10-25T14:39:02.1252799Z  + triton==3.7.1
+2026-10-25T14:39:02.1253254Z  + typer==0.27.1
+2026-10-25T14:39:02.1253795Z  + typing-extensions==4.16.0
+2026-10-25T14:39:02.1254511Z  + typing-inspection==0.4.4
+2026-10-25T14:39:02.1255095Z  + virtualenv==21.7.4
+2026-10-25T14:39:02.1411476Z ##[group]Run uv run --frozen --extra dev --extra perception --extra hand-perception ruff check src tests
+2026-10-25T14:39:02.1412325Z [36;1muv run --frozen --extra dev --extra perception --extra hand-perception ruff check src tests[0m
+2026-10-25T14:39:02.1449256Z shell: /usr/bin/bash -e {0}
+2026-10-25T14:39:02.1542616Z env:
+2026-10-25T14:39:02.1542866Z   UV_PYTHON: 3.13
+2026-10-25T14:39:02.1543137Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+2026-10-25T14:39:02.1543557Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-25T14:39:02.1543864Z ##[endgroup]
+2026-10-25T14:39:02.4179608Z All checks passed!
+2026-10-25T14:39:02.4233794Z ##[group]Run uv run --frozen --extra dev --extra perception --extra hand-perception ruff format --check src tests
+2026-10-25T14:39:02.4234532Z [36;1muv run --frozen --extra dev --extra perception --extra hand-perception ruff format --check src tests[0m
+2026-10-25T14:39:02.4270638Z shell: /usr/bin/bash -e {0}
+2026-10-25T14:39:02.4271050Z env:
+2026-10-25T14:39:02.4271314Z   UV_PYTHON: 3.13
+2026-10-25T14:39:02.4271568Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+2026-10-25T14:39:02.4271918Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-25T14:39:02.4272217Z ##[endgroup]
+2026-10-25T14:39:02.6741024Z 881 files already formatted
+2026-10-25T14:39:02.6803256Z ##[group]Run uv run --frozen --extra dev --extra perception --extra hand-perception mypy src
+2026-10-25T14:39:02.6804469Z [36;1muv run --frozen --extra dev --extra perception --extra hand-perception mypy src[0m
+2026-10-25T14:39:02.6859618Z shell: /usr/bin/bash -e {0}
+2026-10-25T14:39:02.6859884Z env:
+2026-10-25T14:39:02.6860088Z   UV_PYTHON: 3.13
+2026-10-25T14:39:02.6860340Z   VIRTUAL_ENV: /home/runner/work/cpswm/cpswm/.venv
+2026-10-25T14:39:02.6860691Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-10-25T14:39:02.6861182Z ##[endgroup]
+2026-10-25T14:39:20.8109541Z src/cpswm/perception_mapping/depth_validity.py:20: error: Missing type arguments for generic type "dict"  [type-arg]
+2026-10-25T14:39:20.8110557Z src/cpswm/perception_mapping/depth_validity.py:83: error: "object" has no attribute "append"  [attr-defined]
+2026-10-25T14:39:36.3952780Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:49: error: Function is missing a type annotation for one or more parameters  [no-untyped-def]
+2026-10-25T14:39:36.3954474Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:64: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.3955980Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:94: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.3957746Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:104: error: Function is missing a type annotation for one or more parameters  [no-untyped-def]
+2026-10-25T14:39:36.3959553Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:109: error: Missing type arguments for generic type "dict"  [type-arg]
+2026-10-25T14:39:36.3961857Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:112: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.3963625Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:119: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.3965365Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:200: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.3967065Z src/cpswm/system/evaluation_operations/structure_two_active_location_search.py:203: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7131985Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:15: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7133644Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:25: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7135074Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:39: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7136561Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:42: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7138120Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:45: error: Call to untyped function "begin_step" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.7139665Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:51: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7141449Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:58: error: Call to untyped function "receipt_payload" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.7143191Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:65: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7145706Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:66: error: Call to untyped function "validate_receipt" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.7147805Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:70: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7149723Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:70: note: Use "-> None" if function does not return a value
+2026-10-25T14:39:36.7151740Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:75: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7153591Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:75: note: Use "-> None" if function does not return a value
+2026-10-25T14:39:36.7155255Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:86: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7156617Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:92: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7158065Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:95: error: Call to untyped function "observe" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.7159582Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:97: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7161318Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:98: error: Call to untyped function "predict" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.7162851Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:114: error: "None" has no attribute "step_id"  [attr-defined]
+2026-10-25T14:39:36.7164682Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:117: error: "None" has no attribute "step_id"  [attr-defined]
+2026-10-25T14:39:36.7166090Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:118: error: "None" has no attribute "object_instance_id"  [attr-defined]
+2026-10-25T14:39:36.7167529Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:135: error: "None" has no attribute "step_id"  [attr-defined]
+2026-10-25T14:39:36.7169004Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:157: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.7170396Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:158: error: "None" has no attribute "step_id"  [attr-defined]
+2026-10-25T14:39:36.7172104Z src/cpswm/system/evaluation_operations/structure_two_executed_search.py:160: error: Call to untyped function "feedback" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8341336Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:21: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8343032Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:36: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8344423Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:36: note: Use "-> None" if function does not return a value
+2026-10-25T14:39:36.8345790Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:45: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8347332Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:57: error: Call to untyped function "normalize" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8348895Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:70: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8350454Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:90: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8352721Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:108: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8354456Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:121: error: Call to untyped function "normalize" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8356159Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:122: error: Call to untyped function "table" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8357863Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:153: error: Call to untyped function "normalize" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8359530Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:161: error: Call to untyped function "normalize" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8361553Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:169: error: Call to untyped function "export_joint" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8363314Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:177: error: Call to untyped function "location_distribution" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8364969Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:178: error: Call to untyped function "rank" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8366611Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:183: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8368230Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:188: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8369903Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:193: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8372114Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:194: error: Call to untyped function "location_distribution" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8373808Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:197: error: Value of type "Any | None" is not indexable  [index]
+2026-10-25T14:39:36.8375323Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:202: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8376986Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:223: error: Call to untyped function "normalize" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8378742Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:228: error: Call to untyped function "receipt_payload" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8380484Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:228: error: Call to untyped function "export_joint" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8382375Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:231: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8383924Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:231: note: Use "-> None" if function does not return a value
+2026-10-25T14:39:36.8385520Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:252: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8387028Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:279: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8388600Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:284: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8390200Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:290: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8394903Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:298: error: Call to untyped function "project_search_input" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8396935Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:299: error: Call to untyped function "execute_current_search" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.8398673Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:312: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.8400188Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:313: error: Item "None" of "Any | None" has no attribute "step_id"  [union-attr]
+2026-10-25T14:39:36.8402052Z src/cpswm/system/evaluation_operations/structure_two_current_location.py:318: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9646560Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:25: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9648107Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:25: note: Use "-> None" if function does not return a value
+2026-10-25T14:39:36.9649560Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:26: error: Call to untyped function "__post_init__" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.9651320Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:34: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9652901Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:35: error: Call to untyped function "__init__" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.9655185Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:41: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9656796Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:42: error: Call to untyped function "table" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.9658501Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:63: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9660071Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:63: note: Use "-> None" if function does not return a value
+2026-10-25T14:39:36.9661797Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:64: error: Call to untyped function "finish" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.9663363Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:74: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9664850Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:79: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9666355Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:132: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9668002Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:133: error: Call to untyped function "__init__" in typed context  [no-untyped-call]
+2026-10-25T14:39:36.9669749Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:136: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:36.9671466Z src/cpswm/system/evaluation_operations/structure_two_shared_location.py:137: error: Call to untyped function "observe" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.0524919Z src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:965: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.0526200Z src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:1661: error: "FullJointObservation" has no attribute "position_source_id"  [attr-defined]
+2026-10-25T14:39:38.0527811Z src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:1662: error: "FullJointObservation" has no attribute "location_likelihood"  [attr-defined]
+2026-10-25T14:39:38.0529122Z src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py:1669: error: Call to untyped function "_proposal_draw_indices" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.3079375Z src/cpswm/system/evaluation_operations/structure_two_task_readout.py:96: error: Function is missing a type annotation for one or more parameters  [no-untyped-def]
+2026-10-25T14:39:38.3081193Z src/cpswm/system/evaluation_operations/structure_two_task_readout.py:131: error: Returning Any from function declared to return "_Prediction"  [no-any-return]
+2026-10-25T14:39:38.5514993Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:49: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5516426Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:49: note: Use "-> None" if function does not return a value
+2026-10-25T14:39:38.5517453Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:70: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5518600Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:80: error: Call to untyped function "_capture_mutable_state" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5519792Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:84: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5520840Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:89: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5522468Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:91: error: Call to untyped function "_proposal_draw_indices" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5523597Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:116: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5524622Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:122: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5525621Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:127: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5526737Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:128: error: Call to untyped function "_capture_mutable_state" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5527927Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:130: error: Call to untyped function "_record" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5528996Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:135: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5530064Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:137: error: Call to untyped function "_record" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5531225Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:139: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5532278Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:141: error: Call to untyped function "_record" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5533334Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:143: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5534499Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:186: error: Item "None" of "FullJointObservation | None" has no attribute "source_update_id"  [union-attr]
+2026-10-25T14:39:38.5535775Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:191: error: Call to untyped function "_capture_mutable_state" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5537180Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:194: error: Argument 1 to "deepcopy" has incompatible type "Any | None"; expected "Mapping[str, Any]"  [arg-type]
+2026-10-25T14:39:38.5538461Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:212: error: Call to untyped function "_revision_receipt" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5539561Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:214: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5540561Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:231: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5541931Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:252: error: Call to untyped function "_capture_mutable_state" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5543156Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:260: error: Call to untyped function "_capture_mutable_state" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5544364Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:280: error: Call to untyped function "_revision_receipt" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5545470Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:283: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5546498Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:332: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5547506Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:339: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5548758Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:345: error: Call to untyped function "missing_event_observation" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5549931Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:348: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5551174Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:352: error: Item "None" of "FullJointObservation | None" has no attribute "source_update_id"  [union-attr]
+2026-10-25T14:39:38.5552423Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:354: error: Call to untyped function "actor_distribution" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5553667Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:357: error: Call to untyped function "execute_current_search" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5554901Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:358: error: Call to untyped function "project_search_input" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5556174Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:364: error: Item "None" of "FullJointObservation | None" has no attribute "observed_location_id"  [union-attr]
+2026-10-25T14:39:38.5557521Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:390: error: Value of type variable "_DataclassT" of "replace" cannot be "FullJointObservation | None"  [type-var]
+2026-10-25T14:39:38.5558824Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:397: error: "StatefulFullJointRuntime" has no attribute "replace_current_location"  [attr-defined]
+2026-10-25T14:39:38.5560063Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:416: error: Call to untyped function "actor_distribution" in typed context  [no-untyped-call]
+2026-10-25T14:39:38.5561513Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:420: error: Item "None" of "FullJointObservation | None" has no attribute "observed_location_id"  [union-attr]
+2026-10-25T14:39:38.5562933Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:421: error: Item "None" of "FullJointObservation | None" has no attribute "observed_location_id"  [union-attr]
+2026-10-25T14:39:38.5564134Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:429: error: Function is missing a return type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5565187Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:436: error: Function is missing a type annotation  [no-untyped-def]
+2026-10-25T14:39:38.5566230Z src/cpswm/system/evaluation_operations/structure_two_current_event.py:437: error: Item "None" of "Any | None" has no attribute "step_id"  [union-attr]
+2026-10-25T14:39:39.5116793Z Found 130 errors in 8 files (checked 430 source files)
+2026-10-25T14:39:39.5511509Z ##[error]Process completed with exit code 1.
+2026-10-25T14:39:39.5651503Z Post job cleanup.
+2026-10-25T14:39:39.6464629Z [command]/usr/bin/git version
+2026-10-25T14:39:39.6502985Z git version 2.55.0
+2026-10-25T14:39:39.6541683Z Temporarily overriding HOME='/home/runner/work/_temp/6e223f08-4a6d-4fef-84a4-e0751cee3a6d' before making global git config changes
+2026-10-25T14:39:39.6542999Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-25T14:39:39.6546352Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/cpswm/cpswm
+2026-10-25T14:39:39.6582447Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-25T14:39:39.6615306Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-25T14:39:39.6844908Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-25T14:39:39.6871751Z http.https://github.com/.extraheader
+2026-10-25T14:39:39.6892770Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-25T14:39:39.6918841Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-25T14:39:39.7170650Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-25T14:39:39.7211467Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-25T14:39:39.7565198Z Cleaning up orphan processes
+2026-10-25T14:39:39.7866127Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, astral-sh/setup-uv@v5. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

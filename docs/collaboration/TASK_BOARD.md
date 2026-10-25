@@ -2,7 +2,7 @@
 
 分支 `codex/pc-a-matched-readout-diagnostic-20261025`，base `cc7c6f7566bbdfa611a79a096f5a4eb6d6fd7f04`，实际运行源码 `d3465ee69b9451bc1d458bcb0b12ab587a3eba2c`；[报告](../reviews/pc_a/matched_readout_2026-10-25/REPORT.md)。384步全部沿base动作；联合375步在当前固定解析质量下任何解析分布均不能翻转。15错误来源为冷启动2/新习惯空窗8/旧习惯回归空窗5。50测试通过、768臂时点对原件匹配、存档独立标量重算通过。生产模型未改，独有收益未建立。
 
-交付推送/草稿PR回执待补；B按SHA复核待完成。PR123全仓static-quality存在130个mypy错误/8文件，未由本批关闭。共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`；本分支结果不是统一验收或已集成。全E0–E6及既定框架保留，新的科学实验选择交用户决定。
+已通过草稿[PR124](https://github.com/goneveitvet240-svg/cpswm/pull/124)推送交付，堆叠PR123，报告/原件 `4cbf57060a12ef5fdbc63d9c42374d097754da83`，未合并；B按SHA复核待完成。PR123全仓static-quality存在130个mypy错误/8文件，未由本批关闭。共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`；本分支结果不是统一验收或已集成。全E0–E6及既定框架保留，新的科学实验选择交用户决定。
 
 ---
 

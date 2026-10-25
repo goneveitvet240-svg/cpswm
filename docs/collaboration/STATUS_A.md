@@ -6,7 +6,7 @@
 
 工程验证：50定向测试通过，Ruff check/format通过；两臂768时点与PR123输入/动作/分布/反馈后状态hash匹配，独立标量重建最大误差1.11e-16。最终源码干净、source_unchanged；12份交付文件hash及压缩解包重算核验通过。完整命令和原件：[报告](../reviews/pc_a/matched_readout_2026-10-25/REPORT.md)、[命令](../reviews/pc_a/matched_readout_2026-10-25/COMMANDS.md)、[清单](../reviews/pc_a/matched_readout_2026-10-25/MANIFEST.json)。
 
-PR123 static-quality失败：mypy 130错误/8文件；这些文件在PR122、PR123和本次源码Git blob一致，日志已存档。本轮没有关闭这批类型债务。当前报告完成、交付推送和草稿PR回执待补；B按SHA独立复核、全仓CI、统一/科学验收和共享集成待完成，不自动合并。下一步交B复核固定质量界和误例来源；owner门控、父历史分配、回归预测分别设计对照，新的科学规则/指标/确认集由用户决定。保留E0–E6、H/R/I/C/Z/r/V、三个RB blocks、七算子及全部用户科学决策。
+PR123 static-quality失败：mypy 130错误/8文件；这些文件在PR122、PR123和本次源码Git blob一致，日志已存档。本轮没有关闭这批类型债务。已推送草稿[PR124](https://github.com/goneveitvet240-svg/cpswm/pull/124)，堆叠PR123；报告/原件提交 `4cbf57060a12ef5fdbc63d9c42374d097754da83`，未合并；B按SHA独立复核、全仓CI、统一/科学验收和共享集成待完成，不自动合并。下一步交B复核固定质量界和误例来源；owner门控、父历史分配、回归预测分别设计对照，新的科学规则/指标/确认集由用户决定。保留E0–E6、H/R/I/C/Z/r/V、三个RB blocks、七算子及全部用户科学决策。
 
 ---
 

@@ -1,0 +1,189 @@
+{
+  "tie_tolerance": 1e-10,
+  "q1": {
+    "stateful_full_joint/exact": {
+      "points": 4,
+      "argmax_errors": 1,
+      "ties": 0,
+      "truth_outside_max_set": 1,
+      "true_probability_sum": 1.6348263467748865
+    },
+    "stateful_full_joint/systematic": {
+      "points": 4,
+      "argmax_errors": 3,
+      "ties": 0,
+      "truth_outside_max_set": 3,
+      "true_probability_sum": 1.5368718406128918
+    },
+    "stateful_full_joint/independent_strata_v1": {
+      "points": 4,
+      "argmax_errors": 2,
+      "ties": 0,
+      "truth_outside_max_set": 2,
+      "true_probability_sum": 1.3037795313374738
+    },
+    "stateful_full_joint/bootstrap_transition": {
+      "points": 4,
+      "argmax_errors": 3,
+      "ties": 0,
+      "truth_outside_max_set": 3,
+      "true_probability_sum": 1.4616756365610524
+    },
+    "matched_full_state_factorized/exact": {
+      "points": 4,
+      "argmax_errors": 3,
+      "ties": 3,
+      "truth_outside_max_set": 0,
+      "true_probability_sum": 1.6639211994818104
+    },
+    "matched_full_state_factorized/systematic": {
+      "points": 4,
+      "argmax_errors": 3,
+      "ties": 0,
+      "truth_outside_max_set": 3,
+      "true_probability_sum": 1.4538702059324449
+    },
+    "matched_full_state_factorized/independent_strata_v1": {
+      "points": 4,
+      "argmax_errors": 2,
+      "ties": 0,
+      "truth_outside_max_set": 2,
+      "true_probability_sum": 1.5326945492276356
+    },
+    "matched_full_state_factorized/bootstrap_transition": {
+      "points": 4,
+      "argmax_errors": 2,
+      "ties": 0,
+      "truth_outside_max_set": 2,
+      "true_probability_sum": 1.6031588281853666
+    }
+  },
+  "q23": {
+    "native_joint/actor_read": {
+      "points": 384,
+      "errors": 15,
+      "fixed": 0,
+      "harmed": 0,
+      "changed": 0,
+      "recurrence_errors": 5
+    },
+    "native_joint/history_read": {
+      "points": 384,
+      "errors": 15,
+      "fixed": 0,
+      "harmed": 0,
+      "changed": 0,
+      "recurrence_errors": 5
+    },
+    "native_six_potential_ablation/actor_read": {
+      "points": 384,
+      "errors": 15,
+      "fixed": 0,
+      "harmed": 0,
+      "changed": 0,
+      "recurrence_errors": 5
+    },
+    "native_six_potential_ablation/history_read": {
+      "points": 384,
+      "errors": 15,
+      "fixed": 0,
+      "harmed": 0,
+      "changed": 0,
+      "recurrence_errors": 5
+    }
+  },
+  "paired_joint_vs_ablation": {
+    "actor_read": {
+      "joint_wins": 0,
+      "joint_losses": 0,
+      "same_correctness": 384
+    },
+    "history_read": {
+      "joint_wins": 0,
+      "joint_losses": 0,
+      "same_correctness": 384
+    }
+  },
+  "joint_read_components": {
+    "actor_read": {
+      "guaranteed_unchanged_at_fixed_mass": 375,
+      "recurrence": [
+        {
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 27,
+          "analytic_mass": 0.3634026618441352,
+          "analytic_truth_probability": 0.058354594058111685,
+          "analytic_top_is_truth": false
+        },
+        {
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 28,
+          "analytic_mass": 6.67673577014644e-15,
+          "analytic_truth_probability": null,
+          "analytic_top_is_truth": null
+        },
+        {
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 27,
+          "analytic_mass": 3.3543457835047804e-272,
+          "analytic_truth_probability": null,
+          "analytic_top_is_truth": null
+        },
+        {
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 28,
+          "analytic_mass": 9.55779445277201e-273,
+          "analytic_truth_probability": null,
+          "analytic_top_is_truth": null
+        },
+        {
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 29,
+          "analytic_mass": 0.0,
+          "analytic_truth_probability": null,
+          "analytic_top_is_truth": null
+        }
+      ]
+    },
+    "history_read": {
+      "guaranteed_unchanged_at_fixed_mass": 374,
+      "recurrence": [
+        {
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 27,
+          "analytic_mass": 0.36340266184414216,
+          "analytic_truth_probability": 0.05835459405811192,
+          "analytic_top_is_truth": false
+        },
+        {
+          "episode_id": "a8d4d6c9-a52c-9694-5dce-ae8e58d22270",
+          "step": 28,
+          "analytic_mass": 0.12719093668773995,
+          "analytic_truth_probability": 0.05835459311951799,
+          "analytic_top_is_truth": false
+        },
+        {
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 27,
+          "analytic_mass": 3.354345791227255e-272,
+          "analytic_truth_probability": null,
+          "analytic_top_is_truth": null
+        },
+        {
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 28,
+          "analytic_mass": 2.4371429842148587e-272,
+          "analytic_truth_probability": null,
+          "analytic_top_is_truth": null
+        },
+        {
+          "episode_id": "a11287b6-1ad5-03d4-37ee-55859688a598",
+          "step": 29,
+          "analytic_mass": 1.551512344277744e-272,
+          "analytic_truth_probability": null,
+          "analytic_top_is_truth": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,77 @@
+.....F..                                                                 [100%]
+=================================== FAILURES ===================================
+_____ test_native_owner_then_visitor_preserves_owner_cell_and_write_reads ______
+
+native_inputs = ('505d3813-83a3-016a-475e-f3eb0ca3d9da', StatefulFullJointConfig(particle_budget=24, proposal_support_policy='enumerat...be19-585e-92d2-6c92706967d6'), location_likelihood=(('guest', 0.25), ('owner', 0.25), ('unknown_actor', 0.25))), ...}})
+
+    def test_native_owner_then_visitor_preserves_owner_cell_and_write_reads(native_inputs):
+        _, config, model, observations, _ = native_inputs
+        runtime = HistoryReadRuntime(
+            read_policy="actor_read",
+            arm=FullJointArm.STATEFUL_FULL_JOINT,
+            config=config,
+            neural_model=model,
+        )
+        runtime.revise(copy.deepcopy(observations[0]))
+        observation = runtime._last_observation
+        owner = observation.owner_actor_key
+        guest = next(a for a in observation.actor_posterior if a != owner)
+        template = next(
+            p for p in runtime.particles if (owner, p.world.active_regime) in p.world.rb_cells
+        )
+        # Keep a legitimately written owner cell; vary only current actor to witness read semantics.
+        owner_particle = replace(template, posterior_probability=0.95)
+        owner_particle = replace(
+>           owner_particle, world=replace(owner_particle.world, placement_actor=owner)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+
+tests/test_joint_three_questions.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/dataclasses.py:1596: in replace
+    return _replace(obj, **changes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = FullJointWorldState(typed_state=TypedParticleState(particle_id=UUID('7b15300e-5369-576f-a82d-81c9ec2e0119'), parent_pa...3333333, 0.0), information_precision=1.3333333333333333, information_natural=0.3333333333333333, observation_count=1)})
+changes = {'placement_actor': 'owner', 'typed_state': TypedParticleState(particle_id=UUID('7b15300e-5369-576f-a82d-81c9ec2e0119'...9d64ae'), 'event_chain': ('direct_relocation|direct:owner|target_instance|1d6baa09-4ba2-c25c-b729-e982aa1a1723',), ...}
+
+    def _replace(self, /, **changes):
+        # We're going to mutate 'changes', but that's okay because it's a
+        # new dict, even if called with 'replace(self, **my_changes)'.
+    
+        # It's an error to have init=False fields in 'changes'.
+        # If a field is not in 'changes', read its value from the provided 'self'.
+    
+        for f in getattr(self, _FIELDS).values():
+            # Only consider normal fields or InitVars.
+            if f._field_type is _FIELD_CLASSVAR:
+                continue
+    
+            if not f.init:
+                # Error if this field is specified in changes.
+                if f.name in changes:
+                    raise TypeError(f'field {f.name} is declared with '
+                                    f'init=False, it cannot be specified with '
+                                    f'replace()')
+                continue
+    
+            if f.name not in changes:
+                if f._field_type is _FIELD_INITVAR and f.default is MISSING:
+                    raise TypeError(f"InitVar {f.name!r} "
+                                    f'must be specified with replace()')
+                changes[f.name] = getattr(self, f.name)
+    
+        # Create the new object, which calls __init__() and
+        # __post_init__() (if defined), using all of the init fields we've
+        # added and/or left in 'changes'.  If there are values supplied in
+        # changes that aren't fields, this will correctly raise a
+        # TypeError.
+>       return self.__class__(**changes)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: FullJointWorldState.__init__() got an unexpected keyword argument 'placement_actor'
+
+/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/dataclasses.py:1630: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_joint_three_questions.py::test_native_owner_then_visitor_preserves_owner_cell_and_write_reads
+1 failed, 7 passed in 2.62s

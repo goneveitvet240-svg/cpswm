@@ -1,0 +1,222 @@
+{
+  "q1": {
+    "matched_full_state_factorized/bootstrap_transition": {
+      "actor_errors": 2,
+      "habit_errors": 2,
+      "mean_common_joint_actor_tv": 0.15408770173655686,
+      "mean_own_actor_tv": 0.14096458290925915,
+      "mean_true_actor_probability": 0.4007897070463416,
+      "points": 4
+    },
+    "matched_full_state_factorized/exact": {
+      "actor_errors": 3,
+      "habit_errors": 2,
+      "mean_common_joint_actor_tv": 0.020055648867820207,
+      "mean_own_actor_tv": 0.0,
+      "mean_true_actor_probability": 0.41598029987045254,
+      "points": 4
+    },
+    "matched_full_state_factorized/independent_strata_v1": {
+      "actor_errors": 2,
+      "habit_errors": 2,
+      "mean_common_joint_actor_tv": 0.07108374953776966,
+      "mean_own_actor_tv": 0.08010948440427168,
+      "mean_true_actor_probability": 0.3831736373069089,
+      "points": 4
+    },
+    "matched_full_state_factorized/systematic": {
+      "actor_errors": 3,
+      "habit_errors": 2,
+      "mean_common_joint_actor_tv": 0.29280078901056966,
+      "mean_own_actor_tv": 0.28289904329918214,
+      "mean_true_actor_probability": 0.3634675514831113,
+      "points": 4
+    },
+    "stateful_full_joint/bootstrap_transition": {
+      "actor_errors": 3,
+      "habit_errors": 2,
+      "mean_common_joint_actor_tv": 0.16289436807384847,
+      "mean_own_actor_tv": 0.16289436807384847,
+      "mean_true_actor_probability": 0.3654189091402631,
+      "points": 4
+    },
+    "stateful_full_joint/exact": {
+      "actor_errors": 1,
+      "habit_errors": 2,
+      "mean_common_joint_actor_tv": 0.0,
+      "mean_own_actor_tv": 0.0,
+      "mean_true_actor_probability": 0.4087065866937216,
+      "points": 4
+    },
+    "stateful_full_joint/independent_strata_v1": {
+      "actor_errors": 2,
+      "habit_errors": 2,
+      "mean_common_joint_actor_tv": 0.12573983104727904,
+      "mean_own_actor_tv": 0.12573983104727904,
+      "mean_true_actor_probability": 0.32594488283436845,
+      "points": 4
+    },
+    "stateful_full_joint/systematic": {
+      "actor_errors": 3,
+      "habit_errors": 2,
+      "mean_common_joint_actor_tv": 0.2811977678809397,
+      "mean_own_actor_tv": 0.2811977678809397,
+      "mean_true_actor_probability": 0.3842179601532229,
+      "points": 4
+    }
+  },
+  "q23": {
+    "native_joint/actor_read": {
+      "changed_distribution": 227,
+      "mean_analytic_mass": 0.17345156026423925,
+      "offline_live_max_tv": 8.673617379884035e-17,
+      "paired": {
+        "latest_owner": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        },
+        "matched_amg": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        },
+        "native_joint": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        }
+      },
+      "raw_scalar_max_error": 1.1102230246251565e-16,
+      "recurrence_errors": 5,
+      "recurrence_points": 5,
+      "same_feedback_state": 384,
+      "same_search": 384,
+      "same_target_budget": 384,
+      "same_write_state": 384
+    },
+    "native_joint/history_read": {
+      "changed_distribution": 277,
+      "mean_analytic_mass": 0.21590556117583729,
+      "offline_live_max_tv": 1.1449174941446927e-16,
+      "paired": {
+        "latest_owner": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        },
+        "matched_amg": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        },
+        "native_joint": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        }
+      },
+      "raw_scalar_max_error": 2.220446049250313e-16,
+      "recurrence_errors": 5,
+      "recurrence_points": 5,
+      "same_feedback_state": 384,
+      "same_search": 384,
+      "same_target_budget": 384,
+      "same_write_state": 384
+    },
+    "native_six_potential_ablation/actor_read": {
+      "changed_distribution": 226,
+      "mean_analytic_mass": 0.17180454067776232,
+      "offline_live_max_tv": 8.673617379884035e-17,
+      "paired": {
+        "latest_owner": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        },
+        "matched_amg": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        },
+        "native_six_potential_ablation": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        }
+      },
+      "raw_scalar_max_error": 1.1102230246251565e-16,
+      "recurrence_errors": 5,
+      "recurrence_points": 5,
+      "same_feedback_state": 384,
+      "same_search": 384,
+      "same_target_budget": 384,
+      "same_write_state": 384
+    },
+    "native_six_potential_ablation/history_read": {
+      "changed_distribution": 277,
+      "mean_analytic_mass": 0.21485047325538464,
+      "offline_live_max_tv": 8.673617379884035e-17,
+      "paired": {
+        "latest_owner": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        },
+        "matched_amg": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        },
+        "native_six_potential_ablation": {
+          "both_wrong": 15,
+          "changed_actions": 0,
+          "errors": 15,
+          "fixed": 0,
+          "harmed": 0,
+          "points": 384
+        }
+      },
+      "raw_scalar_max_error": 1.1102230246251565e-16,
+      "recurrence_errors": 5,
+      "recurrence_points": 5,
+      "same_feedback_state": 384,
+      "same_search": 384,
+      "same_target_budget": 384,
+      "same_write_state": 384
+    }
+  }
+}

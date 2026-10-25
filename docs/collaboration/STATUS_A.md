@@ -1,3 +1,17 @@
+# 2026-10-25 A交付：五步协同首轮实现与验证
+
+草稿[PR126](https://github.com/goneveitvet240-svg/cpswm/pull/126)，分支 `codex/pc-a-five-stage-synergy-20261025`，base `dfcfbb2b78cd06865923eda916700c3abee5e3e9`。独立工作树 `.local/simulation-stack/cpswm-synergy`。配对源码 `5c8905ed855e5f60d57b1b4704659db5aa3c8ad8`，π0.5运行 `3a00679365c2f50cec2d63d80efa585dbd18fafc`，完整状态审计 `3ca57e4cf2e57f71b795313a3c2f182d7e39f6ae`，目标干预 `7219ab9e065ae01803e3c2b9951bbd03ffe0c9d4`，最终物理负例工具 `b0ec243868b8db1f711e0247f8818b05143322a3`。
+
+768点×6方法与3072原生状态重放完成。新采样联合人物正确旧210→324、新205→324，但四原生臂动作全相同，旧/新仍15/30错。旧制度统计保留；缺失位置时变化概率0造成再激活约1e-300压制。可选中性化探针恢复再激活目标质量，64点仍各7错、无动作净收益。8配置来源修订和40非法来源路径通过，source_replay同样改正目标。
+
+真实π0.5受控目标stove→plate，取消3旧动作，105步/22推理首次目标匹配成功；105步物理及22输入/106帧重放通过，结构完整但EEF伪造反例被物理拒绝。联合/消融/source_replay共享策略输入对照目标完全一致，未独立重跑两个模型基线。该夹具不是本轮改进的v06后验接口，不把它当成自然语义或独有协同收益。
+
+101定向测试+新增1项通过，另33仿真环境测试通过。19个变更Python文件Ruff检查/格式通过。完整证据和复现：[报告](../reviews/pc_a/five_stage_synergy_2026-10-25/REPORT.md)、[命令](../reviews/pc_a/five_stage_synergy_2026-10-25/COMMANDS.md)、[清单](../reviews/pc_a/five_stage_synergy_2026-10-25/MANIFEST.json)。交付前fetch再次成功，共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，B仍 `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`；未改B状态或共享集成。
+
+PR126旧阶段SHA的current-inputs通过，static-quality 130错误/8文件、test收集缺imageio失败，相关blob均继承base；最终新SHA需重新检查。B独立复核、全仓、统一、科学验收未完成，不自动合并。下一步是明确缺失制度证据契约、建立主人习惯/制度专属读出并对接生产目标接口；正式科学选择仍由用户决定。E0–E6、H/R/I/C/Z/r/V、三类RB和七算子等完整范围保留。
+
+---
+
 # 2026-10-25 A进行中：五步协同审计
 
 分支 `codex/pc-a-five-stage-synergy-20261025`，base `dfcfbb2b78cd06865923eda916700c3abee5e3e9`；独立工作树 `.local/simulation-stack/cpswm-synergy`。配对运行源码 `5c8905ed855e5f60d57b1b4704659db5aa3c8ad8`，真实目标运行源码 `3a00679365c2f50cec2d63d80efa585dbd18fafc`，审计器 `94aa2e675c256942e95cdfc5dddb4a1b26d3aab4`。

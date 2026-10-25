@@ -1,3 +1,11 @@
+# 2026-10-25 A开工：联合模型三个问题
+
+用户已授权推进后验准确性、历史读取门控、动作净收益。分支 `codex/pc-a-joint-three-questions-20261025`，base `fbec4e9c2103b8bc505f261112d37313085a4cae`，独立目录 `.local/simulation-stack/cpswm-three-questions`。已fetch核对远端/集成和B交接；集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，未覆盖旧工作树。
+
+[冻结开发协议](../reviews/pc_a/joint_three_questions_2026-10-25/PROTOCOL.md)：既有两步精确参考+真值描述、两个固定只读门控干预、完整384点配对得失。生产模型/默认权重/数据权限不变。当前本地进行中，实际运行SHA、测试与结果待补。后续提交源绑定运行、存档和草稿PR；B/全仓/统一/科学验收仍未完成，完整范围保留。
+
+---
+
 # 2026-10-25 A交付：PR123动作不变的读出定位
 
 分支 `codex/pc-a-matched-readout-diagnostic-20261025`，base `cc7c6f7566bbdfa611a79a096f5a4eb6d6fd7f04`；最终实际运行/测试源码 `d3465ee69b9451bc1d458bcb0b12ab587a3eba2c`。独立工作树 `.local/simulation-stack/cpswm-matched-readout`，开工fetch成功；共享集成仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。生产src、模型/先验、原实验输入和完整研究范围均未改。

@@ -1,0 +1,108 @@
+complete32 864251 a821a783-00fa-5cb9-87a7-d601b89e71ed 32
+complete32 864252 f2a7ccf4-41b4-7b1c-401c-13176001e1d2 64
+complete32 864253 7c30c26f-5a74-a76a-69f6-06bc8c24c092 96
+Traceback (most recent call last):
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/tools/run_reliability_replication.py", line 232, in <module>
+    run(a.output, a.prefix_only, a.smoke)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/tools/run_reliability_replication.py", line 202, in run
+    for row in run_episode(
+               ~~~~~~~~~~~^
+        dataset, episode, condition, seed, archive, 2 if prefix_only or smoke else None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ):
+    ^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/tools/run_reliability_replication.py", line 134, in run_episode
+    state.feedback(step.model_copy(deep=True))
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/src/cpswm/system/evaluation_operations/structure_two_stateful_full_joint.py", line 2323, in feedback
+    self._state.feedback(step)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/src/cpswm/system/evaluation_operations/project_two_factorial_benchmark.py", line 428, in feedback
+    self._state.feedback(step)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/src/cpswm/system/evaluation_operations/project_two_action_benchmark.py", line 1437, in feedback
+    apply_project_one_request(request, self.spine)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/src/cpswm/system/counterfactual_event_hypergraph/feedback_revision_loop.py", line 1108, in apply_project_one_request
+    receipt = apply_all(request)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/src/cpswm/system/prototype_spine.py", line 439, in wrapped
+    return method(self, *args, **kwargs)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/src/cpswm/system/prototype_spine.py", line 4513, in apply_project_one_stat_request
+    checkpoint = self._capture_revision_transaction(include_operator_state=True)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-reliability/src/cpswm/system/prototype_spine.py", line 4126, in _capture_revision_transaction
+    checkpoint["execution_runtime_fields"] = deepcopy(runtime_refs, {id(self): self})
+                                             ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 222, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 222, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 144, in deepcopy
+    y = copier(memo)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/core/lib/python3.13/site-packages/pydantic/main.py", line 994, in __deepcopy__
+    _object_setattr(m, '__dict__', deepcopy(self.__dict__, memo=memo))
+                                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 222, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 202, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+         ~~~~~~~~^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 144, in deepcopy
+    y = copier(memo)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/core/lib/python3.13/site-packages/pydantic/main.py", line 994, in __deepcopy__
+    _object_setattr(m, '__dict__', deepcopy(self.__dict__, memo=memo))
+                                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 222, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 202, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+         ~~~~~~~~^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 144, in deepcopy
+    y = copier(memo)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/core/lib/python3.13/site-packages/pydantic/main.py", line 994, in __deepcopy__
+    _object_setattr(m, '__dict__', deepcopy(self.__dict__, memo=memo))
+                                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 222, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 202, in _deepcopy_tuple
+    y = [deepcopy(a, memo) for a in x]
+         ~~~~~~~~^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 144, in deepcopy
+    y = copier(memo)
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/core/lib/python3.13/site-packages/pydantic/main.py", line 994, in __deepcopy__
+    _object_setattr(m, '__dict__', deepcopy(self.__dict__, memo=memo))
+                                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 137, in deepcopy
+    y = copier(x, memo)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 222, in _deepcopy_dict
+    y[deepcopy(key, memo)] = deepcopy(value, memo)
+                             ~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 163, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 254, in _reconstruct
+    y = func(*args)
+  File "/Users/pangwei/.local/share/uv/python/cpython-3.13.5-macos-aarch64-none/lib/python3.13/copy.py", line 253, in <genexpr>
+    args = (deepcopy(arg, memo) for arg in args)
+    
+KeyboardInterrupt

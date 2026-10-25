@@ -1,3 +1,15 @@
+# 2026-10-26 A交付：可靠性与净收益冻结复验
+
+分支 `codex/pc-a-reliability-net-benefit-20261025`，base/PR127 `2b3b6ee35028ffa94ec0140811d86f48980b7f96`。实际主运行 `a5f3b024f23f870753b8f8ac78da18def04e4f47`，前缀 `42db7931ed9bda42ba2758efe39abe96c94e8e03`，最终来源核验 `2ea1e97b7f0848569186cd72a3246e71af1bb4e5`。生产src、权重、默认和正式科学门均未改。
+
+六个新seed×三条件18轨迹768时点×6方法完成，exit0。联合owner_missing69错，最近主人/AMG/parent_only42错；修正3/损害30，净−27，六seed全部为负；六势消融68错。正确率91.02%对94.53%，新习惯/稳定阶段退化，回归窗口仅净+1。30个损害回退分布全对，26个当前人物已识别正确；嫌疑在制度/历史支持与读出加权，真值选cell只作诊断上界。当前版本不宜替换默认，尚无独有收益。
+
+750运行源文件核验、768输入/真值重生成、所有RB和配对算术通过，最大误差2.22e−16。36前缀及中断串行109记录与并行一致，有重叠合计137唯一时点；不是768状态全量重跑/B复核。串行中断exit130原件保留，仅改轨迹并行调度、未选样本/调模型。74回归测试及最终6项来源测试通过（重叠4项），4文件Ruff通过。
+
+[报告](../reviews/pc_a/reliability_net_benefit_2026-10-25/REPORT.md)、[命令](../reviews/pc_a/reliability_net_benefit_2026-10-25/COMMANDS.md)、[清单](../reviews/pc_a/reliability_net_benefit_2026-10-25/MANIFEST.json)。报告/证据推送和草稿PR回执另记，未推送部分仅本地完成。下一步分别检验制度选择、历史统计和回退/记忆组合后再冻结复验；不擅自改先验或选新正式科研路线。D0同生成器边界、未新做物理多臂或训练π0.5、B/全仓/统一/科学验收未完成；完整E0–E6、H/R/I/C/Z/r/V、三类RB和七算子等范围保持。
+
+---
+
 # 2026-10-25 A开工：可靠性与净收益冻结复验
 
 用户授权验证当前联合机制。独立分支 `codex/pc-a-reliability-net-benefit-20261025`，工作树 `.local/simulation-stack/cpswm-reliability`，base/PR127 `2b3b6ee35028ffa94ec0140811d86f48980b7f96`。fetch成功，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。旧工作树保留。

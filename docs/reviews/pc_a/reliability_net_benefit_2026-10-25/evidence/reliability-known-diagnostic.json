@@ -1,0 +1,251 @@
+{
+  "scope": "PR127 already seen development points; no retuning",
+  "source_sha": "531b3ca36635d59c68f30a880b3cadffd5045194",
+  "archive_sha256": "2baab06178138b3a94b266f0bf98fd05256e610930d2e2106eddceb09259036d",
+  "results": {
+    "old": {
+      "native_joint/owner_missing": {
+        "points": 384,
+        "errors": 35,
+        "brier": 0.25382051715011045,
+        "nll": 0.5413030117435129,
+        "wrong_mean_confidence": 0.58068158065158,
+        "harmed_count": 20,
+        "harmed_base_correct": 20,
+        "wrong_mean_active_correct_mass": 0.04047923637714372,
+        "bins": [
+          {
+            "low": 0,
+            "high": 0.4,
+            "n": 7,
+            "accuracy": 0.5714285714285714,
+            "mean_confidence": 0.3401594347106865
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 142,
+            "accuracy": 0.8732394366197183,
+            "mean_confidence": 0.5142834396499757
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 162,
+            "accuracy": 0.9382716049382716,
+            "mean_confidence": 0.6943553014016326
+          },
+          {
+            "low": 0.8,
+            "high": 1,
+            "n": 73,
+            "accuracy": 0.9452054794520548,
+            "mean_confidence": 0.8873793415828287
+          }
+        ]
+      },
+      "native_joint/owner_only": {
+        "points": 384,
+        "errors": 48,
+        "brier": 0.28348849602554627,
+        "nll": 0.5698673809591168,
+        "wrong_mean_confidence": 0.5024004168479193,
+        "harmed_count": 33,
+        "harmed_base_correct": 33,
+        "wrong_mean_active_correct_mass": 0.09497774506208176,
+        "bins": [
+          {
+            "low": 0,
+            "high": 0.4,
+            "n": 13,
+            "accuracy": 0.8461538461538461,
+            "mean_confidence": 0.3674340897094972
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 190,
+            "accuracy": 0.7789473684210526,
+            "mean_confidence": 0.5034411897019953
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 120,
+            "accuracy": 0.9666666666666667,
+            "mean_confidence": 0.6983165185191907
+          },
+          {
+            "low": 0.8,
+            "high": 1,
+            "n": 61,
+            "accuracy": 1,
+            "mean_confidence": 0.9127304634482495
+          }
+        ]
+      },
+      "native_six_potential_ablation/owner_missing": {
+        "points": 384,
+        "errors": 20,
+        "brier": 0.21379778152892606,
+        "nll": 0.4732770957281676,
+        "wrong_mean_confidence": 0.5721744194245421,
+        "harmed_count": 5,
+        "harmed_base_correct": 5,
+        "wrong_mean_active_correct_mass": 0.0817213258974844,
+        "bins": [
+          {
+            "low": 0,
+            "high": 0.4,
+            "n": 3,
+            "accuracy": 0.3333333333333333,
+            "mean_confidence": 0.2991012785115496
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 127,
+            "accuracy": 0.9448818897637795,
+            "mean_confidence": 0.5179722903574848
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 162,
+            "accuracy": 0.9382716049382716,
+            "mean_confidence": 0.6993203816026036
+          },
+          {
+            "low": 0.8,
+            "high": 1,
+            "n": 92,
+            "accuracy": 0.9891304347826086,
+            "mean_confidence": 0.8865571168116154
+          }
+        ]
+      }
+    },
+    "new": {
+      "native_joint/owner_missing": {
+        "points": 384,
+        "errors": 46,
+        "brier": 0.29008070202650127,
+        "nll": 5.980149946008546,
+        "wrong_mean_confidence": 0.5614666921067091,
+        "harmed_count": 17,
+        "harmed_base_correct": 17,
+        "wrong_mean_active_correct_mass": 0.17928391720660736,
+        "bins": [
+          {
+            "low": 0,
+            "high": 0.4,
+            "n": 14,
+            "accuracy": 0.14285714285714285,
+            "mean_confidence": 0.3060448307367621
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 150,
+            "accuracy": 0.88,
+            "mean_confidence": 0.5157450354822292
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 152,
+            "accuracy": 0.9736842105263158,
+            "mean_confidence": 0.6871703289015155
+          },
+          {
+            "low": 0.8,
+            "high": 1,
+            "n": 68,
+            "accuracy": 0.8235294117647058,
+            "mean_confidence": 0.9165773793869071
+          }
+        ]
+      },
+      "native_joint/owner_only": {
+        "points": 384,
+        "errors": 52,
+        "brier": 0.3269572385804349,
+        "nll": 4.246424773453129,
+        "wrong_mean_confidence": 0.5535185816162508,
+        "harmed_count": 22,
+        "harmed_base_correct": 22,
+        "wrong_mean_active_correct_mass": 0.06081038168499852,
+        "bins": [
+          {
+            "low": 0,
+            "high": 0.4,
+            "n": 12,
+            "accuracy": 0.08333333333333333,
+            "mean_confidence": 0.2953176959607219
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 183,
+            "accuracy": 0.8797814207650273,
+            "mean_confidence": 0.5166009343972326
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 152,
+            "accuracy": 0.9144736842105263,
+            "mean_confidence": 0.6852860527603505
+          },
+          {
+            "low": 0.8,
+            "high": 1,
+            "n": 37,
+            "accuracy": 0.8378378378378378,
+            "mean_confidence": 0.9003361216510368
+          }
+        ]
+      },
+      "native_six_potential_ablation/owner_missing": {
+        "points": 384,
+        "errors": 51,
+        "brier": 0.3169726932901456,
+        "nll": 4.232826152624702,
+        "wrong_mean_confidence": 0.5632998990751981,
+        "harmed_count": 21,
+        "harmed_base_correct": 21,
+        "wrong_mean_active_correct_mass": 0.12454985042484784,
+        "bins": [
+          {
+            "low": 0,
+            "high": 0.4,
+            "n": 15,
+            "accuracy": 0.3333333333333333,
+            "mean_confidence": 0.3075539048510967
+          },
+          {
+            "low": 0.4,
+            "high": 0.6,
+            "n": 165,
+            "accuracy": 0.8666666666666667,
+            "mean_confidence": 0.5175383700560419
+          },
+          {
+            "low": 0.6,
+            "high": 0.8,
+            "n": 170,
+            "accuracy": 0.9470588235294117,
+            "mean_confidence": 0.6928984443647834
+          },
+          {
+            "low": 0.8,
+            "high": 1,
+            "n": 34,
+            "accuracy": 0.7058823529411765,
+            "mean_confidence": 0.8770755458987555
+          }
+        ]
+      }
+    }
+  }
+}

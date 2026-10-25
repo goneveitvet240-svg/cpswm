@@ -1,0 +1,42 @@
+{
+  "probability_scores": {
+    "native_joint/owner_missing": {
+      "zero_true_probability_count": 1,
+      "mean_nll_nonzero_only_descriptive": 0.5520445109835942,
+      "nll_floor": 1e-300,
+      "high_confidence_at_least_08": 140,
+      "errors_at_confidence_at_least_08": 8
+    },
+    "native_joint/parent_only": {
+      "zero_true_probability_count": 8,
+      "mean_nll_nonzero_only_descriptive": 2.03337441887316,
+      "nll_floor": 1e-300,
+      "high_confidence_at_least_08": 611,
+      "errors_at_confidence_at_least_08": 28
+    },
+    "native_six_potential_ablation/owner_missing": {
+      "zero_true_probability_count": 2,
+      "mean_nll_nonzero_only_descriptive": 0.5262935450391166,
+      "nll_floor": 1e-300,
+      "high_confidence_at_least_08": 133,
+      "errors_at_confidence_at_least_08": 6
+    },
+    "native_six_potential_ablation/parent_only": {
+      "zero_true_probability_count": 1,
+      "mean_nll_nonzero_only_descriptive": 0.29755128872602793,
+      "nll_floor": 1e-300,
+      "high_confidence_at_least_08": 622,
+      "errors_at_confidence_at_least_08": 28
+    }
+  },
+  "harmed_diagnostics": {
+    "n": 30,
+    "base_correct": 30,
+    "current_actor_inferred_correct": 26,
+    "true_current_actor_is_owner": 30,
+    "missing_regime_evidence": 13,
+    "no_correct_active_owner_cell_mass": 0,
+    "any_correct_owner_cell_mass_gt_active": 23,
+    "zero_correct_owner_cell_mass_any_regime": 0
+  }
+}

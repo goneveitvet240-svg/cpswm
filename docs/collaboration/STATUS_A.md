@@ -1,3 +1,9 @@
+# 2026-10-26 A交付回执：PR128
+
+已推送草稿 [PR128](https://github.com/goneveitvet240-svg/cpswm/pull/128)，堆叠PR127，未合并。报告/原件提交 `c945954df0f451b5fad9d9d1603e5657e1d773bb`；实际完整运行 `a5f3b024f23f870753b8f8ac78da18def04e4f47`，最终核验代码 `2ea1e97b7f0848569186cd72a3246e71af1bb4e5`。本回执只改文档。新768点净多错27、六seed均负，默认保留；全仓CI/B/统一/科学验收未完成，真实机器人净收益未验证。详细命令、日志、全部原件及部分状态重跑范围见下方报告链接。
+
+---
+
 # 2026-10-26 A交付：可靠性与净收益冻结复验
 
 分支 `codex/pc-a-reliability-net-benefit-20261025`，base/PR127 `2b3b6ee35028ffa94ec0140811d86f48980b7f96`。实际主运行 `a5f3b024f23f870753b8f8ac78da18def04e4f47`，前缀 `42db7931ed9bda42ba2758efe39abe96c94e8e03`，最终来源核验 `2ea1e97b7f0848569186cd72a3246e71af1bb4e5`。生产src、权重、默认和正式科学门均未改。

@@ -1,0 +1,19 @@
+{
+  "finding": "A1 OPEN: valid live withdrawal strands executed segment",
+  "positive_control_settle_then_withdraw": true,
+  "runtime_internal_contracts_after_withdrawal": true,
+  "errors": {
+    "feedback": "stale, foreign, replaced or already executed command",
+    "plan": "settle the executed segment before replanning",
+    "step": "stale, foreign, replaced or already executed command"
+  },
+  "unsettled_ticks": [
+    101
+  ],
+  "pending_command": "9e38c8e9f16f096ea469647b9024a7755eeddf1b0e2f01fac7e25c8e6f7371bc",
+  "completed_commands": 0,
+  "scope": "public in-process live native API; fixed-prefix worker has no update RPC",
+  "audited_base_sha": "90e6c60009e17226b1a58f31245dcd04b810b23a",
+  "audit_runner_sha": "d6aa33464f7117e465722f5cd4353ebc026a8683",
+  "acceptance": "findings reproduced; NOT project acceptance"
+}

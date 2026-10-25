@@ -1,0 +1,22 @@
+{
+  "finding": "A2 OPEN: native verifier accepts bogus source and smoke-to-pi05 relabel",
+  "positive_core": {
+    "native_source_and_commands": true,
+    "steps": 5,
+    "inferences": 1,
+    "journal_sha256": "817e151de97ce383e3d8280f7ab638cadcb831b2731584c57010e08cc1b2cec8"
+  },
+  "forged_core": {
+    "native_source_and_commands": true,
+    "steps": 5,
+    "inferences": 1,
+    "journal_sha256": "817e151de97ce383e3d8280f7ab638cadcb831b2731584c57010e08cc1b2cec8"
+  },
+  "forged_directory": "../runs/third-party-audit-native01/forged-pi05",
+  "pi05_metadata_exists": false,
+  "physics": "run separate verifier on both directories; this command only runs core",
+  "scope": "forged claims in a copy; original smoke and prior pi05 runs untouched",
+  "audited_base_sha": "90e6c60009e17226b1a58f31245dcd04b810b23a",
+  "audit_runner_sha": "d6aa33464f7117e465722f5cd4353ebc026a8683",
+  "acceptance": "findings reproduced; NOT project acceptance"
+}

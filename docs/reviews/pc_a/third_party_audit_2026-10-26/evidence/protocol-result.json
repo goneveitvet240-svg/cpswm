@@ -1,0 +1,57 @@
+{
+  "finding": "A3 OPEN: unbound frozen configuration changes accepted statistics",
+  "original_protocol_matches_git_blob": true,
+  "changed_fields": {
+    "frozen.bootstrap_draws": [
+      10000,
+      1
+    ]
+  },
+  "positive_and_forged_all_source_verifiers_accepted": true,
+  "original_uncertainty": {
+    "seed_net_fewer_errors": {
+      "864251": -8,
+      "864252": -4,
+      "864253": -3,
+      "864254": -8,
+      "864255": -2,
+      "864256": -2
+    },
+    "descriptive_bootstrap_total_95pct": [
+      -39,
+      -15
+    ],
+    "two_sided_cluster_sign_flip_fraction": 0.03125,
+    "independent_seed_groups": 6,
+    "assumptions": "seed groups exchangeable; same generator; not formal scientific acceptance"
+  },
+  "changed_uncertainty": {
+    "seed_net_fewer_errors": {
+      "864251": -8,
+      "864252": -4,
+      "864253": -3,
+      "864254": -8,
+      "864255": -2,
+      "864256": -2
+    },
+    "descriptive_bootstrap_total_95pct": [
+      -23,
+      -23
+    ],
+    "two_sided_cluster_sign_flip_fraction": 0.03125,
+    "independent_seed_groups": 6,
+    "assumptions": "seed groups exchangeable; same generator; not formal scientific acceptance"
+  },
+  "unchanged_paired_counts": {
+    "points": 768,
+    "candidate_errors": 69,
+    "baseline_errors": 42,
+    "fixed": 3,
+    "harmed": 30,
+    "net_fewer_errors": -27
+  },
+  "point_file_identical": false,
+  "audited_base_sha": "90e6c60009e17226b1a58f31245dcd04b810b23a",
+  "audit_runner_sha": "d6aa33464f7117e465722f5cd4353ebc026a8683",
+  "acceptance": "findings reproduced; NOT project acceptance"
+}

@@ -1,3 +1,9 @@
+# 2026-10-25 A交付回执：PR127
+
+已推送草稿 [PR127](https://github.com/goneveitvet240-svg/cpswm/pull/127)，堆叠 PR126，未合并；报告/原件提交 `e52a086c66aae6e07a46dbc99e78d657883c87fe`，实际最终代码 `7a26b5eeedef2427f957bd41bc917b9806736031`。本次回执仅增加文档/CI原件。e52a 的 Ruff 通过，mypy 130错/8文件；8文件Git blob逐一核对均继承base，日志和核验位于 memory_action 证据目录。current-inputs仍运行，未有全仓test结果；最终新SHA的检查需另验。负收益、T²Mem原型尚未训练真实π0.5、B/统一/科学验收待完成等边界保持不变。
+
+---
+
 # 2026-10-25 A交付：三篇论文启发的机制实现与负收益验证
 
 分支 `codex/pc-a-memory-action-20261025`，base/PR126 `0acc47c10e2bc183b717d43c72eab1d6c32e09eb`。独立工作树 `.local/simulation-stack/cpswm-memory-action`。实际配对源码 `531b3ca36635d59c68f30a880b3cadffd5045194`，完整 π0.5/训练 `6e67a78355b8c79c38dbbccbc04d4f5db4656397`，版本绑定修复/10步执行 `d6369829a21941680aaaf4668959b4275ad127a1`，最终检查/审计源码 `7a26b5eeedef2427f957bd41bc917b9806736031`。

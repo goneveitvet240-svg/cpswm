@@ -1,0 +1,62 @@
+{
+  "old": {
+    "native_joint/original": {
+      "actor_probability_mean": 0.49740706738281026,
+      "top1_correct": 210,
+      "near_tie_count_1e_12": 0
+    },
+    "native_joint/posterior_parent": {
+      "actor_probability_mean": 0.6130300401268982,
+      "top1_correct": 324,
+      "near_tie_count_1e_12": 0
+    },
+    "native_six_potential_ablation/original": {
+      "actor_probability_mean": 0.49451694975723726,
+      "top1_correct": 208,
+      "near_tie_count_1e_12": 0
+    },
+    "native_six_potential_ablation/posterior_parent": {
+      "actor_probability_mean": 0.5944812427789036,
+      "top1_correct": 317,
+      "near_tie_count_1e_12": 0
+    },
+    "native_joint/original -> native_joint/posterior_parent": {
+      "actor_fixed": 143,
+      "actor_harmed": 29
+    },
+    "native_six_potential_ablation/posterior_parent -> native_joint/posterior_parent": {
+      "actor_fixed": 37,
+      "actor_harmed": 30
+    }
+  },
+  "new": {
+    "native_joint/original": {
+      "actor_probability_mean": 0.4993740908570751,
+      "top1_correct": 205,
+      "near_tie_count_1e_12": 0
+    },
+    "native_joint/posterior_parent": {
+      "actor_probability_mean": 0.6190818589634266,
+      "top1_correct": 324,
+      "near_tie_count_1e_12": 0
+    },
+    "native_six_potential_ablation/original": {
+      "actor_probability_mean": 0.4910197107412667,
+      "top1_correct": 203,
+      "near_tie_count_1e_12": 0
+    },
+    "native_six_potential_ablation/posterior_parent": {
+      "actor_probability_mean": 0.5880667583673225,
+      "top1_correct": 311,
+      "near_tie_count_1e_12": 0
+    },
+    "native_joint/original -> native_joint/posterior_parent": {
+      "actor_fixed": 142,
+      "actor_harmed": 23
+    },
+    "native_six_potential_ablation/posterior_parent -> native_joint/posterior_parent": {
+      "actor_fixed": 35,
+      "actor_harmed": 22
+    }
+  }
+}

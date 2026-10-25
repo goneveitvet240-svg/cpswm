@@ -6,7 +6,9 @@ import hashlib
 import json
 import subprocess
 import time
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import asdict
+from multiprocessing import get_context
 from pathlib import Path
 
 from run_matched_value import (
@@ -162,7 +164,37 @@ def run_episode(dataset, episode, condition, seed, archive, limit=None):
         }
 
 
-def run(output, prefix_only=False, smoke=False):
+def worker_episode(condition, seed, output, limit):
+    dataset = build_dataset(condition, [seed])
+    episode = dataset.visible_episodes(Split.TEST)[0]
+    count = 0
+    with gzip.open(output, "wt") as stream:
+        for row in run_episode(dataset, episode, condition, seed, read_selection_archive(), limit):
+            stream.write(json.dumps(_canonical_value(row), allow_nan=False, sort_keys=True) + "\n")
+            count += 1
+    print("shard", condition, seed, count, flush=True)
+    return str(output)
+
+
+def parallel_rows(output, conditions, seeds, limit, workers):
+    shards = output / "shards"
+    shards.mkdir()
+    with ProcessPoolExecutor(max_workers=workers, mp_context=get_context("spawn")) as pool:
+        futures = [
+            pool.submit(
+                worker_episode, condition, seed, shards / f"{condition}-{seed}.jsonl.gz", limit
+            )
+            for condition in conditions
+            for seed in seeds
+        ]
+        # Preserve frozen condition/seed order regardless of process completion order.
+        for future in futures:
+            with gzip.open(future.result(), "rt") as stream:
+                for line in stream:
+                    yield json.loads(line)
+
+
+def run(output, prefix_only=False, smoke=False, workers=1):
     if output.exists():
         raise ValueError("new output directory required")
     status = subprocess.check_output(["git", "status", "--porcelain"], text=True)
@@ -180,6 +212,7 @@ def run(output, prefix_only=False, smoke=False):
         "sha": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
         "status": status,
         "prefix_only": prefix_only,
+        "workers": workers,
         "smoke": smoke,
         "frozen": frozen,
         "files": {
@@ -193,22 +226,37 @@ def run(output, prefix_only=False, smoke=False):
     conditions = ["complete32"] if smoke else frozen["conditions"]
     records, inputs = 0, []
     with gzip.open(output / "points.jsonl.gz", "wt") as stream:
-        for condition in conditions:
-            dataset = build_dataset(condition, seeds)
-            episodes = dataset.visible_episodes(Split.TEST)
-            if len(episodes) != len(seeds):
-                raise ValueError("episode inventory mismatch")
-            for seed, episode in zip(seeds, episodes, strict=True):
-                for row in run_episode(
-                    dataset, episode, condition, seed, archive, 2 if prefix_only or smoke else None
-                ):
-                    stream.write(
-                        json.dumps(_canonical_value(row), allow_nan=False, sort_keys=True) + "\n"
-                    )
-                    stream.flush()
-                    records += 1
-                    inputs.append(row["input_sha256"])
-                print(condition, seed, str(episode.episode_id), records, flush=True)
+        if workers > 1:
+            for row in parallel_rows(
+                output, conditions, seeds, 2 if prefix_only or smoke else None, workers
+            ):
+                stream.write(json.dumps(row, allow_nan=False, sort_keys=True) + "\n")
+                stream.flush()
+                records += 1
+                inputs.append(row["input_sha256"])
+        else:
+            for condition in conditions:
+                dataset = build_dataset(condition, seeds)
+                episodes = dataset.visible_episodes(Split.TEST)
+                if len(episodes) != len(seeds):
+                    raise ValueError("episode inventory mismatch")
+                for seed, episode in zip(seeds, episodes, strict=True):
+                    for row in run_episode(
+                        dataset,
+                        episode,
+                        condition,
+                        seed,
+                        archive,
+                        2 if prefix_only or smoke else None,
+                    ):
+                        stream.write(
+                            json.dumps(_canonical_value(row), allow_nan=False, sort_keys=True)
+                            + "\n"
+                        )
+                        stream.flush()
+                        records += 1
+                        inputs.append(row["input_sha256"])
+                    print(condition, seed, str(episode.episode_id), records, flush=True)
     if not smoke:
         assert subprocess.check_output(["git", "status", "--porcelain"], text=True) == ""
         for name, digest in source["files"].items():
@@ -228,5 +276,6 @@ if __name__ == "__main__":
     p.add_argument("--output", required=True, type=Path)
     p.add_argument("--prefix-only", action="store_true")
     p.add_argument("--smoke", action="store_true")
+    p.add_argument("--workers", type=int, choices=(1, 2, 4), default=1)
     a = p.parse_args()
-    run(a.output, a.prefix_only, a.smoke)
+    run(a.output, a.prefix_only, a.smoke, a.workers)

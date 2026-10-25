@@ -1,0 +1,36 @@
+{
+  "schema": "frozen-reliability-replication-v1",
+  "base_sha": "2b3b6ee35028ffa94ec0140811d86f48980b7f96",
+  "test_seeds": [
+    864251,
+    864252,
+    864253,
+    864254,
+    864255,
+    864256
+  ],
+  "conditions": [
+    "complete32",
+    "sparse32",
+    "long64"
+  ],
+  "modes": [
+    "parent_only",
+    "owner_missing"
+  ],
+  "baselines": [
+    "latest_owner",
+    "matched_amg"
+  ],
+  "confidence_bins": [
+    0,
+    0.4,
+    0.6,
+    0.8,
+    1.000000001
+  ],
+  "bootstrap_seed": 864250,
+  "bootstrap_draws": 10000,
+  "truth_access": "after all predictions and diagnostics commit",
+  "model_or_threshold_tuning": false
+}

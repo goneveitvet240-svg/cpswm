@@ -1,3 +1,11 @@
+# 2026-10-25 A开工：可靠性与净收益冻结复验
+
+用户授权验证当前联合机制。独立分支 `codex/pc-a-reliability-net-benefit-20261025`，工作树 `.local/simulation-stack/cpswm-reliability`，base/PR127 `2b3b6ee35028ffa94ec0140811d86f48980b7f96`。fetch成功，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a未变。旧工作树保留。
+
+[冻结协议](../reviews/pc_a/reliability_net_benefit_2026-10-25/PROTOCOL.md)：六新seed×三条件768时点、六方法、同预算；可靠性分层和修正−损害，seed组不确定性与36前缀时点独立重跑。旧数据仅诊断；不调模型/阈值或改正式验收门，不把D0当自然机器人收益。当前本地开工，源码/运行结果待补；下一步实现只读验证工具并源绑定运行。完整范围保留，B/全仓/统一/科学验收未完成。
+
+---
+
 # 2026-10-25 A交付回执：PR127
 
 已推送草稿 [PR127](https://github.com/goneveitvet240-svg/cpswm/pull/127)，堆叠 PR126，未合并；报告/原件提交 `e52a086c66aae6e07a46dbc99e78d657883c87fe`，实际最终代码 `7a26b5eeedef2427f957bd41bc917b9806736031`。本次回执仅增加文档/CI原件。e52a 的 Ruff 通过，mypy 130错/8文件；8文件Git blob逐一核对均继承base，日志和核验位于 memory_action 证据目录。current-inputs仍运行，未有全仓test结果；最终新SHA的检查需另验。负收益、T²Mem原型尚未训练真实π0.5、B/统一/科学验收待完成等边界保持不变。

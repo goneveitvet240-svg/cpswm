@@ -14,7 +14,7 @@ from torch import nn
 
 
 class ObservationFastMemory(nn.Module):
-    def __init__(self, feature_dim: int, memory_dim: int = 16):
+    def __init__(self, feature_dim: int, memory_dim: int = 16) -> None:
         super().__init__()
         if feature_dim < 1 or memory_dim < 1:
             raise ValueError("positive feature and memory dimensions required")
@@ -26,12 +26,18 @@ class ObservationFastMemory(nn.Module):
         self.log_step = nn.Parameter(torch.tensor(-1.0))
         self.gate = nn.Parameter(torch.full((memory_dim,), 0.1))
 
-    def reset(self, batch_size: int):
+    def reset(self, batch_size: int) -> torch.Tensor:
         if batch_size < 1:
             raise ValueError("nonempty episode batch required")
         return self.initial.unsqueeze(0).expand(batch_size, -1, -1).clone()
 
-    def forward(self, features, fast_state, *, write_mask=None):
+    def forward(
+        self,
+        features: torch.Tensor,
+        fast_state: torch.Tensor,
+        *,
+        write_mask: torch.Tensor | None = None,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         if features.ndim != 2 or features.shape[-1] != self.feature_dim:
             raise ValueError("expected observation-grounded [batch, features]")
         if fast_state.shape != (len(features), self.memory_dim, self.memory_dim):
@@ -68,14 +74,16 @@ class AlternatingMemoryTrainer:
     memory-conditioned model.
     """
 
-    def __init__(self, memory, action_head, *, learning_rate=1e-3):
+    def __init__(
+        self, memory: ObservationFastMemory, action_head: nn.Module, *, learning_rate: float = 1e-3
+    ) -> None:
         self.memory, self.action_head = memory, action_head
         self.optimizers = {
             "memory": torch.optim.Adam(memory.parameters(), lr=learning_rate),
             "policy": torch.optim.Adam(action_head.parameters(), lr=learning_rate),
         }
 
-    def step(self, observations, targets, *, phase: str):
+    def step(self, observations: torch.Tensor, targets: torch.Tensor, *, phase: str) -> float:
         if phase not in self.optimizers:
             raise ValueError("phase must be memory or policy")
         if observations.ndim != 3 or observations.shape[0] < 2:
@@ -91,6 +99,6 @@ class AlternatingMemoryTrainer:
             read, state = self.memory(frame, state)
         logits = self.action_head(torch.cat((observations[-1], read), dim=-1))
         loss = torch.nn.functional.cross_entropy(logits, targets)
-        loss.backward()
+        loss.backward()  # type: ignore[no-untyped-call]
         self.optimizers[phase].step()
         return float(loss.detach())

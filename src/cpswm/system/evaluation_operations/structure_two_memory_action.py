@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, fields
-from typing import Any
+from typing import Any, cast
 from uuid import UUID
 
 from cpswm.system.evaluation_operations.structure_two_current_event import (
@@ -20,6 +20,11 @@ from cpswm.system.evaluation_operations.structure_two_selected_method import (
     ParticleRegimeDecision,
     StructureTwoOperator,
 )
+from cpswm.system.evaluation_operations.structure_two_stateful_full_joint import (
+    FullJointCandidate,
+    FullJointObservation,
+    StatefulJointParticle,
+)
 from cpswm.system.reproducibility import content_sha256
 
 
@@ -27,13 +32,13 @@ from cpswm.system.reproducibility import content_sha256
 class MemoryActionObservation(CurrentEventObservation):
     regime_evidence_available: bool = True
 
-    def __post_init__(self):
-        CurrentEventObservation.__post_init__(self)
+    def __post_init__(self) -> None:
+        CurrentEventObservation.__post_init__(self)  # type: ignore[no-untyped-call]
         if type(self.regime_evidence_available) is not bool:
             raise ValueError("regime evidence availability must be explicit boolean")
 
 
-def projection_observation(observation):
+def projection_observation(observation: FullJointObservation) -> MemoryActionObservation:
     """Adapt the existing D0 missing-event producer's documented zero placeholder.
 
     Callers with actual zero evidence must use MemoryActionObservation(..., True).
@@ -53,16 +58,23 @@ def projection_observation(observation):
 
 
 class MemoryActionRuntime(CurrentEventRuntime):
-    def __init__(self, *, owner_readout=True, missing_evidence=True, **kwargs):
+    def __init__(
+        self, *, owner_readout: bool = True, missing_evidence: bool = True, **kwargs: Any
+    ) -> None:
         self.owner_readout = owner_readout
         self.missing_evidence = missing_evidence
-        super().__init__(**kwargs)
+        super().__init__(**kwargs)  # type: ignore[no-untyped-call]
 
-    def revise(self, observation):
+    def revise(self, observation: FullJointObservation) -> tuple[StatefulJointParticle, ...]:
         # Conversion is owned by this explicit adapter, not inferred by the target.
-        return super().revise(projection_observation(observation))
+        return cast(
+            tuple[StatefulJointParticle, ...],
+            super().revise(projection_observation(observation)),  # type: ignore[no-untyped-call]
+        )
 
-    def _candidates(self, observation, parent):
+    def _candidates(
+        self, observation: FullJointObservation, parent: StatefulJointParticle | None
+    ) -> tuple[tuple[FullJointCandidate, float], ...]:
         mass = 1.0 if parent is None else parent.posterior_probability
         if not math.isfinite(mass) or mass < 0:
             raise ValueError("invalid parent mass")
@@ -71,7 +83,9 @@ class MemoryActionRuntime(CurrentEventRuntime):
             for candidate, q in super()._candidates(observation, parent)
         )
 
-    def _main_log_factor(self, observation, candidate):
+    def _main_log_factor(
+        self, observation: FullJointObservation, candidate: FullJointCandidate
+    ) -> float:
         original = super()._main_log_factor(observation, candidate)
         if (
             not self.missing_evidence
@@ -89,12 +103,14 @@ class MemoryActionRuntime(CurrentEventRuntime):
             probability = max(observation.unresolved_probability, 1e-12)
         return original - math.log(max(probability, 1e-300))
 
-    def action_distribution(self):
+    def action_distribution(self) -> dict[UUID, float]:
         if not self.owner_readout:
             return super().action_distribution()
         return owner_habit_readout(self)[0]
 
-    def revise_location_source(self, source_id, expected_digest, *, restore=False):
+    def revise_location_source(
+        self, source_id: UUID, expected_digest: str, *, restore: bool = False
+    ) -> dict[str, Any]:
         for kind, payload, _ in self.operations:
             is_observation = isinstance(payload, CurrentEventObservation)
             if kind not in {"observation", "feedback", "verification"} or (
@@ -103,10 +119,13 @@ class MemoryActionRuntime(CurrentEventRuntime):
                 raise ValueError("replay operation type does not match its payload")
             if kind == "verification" and not isinstance(payload, dict):
                 raise ValueError("verification operation requires named arguments")
-        return super().revise_location_source(source_id, expected_digest, restore=restore)
+        return cast(
+            dict[str, Any],
+            super().revise_location_source(source_id, expected_digest, restore=restore),  # type: ignore[no-untyped-call]
+        )
 
 
-def snapshot_binding(runtime):
+def snapshot_binding(runtime: CurrentEventRuntime) -> str:
     """Bind actual statistics and typed evidence, not only native history labels."""
     return content_sha256(
         {
@@ -123,7 +142,9 @@ def snapshot_binding(runtime):
     )
 
 
-def owner_habit_readout(runtime, owner: str | None = None):
+def owner_habit_readout(
+    runtime: CurrentEventRuntime, owner: str | None = None
+) -> tuple[dict[UUID, float], dict[str, Any]]:
     """Marginalize current mover; query owner statistics within each latent regime.
 
     RB cells contain target-instance evidence admitted by the native writer. A
@@ -198,7 +219,7 @@ class NativeGoalMemory:
     or self-signed receipt is accepted as an alternative to recomputation.
     """
 
-    def __init__(self, runtime, bindings: dict[UUID, str]):
+    def __init__(self, runtime: CurrentEventRuntime, bindings: dict[UUID, str]) -> None:
         self.runtime = runtime
         self.bindings = dict(bindings)
         observation = runtime._last_observation

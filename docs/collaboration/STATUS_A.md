@@ -1,3 +1,11 @@
+# 2026-10-25 A开工：三篇论文机制落实到动作
+
+用户已授权落实 LEDGER/T²Mem/MEMORA。分支 `codex/pc-a-memory-action-20261025`，base `0acc47c10e2bc183b717d43c72eab1d6c32e09eb`；独立工作树 `.local/simulation-stack/cpswm-memory-action`。fetch成功；集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`，B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a`。
+
+[实施协议](../reviews/pc_a/memory_action_2026-10-25/PROTOCOL.md)：缺失制度证据分型、主人习惯读出、原生后验到目标、配对内容干预、独立T²Mem训练路径。本地进行中，未运行新实验；实际源码/测试/证据待补。旧默认保留；不宣称已训练π0.5或科学收益。下一步实现并做因果内容对照，B/全仓/统一验收待完成。
+
+---
+
 # 2026-10-25 A交付：五步协同首轮实现与验证
 
 草稿[PR126](https://github.com/goneveitvet240-svg/cpswm/pull/126)，分支 `codex/pc-a-five-stage-synergy-20261025`，base `dfcfbb2b78cd06865923eda916700c3abee5e3e9`。独立工作树 `.local/simulation-stack/cpswm-synergy`。配对源码 `5c8905ed855e5f60d57b1b4704659db5aa3c8ad8`，π0.5运行 `3a00679365c2f50cec2d63d80efa585dbd18fafc`，完整状态审计 `3ca57e4cf2e57f71b795313a3c2f182d7e39f6ae`，目标干预 `7219ab9e065ae01803e3c2b9951bbd03ffe0c9d4`，最终物理负例工具 `b0ec243868b8db1f711e0247f8818b05143322a3`。

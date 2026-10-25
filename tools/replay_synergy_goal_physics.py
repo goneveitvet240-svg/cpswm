@@ -19,13 +19,26 @@ from cpswm.simulation.integrations.policy import policy_input
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def run(path):
+def run(path, controls_path=None):
     manifest = json.loads((path / "manifest.json").read_text())
     summary = json.loads((path / "summary.json").read_text())
     journal = json.loads((path / "journal.json").read_text())
     validate_goal_outcomes(manifest, summary, journal)
     inferences = {x["tick"]: x for x in journal if x["event"] == "policy_inference"}
     actions = [x for x in journal if x["event"] == "executed_action"]
+    controls = None if controls_path is None else json.loads(controls_path.read_text())
+    control_plans = {}
+    if controls is not None:
+        assert (
+            controls["actual_manifest_sha256"]
+            == hashlib.sha256((path / "manifest.json").read_bytes()).hexdigest()
+        )
+        assert (
+            controls["actual_journal_sha256"]
+            == hashlib.sha256((path / "journal.json").read_bytes()).hexdigest()
+        )
+        assert len(controls["actions"]) == len(actions)
+        control_plans = {x["tick"]: x["controls"] for x in controls["inferences"]}
     validate_policy_claim(manifest, summary, len(inferences))
     for name, spec in manifest["vendor"].items():
         vendor = ROOT.parent / "vendor" / name
@@ -64,6 +77,17 @@ def run(path):
                 assert np.isfinite(loaded[tick]).all()
             np.testing.assert_array_equal(record["action"], loaded[tick][record["output_offset"]])
             assert record["command_id"] == plan["command"]["command_id"]
+            if controls is not None:
+                for arm, selected in control_plans[tick].items():
+                    assert selected["plan"]["prompt"] == plan["prompt"]
+                    assert (
+                        selected["plan"]["command"]["destination"] == plan["command"]["destination"]
+                    )
+                    assert controls["actions"][env.steps]["action"] == record["action"]
+                    assert (
+                        controls["actions"][env.steps]["control_commands"][arm]
+                        == selected["plan"]["command"]["command_id"]
+                    )
             obs = env.step(np.asarray(record["action"], dtype=np.float64))
             assert (
                 evaluate_goal(env, plan["command"]["destination"]) == record["goal_evaluation_only"]
@@ -93,6 +117,9 @@ def run(path):
         "goal_success": summary["goal_success_evaluator_only"],
         "scientific_acceptance": False,
         "scope": "saved-action replay; does not rerun model inference or SAM",
+        "common_input_memory_controls_physically_replayed": []
+        if controls is None
+        else sorted(controls["final_controls"]),
     }
 
 
@@ -100,5 +127,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("run", type=Path)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--controls", type=Path)
     args = parser.parse_args()
-    save(args.output, run(args.run))
+    save(args.output, run(args.run, args.controls))

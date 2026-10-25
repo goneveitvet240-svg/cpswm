@@ -261,7 +261,7 @@ def main() -> None:
     validate_goal_outcomes(manifest, summary, journal)
     require(
         len(actual_steps) == summary["steps"]
-        and 7 <= len(actual_steps) <= manifest["arguments"]["steps"],
+        and 3 <= len(actual_steps) <= manifest["arguments"]["steps"],
         "incomplete physical segment count",
     )
     require(

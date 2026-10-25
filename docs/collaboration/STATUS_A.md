@@ -1,3 +1,23 @@
+# 2026-10-25 A交付：PR123动作不变的读出定位
+
+分支 `codex/pc-a-matched-readout-diagnostic-20261025`，base `cc7c6f7566bbdfa611a79a096f5a4eb6d6fd7f04`；最终实际运行/测试源码 `d3465ee69b9451bc1d458bcb0b12ab587a3eba2c`。独立工作树 `.local/simulation-stack/cpswm-matched-readout`，开工fetch成功；共享集成仍为 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。生产src、模型/先验、原实验输入和完整研究范围均未改。
+
+9条轨迹384时点：联合与消融206处概率变化、384步同动作；二者全部沿共同base动作。固定当前解析质量、base和账本时，联合375/384步任意解析分布也不能翻转排序，其中含13/15错误。15次错分为冷启动2次、新习惯切换观测空窗8次、旧习惯回归空窗5次；不把空窗解释成不可避免，不声称已有独有科学收益。
+
+工程验证：50定向测试通过，Ruff check/format通过；两臂768时点与PR123输入/动作/分布/反馈后状态hash匹配，独立标量重建最大误差1.11e-16。最终源码干净、source_unchanged；12份交付文件hash及压缩解包重算核验通过。完整命令和原件：[报告](../reviews/pc_a/matched_readout_2026-10-25/REPORT.md)、[命令](../reviews/pc_a/matched_readout_2026-10-25/COMMANDS.md)、[清单](../reviews/pc_a/matched_readout_2026-10-25/MANIFEST.json)。
+
+PR123 static-quality失败：mypy 130错误/8文件；这些文件在PR122、PR123和本次源码Git blob一致，日志已存档。本轮没有关闭这批类型债务。已推送草稿[PR124](https://github.com/goneveitvet240-svg/cpswm/pull/124)，堆叠PR123；报告/原件提交 `4cbf57060a12ef5fdbc63d9c42374d097754da83`，未合并；B按SHA独立复核、全仓CI、统一/科学验收和共享集成待完成，不自动合并。下一步交B复核固定质量界和误例来源；owner门控、父历史分配、回归预测分别设计对照，新的科学规则/指标/确认集由用户决定。保留E0–E6、H/R/I/C/Z/r/V、三个RB blocks、七算子及全部用户科学决策。
+
+---
+
+# 2026-10-25 A开工：PR123读出和共同错误诊断
+
+分支 `codex/pc-a-matched-readout-diagnostic-20261025`，base/当前源码 `cc7c6f7566bbdfa611a79a096f5a4eb6d6fd7f04`，独立目录 `.local/simulation-stack/cpswm-matched-readout`。已fetch并核对A/B交接，PR123仍草稿、CI尚运行；共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`。已读旧10月13日诊断，本批只把其问题在PR123最新固定证据上源绑定核实，增加固定解析质量的最坏排序界与15个共同错误的证据时序。
+
+[协议](../reviews/pc_a/matched_readout_2026-10-25/PROTOCOL.md)。不改生产模型/参数或研究范围，不以低ESS或阴性结果代替科学判定。当前本地进行中，测试/实际代码SHA/结果待补；B独立复核、统一/科学验收待完成。下一步实现只读分解和存档重算，保留全部正负路径。
+
+---
+
 # 2026-10-25 A交付：E1/E2固定证据强基线开发对照
 
 分支 `codex/pc-a-matched-value-diagnostic-20261024`，接续base `146d847c4346f7323af8de548d405b09fcbdbf82`，实际运行/测试源码 `ee356b2393c1786fc87083d079b2d8517aa31e6f`。本轮已fetch远端并保留完整范围。独立工作目录 `.local/simulation-stack/cpswm-matched-value`；生产src/先验/模型/24粒子/v06未改。

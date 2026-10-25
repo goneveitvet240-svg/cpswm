@@ -1,3 +1,11 @@
+## 2026-10-25 A任务分支交付更新：固定状态读出诊断
+
+分支 `codex/pc-a-matched-readout-diagnostic-20261025`，base `cc7c6f7566bbdfa611a79a096f5a4eb6d6fd7f04`，实际运行源码 `d3465ee69b9451bc1d458bcb0b12ab587a3eba2c`；[报告](../reviews/pc_a/matched_readout_2026-10-25/REPORT.md)。384步全部沿base动作；联合375步在当前固定解析质量下任何解析分布均不能翻转。15错误来源为冷启动2/新习惯空窗8/旧习惯回归空窗5。50测试通过、768臂时点对原件匹配、存档独立标量重算通过。生产模型未改，独有收益未建立。
+
+已通过草稿[PR124](https://github.com/goneveitvet240-svg/cpswm/pull/124)推送交付，堆叠PR123，报告/原件 `4cbf57060a12ef5fdbc63d9c42374d097754da83`，未合并；B按SHA复核待完成。PR123全仓static-quality存在130个mypy错误/8文件，未由本批关闭。共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`；本分支结果不是统一验收或已集成。全E0–E6及既定框架保留，新的科学实验选择交用户决定。
+
+---
+
 ## 2026-10-25 A任务分支交付更新
 
 E1/E2固定公开证据强基线开发比较已完成，运行源码 `ee356b2393c1786fc87083d079b2d8517aa31e6f`；[报告](../reviews/pc_a/matched_value_2026-10-24/REPORT.md)。联合/六势消融/最近可信主人事件/匹配AMG在384时点均15放回错、放回动作相同；E2可修订简单基线同样恢复。63测试通过/1可选跳过，两次完整结果重放一致。A已通过草稿[PR123](https://github.com/goneveitvet240-svg/cpswm/pull/123)交付源码与原件；B待按SHA独立复核。共享集成仍 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`；本分支更新不代表共享集成已接受。全E0–E6、统一验收和科学收益保持分层记录。

@@ -118,3 +118,80 @@ def test_real_d0_runtime_binds_goal_and_rejects_forged_or_stale_plan():
         controller.observe_history(camera, 102)
     with pytest.raises(ValueError):
         NativeGoalMemory(state.runtime, {next(iter(bindings)): "only"})
+
+
+def test_paid_source_withdrawal_restores_typed_evidence_and_habit_distribution():
+    from test_current_event import advance, data, state_for
+
+    inputs = data.__wrapped__()
+    state = state_for(inputs)
+    old = state.runtime
+    state.runtime = MemoryActionRuntime(
+        arm=old.arm, config=old.config, neural_model=old.neural_model
+    )
+    advance(state, inputs[1].steps[:4])
+    r = state.runtime
+    source_id = next(iter(r.location_sources))
+    source = r.location_sources[source_id]
+    assert source["original"].regime_evidence_available is False
+    assert source["updated"].regime_evidence_available is False
+    before = r._state_sha256()
+    distribution, receipt = owner_habit_readout(r)
+    r.revise_location_source(source_id, source["sha256"])
+    assert r._state_sha256() != before
+    r.revise_location_source(source_id, source["sha256"], restore=True)
+    assert r._state_sha256() == before
+    restored, restored_receipt = owner_habit_readout(r)
+    assert restored == distribution and restored_receipt == receipt
+    r.verify_internal_contracts()
+
+
+@pytest.mark.parametrize("attack", ["typed_regime", "actor", "position", "operation"])
+def test_typed_source_replay_rejects_semantically_changed_complete_input(attack):
+    from test_current_event import advance, data, state_for
+
+    inputs = data.__wrapped__()
+    state = state_for(inputs)
+    old = state.runtime
+    state.runtime = MemoryActionRuntime(
+        arm=old.arm, config=old.config, neural_model=old.neural_model
+    )
+    advance(state, inputs[1].steps[:2])
+    r = state.runtime
+    source_id = next(iter(r.location_sources))
+    source = r.location_sources[source_id]
+    before = r._state_sha256()
+    if attack == "typed_regime":
+        kind, payload, digest = r.operations[0]
+        r.operations[0] = (kind, replace(payload, regime_evidence_available=True), digest)
+    elif attack == "actor":
+        source["payload"]["location_likelihood"] = (("owner", 1.0),)
+    elif attack == "position":
+        source["payload"]["paid_updates"][-1]["receipt"]["found"] = False
+    else:
+        kind, payload, digest = r.operations[0]
+        r.operations[0] = ("feedback", payload, digest)
+    with pytest.raises((ValueError, AttributeError)):
+        r.revise_location_source(source_id, source["sha256"])
+    assert r._state_sha256() == before
+
+
+def test_goal_revision_binds_actual_rb_content_not_only_native_history_labels():
+    from native_goal_worker import controller_for
+
+    controller, _ = controller_for()
+    memory = controller.memory
+    old_revision = memory.revision
+    old_native = memory.runtime._state_sha256()
+    # A complete valid-shaped replacement preserves event/role/regime labels.
+    # It must STILL invalidate the previously bound memory revision.
+    for particle in memory.runtime.particles:
+        for key, cell in list(particle.world.rb_cells.items()):
+            particle.world.rb_cells[key] = replace(
+                cell,
+                location_alpha=tuple(reversed(cell.location_alpha)),
+                ridge_precision=tuple(reversed(cell.ridge_precision)),
+                ridge_natural=tuple(reversed(cell.ridge_natural)),
+            )
+    assert memory.runtime._state_sha256() == old_native
+    assert memory.revision != old_revision

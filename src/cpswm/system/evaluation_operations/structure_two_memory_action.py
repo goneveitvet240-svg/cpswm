@@ -94,6 +94,34 @@ class MemoryActionRuntime(CurrentEventRuntime):
             return super().action_distribution()
         return owner_habit_readout(self)[0]
 
+    def revise_location_source(self, source_id, expected_digest, *, restore=False):
+        for kind, payload, _ in self.operations:
+            is_observation = isinstance(payload, CurrentEventObservation)
+            if kind not in {"observation", "feedback", "verification"} or (
+                (kind == "observation") != is_observation
+            ):
+                raise ValueError("replay operation type does not match its payload")
+            if kind == "verification" and not isinstance(payload, dict):
+                raise ValueError("verification operation requires named arguments")
+        return super().revise_location_source(source_id, expected_digest, restore=restore)
+
+
+def snapshot_binding(runtime):
+    """Bind actual statistics and typed evidence, not only native history labels."""
+    return content_sha256(
+        {
+            "native_state": runtime._state_sha256(),
+            "observation": runtime._last_observation,
+            "cells": [
+                [
+                    (actor, regime, cell)
+                    for (actor, regime), cell in sorted(p.world.rb_cells.items())
+                ]
+                for p in runtime.particles
+            ],
+        }
+    )
+
 
 def owner_habit_readout(runtime, owner: str | None = None):
     """Marginalize current mover; query owner statistics within each latent regime.
@@ -147,7 +175,9 @@ def owner_habit_readout(runtime, owner: str | None = None):
         "schema": "owner-habit-readout-v1",
         "task": "PUT_BACK",
         "owner": owner,
-        "state_sha256": runtime._state_sha256(),
+        "state_sha256": snapshot_binding(runtime),
+        "native_state_sha256": runtime._state_sha256(),
+        "typed_observation_sha256": content_sha256(observation),
         "source_update_id": str(observation.source_update_id),
         "ledger_head": runtime.rgrc_ledger.head_hash,
         "components": components,
@@ -182,7 +212,7 @@ class NativeGoalMemory:
     @property
     def revision(self) -> str:
         return content_sha256(
-            [self.runtime._state_sha256(), self.bindings, "owner-habit-readout-v1"]
+            [snapshot_binding(self.runtime), self.bindings, "owner-habit-readout-v1"]
         )
 
     def destination_distribution(self) -> dict[str, float]:

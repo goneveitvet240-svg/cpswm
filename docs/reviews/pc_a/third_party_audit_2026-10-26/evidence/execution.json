@@ -1,0 +1,40 @@
+{
+  "regression": {
+    "exit_code": 0,
+    "passed": 45
+  },
+  "state_machine": {
+    "exit_code": 0,
+    "finding": "OPEN"
+  },
+  "protocol": {
+    "exit_code": 0,
+    "finding": "OPEN"
+  },
+  "native_core": {
+    "exit_code": 0,
+    "finding": "OPEN"
+  },
+  "native_smoke03": {
+    "exit_code": 0,
+    "policy": "smoke",
+    "steps": 5
+  },
+  "native_physics_positive_and_forged": {
+    "exit_code": 0,
+    "both_accepted": true
+  },
+  "failed_attempts": [
+    {
+      "run": "smoke01",
+      "exit_code": 1,
+      "reason": "launcher omitted; missing LIBERO import"
+    },
+    {
+      "run": "smoke02",
+      "exit_code": 143,
+      "reason": "sandbox macOS graphics service stalled; own process terminated"
+    }
+  ],
+  "no_production_fix": true
+}

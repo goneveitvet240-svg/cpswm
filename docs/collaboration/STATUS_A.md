@@ -1,3 +1,15 @@
+# 2026-10-26 A 交付：第三方视角部分审计，3 项 OPEN
+
+分支 `codex/pc-a-third-party-audit-20261026`，base/被审计 PR128 `90e6c60009e17226b1a58f31245dcd04b810b23a`；审计工具源码 `d6aa33464f7117e465722f5cd4353ebc026a8683`。仅增加审计/报告，生产 src、既有核验工具和配置未改；本机实施方的第三方视角审计，不冒称电脑 B 独立验收。fetch 成功，集成19ddf26830348a2f0b33f0af54d6ba702c5cfb1c、B fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a分别保留。
+
+A1/P1：合法原生来源撤回到达已执行一步与 feedback 之间，feedback/下一步/新计划都被拒绝，段无法结算；相同撤回在结算后可继续。A2/P1：真实5步 smoke 的副本重标π0.5、清空源清单、改不存在SHA，core及真实physics均接受，来源声明未获独立证明。A3/P2：仅改manifest bootstrap次数10000→1，95%区间−39..−15变−23..−23，完整来源核验仍通过；原始768点和净−27计数未变。三项均未修复，不自动合并。
+
+45项现有定向测试通过；正反例、750源/768输入真值和统计重算、36+109既有重复比较、新5步物理重放完成；脚本Ruff通过，证据逐成员hash回读通过。PR128当前CI static-quality失败，mypy130错/8文件，均继承PR127；不是130个运行时bug。完整测试/七算子矩阵、B、统一和科学验收均未通过本轮认证；137唯一点不冒称全量状态复跑。完整研究范围不变。
+
+[报告](../reviews/pc_a/third_party_audit_2026-10-26/REPORT.md)、[复现命令](../reviews/pc_a/third_party_audit_2026-10-26/COMMANDS.md)、[证据清单](../reviews/pc_a/third_party_audit_2026-10-26/MANIFEST.json)。推送前新增交付部分仅本地完成，GitHub草稿PR回执另补。下一步优先分离动作授权与已执行结算、绑定源码/模型来源、绑定冻结协议及完整统计，再修现存CI并在新SHA复验；未擅自选新先验或科研路线。
+
+---
+
 # 2026-10-26 A 开工：第三方视角代码审计
 
 用户授权审核当前项目问题和 bug；本机以第三方审计方法开展，不冒称电脑 B 或独立机构验收。独立分支 `codex/pc-a-third-party-audit-20261026`，工作树 `.local/simulation-stack/cpswm-third-party-audit`，base/被审计源码 `90e6c60009e17226b1a58f31245dcd04b810b23a` (PR128)。fetch 成功；共享集成 `19ddf26830348a2f0b33f0af54d6ba702c5cfb1c`、B `fd4ca6ef5e81c90d7cf7987b42c0b2810d8a810a` 分别记录。

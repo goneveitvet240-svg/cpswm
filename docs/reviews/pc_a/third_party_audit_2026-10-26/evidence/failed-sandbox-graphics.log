@@ -1,0 +1,18 @@
+[robosuite WARNING] No private macro file found! (macros.py:53)
+[robosuite WARNING] It is recommended to use a private macro file (macros.py:54)
+[robosuite WARNING] To setup, run: python /Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/envs/libero/lib/python3.11/site-packages/robosuite/scripts/setup_macros.py (macros.py:55)
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-10-26 00:22:50.301 python[89764:114008609] Connection Invalid error for service com.apple.hiservices-xpcservice.
+2026-10-26 00:22:50.301 python[89764:114008300] Error received in message reply handler: Connection invalid
+2026-10-26 00:22:50.307 python[89764:114008300] Failure on line 688 in function id scheduleApplicationNotification(LSNotificationCode, NSWorkspaceNotificationCenter *): noErr == _LSModifyNotification(notificationID, 1, &code, 0, NULL, NULL, NULL)
+Traceback (most recent call last):
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-third-party-audit/tools/native_goal_worker.py", line 108, in <module>
+    main()
+    ~~~~^^
+  File "/Users/pangwei/Documents/ai/continual-personalized-semantic-world-model/.local/simulation-stack/cpswm-third-party-audit/tools/native_goal_worker.py", line 69, in main
+    for line in sys.stdin:
+                ^^^^^^^^^
+KeyboardInterrupt

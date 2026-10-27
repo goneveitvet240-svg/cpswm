@@ -1,0 +1,61 @@
+{
+  "moves": [
+    {
+      "old": "artifacts",
+      "new": "data/artifacts",
+      "entries": 221,
+      "inventory_inode_size_mtime_and_links_identical": true,
+      "compatibility_path_samefile": true,
+      "preexisting_broken_symlinks": 0
+    },
+    {
+      "old": "output",
+      "new": "data/outputs",
+      "entries": 181592,
+      "inventory_inode_size_mtime_and_links_identical": true,
+      "compatibility_path_samefile": true,
+      "preexisting_broken_symlinks": 14
+    },
+    {
+      "old": ".local/simulation-stack/runs",
+      "new": "data/runs",
+      "entries": 815,
+      "inventory_inode_size_mtime_and_links_identical": true,
+      "compatibility_path_samefile": true,
+      "preexisting_broken_symlinks": 0
+    },
+    {
+      "old": ".local/simulation-stack/models",
+      "new": "data/models",
+      "entries": 28,
+      "inventory_inode_size_mtime_and_links_identical": true,
+      "compatibility_path_samefile": true,
+      "preexisting_broken_symlinks": 0
+    },
+    {
+      "old": ".local/simulation-stack/vendor/openpi",
+      "new": "integrations/pi05/openpi",
+      "entries": 1751,
+      "inventory_inode_size_mtime_and_links_identical": true,
+      "compatibility_path_samefile": true,
+      "preexisting_broken_symlinks": 0
+    },
+    {
+      "old": ".local/simulation-stack/vendor/sam2",
+      "new": "integrations/sam2/source",
+      "entries": 730,
+      "inventory_inode_size_mtime_and_links_identical": true,
+      "compatibility_path_samefile": true,
+      "preexisting_broken_symlinks": 0
+    }
+  ],
+  "method": "Same-filesystem rename; all entries checked by inode, mode, size, mtime and symlink text/status. No content hashing.",
+  "navigation_links_verified": 37,
+  "test": {
+    "cwd": ".local/simulation-stack/cpswm",
+    "command": "../envs/libero/bin/python tools/simulation_python.py -m pytest -o addopts= -q -p no:cacheprovider tests/test_libero_stack.py",
+    "exit_code": 0,
+    "result": "16 passed in 4.74s"
+  },
+  "scope": "Local resource organization only; no model inference rerun or scientific acceptance."
+}

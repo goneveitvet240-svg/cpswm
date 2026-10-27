@@ -1,4 +1,4 @@
-# A 目录整理（2026-10-27，本地完成，待推送）
+# A 目录整理（2026-10-27，已推送，草稿 PR #130）
 
 - 任务：将本地数据/权重/输出集中到 data，将 π0.5、SAM2、LIBERO 入口集中到 integrations。
 - 分支：`codex/pc-a-directory-layout-20261027`。
@@ -10,7 +10,8 @@
 - 测试与证据：6 项同卷迁移，所有条目的 inode/大小/mtime/链接状态一致；旧启动器运行 `tests/test_libero_stack.py`：16 passed in 4.74s，exit 0；37 个导航链接验证通过。
 - 证据：[迁移与检查记录](directory-layout-20261027.json)，[目录导航](../../DIRECTORY_LAYOUT.md)。
 - 局限：迁移以同卷 rename 保留文件，并核对 inode/大小/mtime/链接；未逐字节重算全部内容哈希。原输出已有 14 个失效的历史链接，迁移未新增。未重新运行模型推理或科研验收。
-- 下一步：推送独立分支，通过 PR 交接目录约定；共享集成不自动合并。
+- 已推送整理提交：`274bdd6574023710306f261d1179d9446aaef14d`；[草稿 PR #130](https://github.com/goneveitvet240-svg/cpswm/pull/130)。本条回执提交见 Git 历史。
+- 下一步：B 复核目录约定及本机资源边界；共享集成未合并。
 
 ---
 
